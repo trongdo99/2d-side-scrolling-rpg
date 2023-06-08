@@ -24,10 +24,7 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
 
     public Vector2 GetMovementVectorNormalized()
     {
-        Vector2 inputVector = Vector2.zero;
-
-        inputVector = _playerInputActions.Player.Move.ReadValue<Vector2>();
-        Debug.Log(inputVector);
+        Vector2 inputVector = _playerInputActions.Player.Move.ReadValue<Vector2>();
 
         return inputVector.normalized;
     }
