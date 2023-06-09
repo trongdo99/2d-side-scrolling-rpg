@@ -1072,7 +1072,7 @@ MonoBehaviour:
   m_Follow: {fileID: 1653787188}
   m_Lens:
     FieldOfView: 34
-    OrthographicSize: 11.25
+    OrthographicSize: 5.625
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -1690,7 +1690,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 11.25
+  orthographic size: 5.625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5815,6 +5815,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a41d7770594bb3458bd101718c4423e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 1946773058}
+  _animator: {fileID: 1946773059}
   _moveSpeed: 6
   _accelerationTimeGrounded: 0.1
   _accelerationTimeAirborne: 0.2
@@ -5853,7 +5855,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.01635176, y: 0.6874968}
+  m_Offset: {x: 0.080453515, y: 0.6908934}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -5864,7 +5866,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8465456, y: 1.3904126}
+  m_Size: {x: 0.8499422, y: 1.3836193}
   m_EdgeRadius: 0
 --- !u!114 &1653787192
 MonoBehaviour:
@@ -6674,6 +6676,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1946773057}
   - component: {fileID: 1946773058}
+  - component: {fileID: 1946773059}
   m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
@@ -6748,6 +6751,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &1946773059
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946773056}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: cc3fb8ca069ffd5428cc0fb82a9d03d4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1980125794
 GameObject:
   m_ObjectHideFlags: 0
