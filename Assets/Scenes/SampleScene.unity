@@ -1665,7 +1665,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.014692263, g: 0, b: 0.1792453, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -5913,7 +5913,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gravityScale: 8
   _moveSpeed: 6
-  _jumpHeight: 10
+  _maxJumpHeight: 2.3
+  _timeToJumpApex: 0.3
+  _jumpForce: 0
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -5936,7 +5938,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 8
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 21dcfb4d6cea87d42b3a088bc93feea4, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

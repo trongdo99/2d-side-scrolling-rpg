@@ -6,19 +6,25 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _gravityScale;
     [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _jumpHeight;
+    [SerializeField] private float _maxJumpHeight;
+    [SerializeField] private float _timeToJumpApex;
+    [SerializeField] private float _jumpForce;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private Transform[] _groundRaycasts;
 
     private Rigidbody2D _rb;
     private Vector2 _inputVector;
-    private Vector2 _yVelocity = Vector2.zero;
     private bool _isGrounded = false;
-    private bool _isJumping = false;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+
+        float gravity = -2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2);
+        _rb.gravityScale = gravity / Physics2D.gravity.y;
+        _jumpForce = 2 * _maxJumpHeight / _timeToJumpApex;
+
+        Debug.Log($"Gravity: {gravity}, Scale: {_rb.gravityScale}, Jump Force: {_jumpForce}");
     }
 
     private void Start()
@@ -36,9 +42,10 @@ public class Player : MonoBehaviour
 
     private void GameInputManager_OnJumpAction()
     {
-        float jumpForce = Mathf.Sqrt(_jumpHeight * -2 * (Physics2D.gravity.y * _rb.gravityScale));
-        _rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
-        print("Jump");
+        if (_isGrounded)
+        {
+            _rb.AddForce(new Vector2(0f, _jumpForce), ForceMode2D.Impulse);
+        }
     }
 
     private void Update()
@@ -47,12 +54,7 @@ public class Player : MonoBehaviour
         foreach (var transform in _groundRaycasts)
         {
             var hit = Physics2D.Raycast(transform.position, Vector2.down, 0.2f, _groundLayer);
-            if (hit)
-            {
-                _isGrounded = true;
-                _isJumping = false;
-                break;
-            }
+            _isGrounded = hit ? true : false;
         }
 
         _inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
@@ -60,6 +62,6 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _rb.velocity = _inputVector * _moveSpeed;
+        _rb.velocity = new Vector2(_inputVector.x * _moveSpeed, _rb.velocity.y);
     }
 }
