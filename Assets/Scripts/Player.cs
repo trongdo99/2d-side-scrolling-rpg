@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float _gravityScale;
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _maxJumpHeight;
     [SerializeField] private float _timeToJumpApex;
-    [SerializeField] private float _jumpForce;
+    [SerializeField] private float _fallGravityMultiplier;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private Transform[] _groundRaycasts;
 
     private Rigidbody2D _rb;
     private Vector2 _inputVector;
+    private float _jumpForce;
+    private float _gravityScale;
+    private float _gravityFallScale;
+    private float _lastYPosition = Mathf.NegativeInfinity;
+    private bool _isApexReached = false;
     private bool _isGrounded = false;
 
     private void Awake()
@@ -21,10 +25,23 @@ public class Player : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
 
         float gravity = -2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2);
-        _rb.gravityScale = gravity / Physics2D.gravity.y;
+        _gravityScale = gravity / Physics2D.gravity.y;
+        _gravityFallScale = _gravityScale * _fallGravityMultiplier;
+        _rb.gravityScale = _gravityScale;
         _jumpForce = 2 * _maxJumpHeight / _timeToJumpApex;
 
-        Debug.Log($"Gravity: {gravity}, Scale: {_rb.gravityScale}, Jump Force: {_jumpForce}");
+        Debug.Log($"Gravity: {gravity}, Scale: {_gravityScale}, Fall Scale: {_gravityFallScale}, Jump Force: {_jumpForce}");
+    }
+
+    private void OnValidate()
+    {
+        _rb = GetComponent<Rigidbody2D>();
+
+        float gravity = -2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2);
+        _gravityScale = gravity / Physics2D.gravity.y;
+        _gravityFallScale = _gravityScale * _fallGravityMultiplier;
+        _rb.gravityScale = _gravityScale;
+        _jumpForce = 2 * _maxJumpHeight / _timeToJumpApex;
     }
 
     private void Start()
@@ -40,22 +57,26 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void GameInputManager_OnJumpAction()
-    {
-        if (_isGrounded)
-        {
-            _rb.AddForce(new Vector2(0f, _jumpForce), ForceMode2D.Impulse);
-        }
-    }
-
     private void Update()
     {
         _isGrounded = false;
         foreach (var transform in _groundRaycasts)
         {
             var hit = Physics2D.Raycast(transform.position, Vector2.down, 0.2f, _groundLayer);
-            _isGrounded = hit ? true : false;
+            if (hit)
+            {
+                _isGrounded = true;
+                _rb.gravityScale = _gravityScale;
+            }
         }
+
+        if (!_isApexReached && _lastYPosition > _rb.position.y)
+        {
+            _isApexReached = true;
+            _rb.gravityScale = _gravityFallScale;
+        }
+
+        _lastYPosition = Mathf.Max(_rb.position.y, _lastYPosition);
 
         _inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
     }
@@ -63,5 +84,15 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         _rb.velocity = new Vector2(_inputVector.x * _moveSpeed, _rb.velocity.y);
+    }
+
+    private void GameInputManager_OnJumpAction()
+    {
+        if (_isGrounded)
+        {
+            _rb.AddForce(new Vector2(0f, _jumpForce), ForceMode2D.Impulse);
+            _lastYPosition = Mathf.NegativeInfinity;
+            _isApexReached = false;
+        }
     }
 }

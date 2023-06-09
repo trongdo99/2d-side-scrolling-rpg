@@ -5911,11 +5911,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a41d7770594bb3458bd101718c4423e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gravityScale: 8
   _moveSpeed: 6
   _maxJumpHeight: 2.3
   _timeToJumpApex: 0.3
-  _jumpForce: 0
+  _fallGravityMultiplier: 1.7
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -5937,7 +5936,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 8
+  m_GravityScale: 5.2101026
   m_Material: {fileID: 6200000, guid: 21dcfb4d6cea87d42b3a088bc93feea4, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
