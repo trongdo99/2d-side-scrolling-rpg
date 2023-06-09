@@ -1941,7 +1941,7 @@ GameObject:
   m_Layer: 6
   m_Name: LeftRaycast
   m_TagString: Untagged
-  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -3894,7 +3894,7 @@ GameObject:
   m_Layer: 6
   m_Name: RightRaycast
   m_TagString: Untagged
-  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -5875,6 +5875,7 @@ GameObject:
   - component: {fileID: 1653787190}
   - component: {fileID: 1653787191}
   - component: {fileID: 1653787189}
+  - component: {fileID: 1653787192}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -5993,6 +5994,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.8465456, y: 1.3904126}
   m_EdgeRadius: 0
+--- !u!114 &1653787192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653787187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e69c49e268623f24984997b672376512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _skinWidth: 0.05
+  _horizontalRayCount: 3
+  _verticalRayCount: 3
 --- !u!1 &1754321255
 GameObject:
   m_ObjectHideFlags: 0
