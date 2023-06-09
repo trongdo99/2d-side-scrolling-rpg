@@ -2,145 +2,156 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D))]
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent (typeof (BoxCollider2D))]
 public class CharacterController2D : MonoBehaviour
 {
-    [SerializeField] private LayerMask _collisionMask;
-    [SerializeField] private float _skinWidth;
-    [SerializeField] private int _horizontalRayCount;
-    [SerializeField] private int _verticalRayCount;
+    // Used to determine which objects to collide with
+    public LayerMask collisionMask;
 
-    private Rigidbody2D _rb;
-    private RaycastOrigin _raycastOrigins;
-    private CollisionInfo _collisionInfo;
-    private BoxCollider2D _boxCollider;
-    private float _horizontalRaySpacing;
-    private float _verticalRaySpacing;
-    private float _lastXVelocity;
+    const float skinWidth = 0.015f;
+    public int horizontalRayCount = 4;
+    public int verticalRayCount = 4;
 
-    public CollisionInfo CollisionInfo => _collisionInfo;
+    float horizontalRaySpacing;
+    float verticalRaySpacing;
 
-    private void Awake()
+    BoxCollider2D collider;
+    RaycastOrigins raycastOrigins;
+    public CollisionInfo collisions;
+
+    // Start is called before the first frame update
+    void Start()
     {
-        _rb = GetComponent<Rigidbody2D>();
-        _boxCollider = GetComponent<BoxCollider2D>();
+        collider = GetComponent<BoxCollider2D>();
         CalculateRaySpacing();
     }
 
-    public void Move(Vector2 velocity)
+    public void Move(Vector3 moveDistance)
     {
         UpdateRaycastOrigins();
-        _collisionInfo.Reset();
+        collisions.Reset();
 
-        if (velocity.x != 0)
+        if (moveDistance.x != 0)
         {
-            HorizontalCollision(velocity);
+            HorizontalCollisions(ref moveDistance);
+        }
+        if (moveDistance.y != 0)
+        {
+            VerticalCollisions(ref moveDistance);
         }
 
-        if (velocity.y != 0)
-        {
-            VerticalCollision(velocity);
-        }
-
-        _rb.velocity = velocity;
-        _lastXVelocity = _rb.velocity.x;
+        transform.Translate(moveDistance);
     }
 
-    private void VerticalCollision(Vector2 velocity)
+    // Changes in this method effect moveDistance Move method
+    void HorizontalCollisions(ref Vector3 moveDistance)
     {
-        float directionY = Mathf.Sign(velocity.y);
-        float rayLength = Mathf.Abs(velocity.y) + _skinWidth;
+        float directionX = Mathf.Sign(moveDistance.x);
+        float rayLength = Mathf.Abs(moveDistance.x) + skinWidth;
 
-        for (int i = 0; i < _verticalRayCount; i++)
+        for (int i = 0; i < horizontalRayCount; i++)
         {
-            Vector2 raycastOrigin = directionY == -1 ? _raycastOrigins.bottomLeft : _raycastOrigins.topLeft;
-            raycastOrigin += Vector2.right * (_verticalRaySpacing * i + (Mathf.Abs(velocity.x - _lastXVelocity)));
+            // If moving down, cast from bottom left corner
+            // If moving up, cast from bottom right corner
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
 
-            RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, Vector2.up * directionY, rayLength, _collisionMask);
+
+            // Set x moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
             if (hit)
             {
+                Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red, 0.01f);
+
+                moveDistance.x = (hit.distance - skinWidth) * directionX;
+                // Set all ray lengths to the nearest hit ray
+                // Avoids clipping scenario
                 rayLength = hit.distance;
 
-                _collisionInfo.above = directionY == 1;
-                _collisionInfo.below = directionY == -1;
-
-                Debug.DrawRay(raycastOrigin, Vector2.up * directionY * rayLength, Color.red);
+                collisions.left = directionX == -1;
+                collisions.right = directionX == 1;
             }
             else
             {
-                Debug.DrawRay(raycastOrigin, Vector2.up * directionY * rayLength, Color.green);
+                Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.green, 0.01f);
             }
         }
     }
 
-    private void HorizontalCollision(Vector2 velocity)
+
+    // Changes in this method effect moveDistance inside Move method
+    void VerticalCollisions(ref Vector3 moveDistance)
     {
-        float directionX = Mathf.Sign(velocity.x);
-        float rayLength = Mathf.Abs(velocity.x) + _skinWidth;
+        float directionY = Mathf.Sign(moveDistance.y);
+        float rayLength = Mathf.Abs(moveDistance.y) + skinWidth;
 
-        for (int i = 0; i < _horizontalRayCount; i++)
+        for (int i = 0; i < verticalRayCount; i++)
         {
-            Vector2 raycastOrigin = directionX == -1 ? _raycastOrigins.bottomLeft : _raycastOrigins.bottomRight;
-            raycastOrigin += Vector2.up * (_horizontalRaySpacing * i);
+            // If moving down, cast from bottom left corner
+            // If moving up, cast from top left corner
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + moveDistance.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
 
-            RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, Vector2.right * directionX, rayLength, _collisionMask);
+
+            // Set y moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
             if (hit)
             {
+                Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+
+                moveDistance.y = (hit.distance - skinWidth) * directionY;
+                // Set all ray lengths to the nearest hit ray
+                // Avoids clipping scenario
                 rayLength = hit.distance;
 
-                _collisionInfo.right = directionX == 1;
-                _collisionInfo.left = directionX == -1;
-
-                Debug.DrawRay(raycastOrigin, Vector2.right * directionX * rayLength, Color.red);
-            }
-            else
+                collisions.below = directionY == -1;
+                collisions.above = directionY == 1;
+            } else
             {
-                Debug.DrawRay(raycastOrigin, Vector2.right * directionX * rayLength, Color.green);
+                Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.green);
             }
         }
     }
 
-    private void CalculateRaySpacing()
+    void UpdateRaycastOrigins()
     {
-        Bounds bound = _boxCollider.bounds;
-        bound.Expand(-2 * _skinWidth);
+        Bounds bounds = collider.bounds;
+        bounds.Expand(skinWidth * -2);
 
-        _horizontalRayCount = Mathf.Clamp(_horizontalRayCount, 2, int.MaxValue);
-        _verticalRayCount = Mathf.Clamp(_verticalRayCount, 2, int.MaxValue);
-
-        _horizontalRaySpacing = bound.size.y / (_horizontalRayCount - 1);
-        _verticalRaySpacing = bound.size.x / (_verticalRayCount - 1);
+        raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
+        raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
+        raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
+        raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
     }
 
-    private void UpdateRaycastOrigins()
+    void CalculateRaySpacing()
     {
-        Bounds bound = _boxCollider.bounds;
-        bound.Expand(-2 * _skinWidth);
+        Bounds bounds = collider.bounds;
+        bounds.Expand(skinWidth * -2);
 
-        _raycastOrigins.topLeft = new Vector2(bound.min.x, bound.max.y);
-        _raycastOrigins.topRight = new Vector2(bound.max.x, bound.max.y);
-        _raycastOrigins.bottomLeft = new Vector2(bound.min.x, bound.min.y);
-        _raycastOrigins.bottomRight = new Vector2(bound.max.x, bound.min.y);
+        horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
+        verticalRayCount = Mathf.Clamp(verticalRayCount, 2, int.MaxValue);
+
+        horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
+        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+    }
+
+    struct RaycastOrigins
+    {
+        public Vector2 topLeft, topRight;
+        public Vector2 bottomLeft, bottomRight;
+    }
+
+    // Used to remove the accumulation of gravity and collisions left/right
+    public struct CollisionInfo
+    {
+        public bool above, below;
+        public bool left, right;
+
+        public void Reset()
+        {
+            above = below = false;
+            left = right = false;
+        }
     }
 }
-
-public struct RaycastOrigin
-{
-    public Vector2 topLeft;
-    public Vector2 bottomLeft;
-    public Vector2 topRight;
-    public Vector2 bottomRight;
-}
-
-public struct CollisionInfo
-{
-    public bool above, below;
-    public bool left, right;
-
-    public void Reset()
-    {
-        above = below = left = right = false;
-    }
-}
-
