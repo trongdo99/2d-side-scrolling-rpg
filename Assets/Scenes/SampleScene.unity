@@ -5820,7 +5820,7 @@ MonoBehaviour:
   _accelerationTimeAirborne: 0.2
   _maxJumpHeight: 4
   _timeToJumpApex: 0.4
-  _fallGravityMultiplier: 1.7
+  _fallGravityMultiplier: 1.6
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -5881,11 +5881,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e69c49e268623f24984997b672376512, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask:
+  _collisionMask:
     serializedVersion: 2
     m_Bits: 8
-  horizontalRayCount: 3
-  verticalRayCount: 3
+  _skinWidth: 0.015
+  _horizontalRayCount: 3
+  _verticalRayCount: 3
 --- !u!1 &1754321255
 GameObject:
   m_ObjectHideFlags: 0

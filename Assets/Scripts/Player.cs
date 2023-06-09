@@ -11,7 +11,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float _maxJumpHeight;
     [SerializeField] private float _timeToJumpApex;
     [SerializeField] private float _fallGravityMultiplier;
-    [SerializeField] private LayerMask _groundLayer;
 
     private CharacterController2D _controller;
     private Vector2 _inputVector;
@@ -66,15 +65,15 @@ public class Player : MonoBehaviour
     {
         _velocity.y += _gravity * Time.fixedDeltaTime;
         float targetVelocityX = _inputVector.x * _moveSpeed;
-        _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing, (_controller.collisions.below) ? _accelerationTimeGrounded : _accelerationTimeAirborne);
+        _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing, (_controller.CollisionInfo.below) ? _accelerationTimeGrounded : _accelerationTimeAirborne);
         _controller.Move(_velocity * Time.fixedDeltaTime);
 
-        if (_controller.collisions.below)
+        if (_controller.CollisionInfo.below)
         {
             _velocity.y = 0;
         }
 
-        if (_controller.collisions.left || _controller.collisions.right)
+        if (_controller.CollisionInfo.left || _controller.CollisionInfo.right)
         {
             _velocity.x = 0;
         }
@@ -82,7 +81,7 @@ public class Player : MonoBehaviour
 
     private void GameInputManager_OnJumpAction()
     {
-        if (_controller.collisions.below)
+        if (_controller.CollisionInfo.below)
         {
             _velocity.y = _jumpForce;
             _lastYPosition = Mathf.NegativeInfinity;
