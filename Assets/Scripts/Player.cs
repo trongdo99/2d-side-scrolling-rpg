@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,6 +20,7 @@ public class Player : MonoBehaviour
     private CharacterController2D _controller;
     private Vector2 _inputVector;
     private Vector2 _velocity;
+    private Vector2 _previousVelocity;
     private float _velocityXSmoothing;
     private float _gravity;
     private float _normalGravity;
@@ -27,6 +29,9 @@ public class Player : MonoBehaviour
     private float _lastYPosition = Mathf.NegativeInfinity;
     private bool _isApexReached = false;
     private bool _isFacingRight = true;
+
+    // Debug variable;
+    private float _startJumpHeight;
 
     private void Awake()
     {
@@ -59,6 +64,9 @@ public class Player : MonoBehaviour
         {
             _isApexReached = true;
             _gravity = _fallingGravity;
+
+            float jumpHeight = transform.position.y - _startJumpHeight;
+            print("Jump height: " + jumpHeight);
         }
 
         _lastYPosition = Mathf.Max(transform.position.y, _lastYPosition);
@@ -78,25 +86,30 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        _previousVelocity = _velocity;
+
         // Apply gravity
         _velocity.y += _gravity * Time.fixedDeltaTime;
 
         // Smooth out velocity x
         float targetVelocityX = _inputVector.x * _moveSpeed;
         _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing, (_controller.CollisionInfo.below) ? _accelerationTimeGrounded : _accelerationTimeAirborne);
-        // Set velocity x to 0 to make sure the character stop completely when there is no input
+        //Set velocity x to 0 to make sure the character stop completely when there is no input
         if (Mathf.Abs(_velocity.x - targetVelocityX) < 1f && _inputVector.x == 0)
         {
             _velocity.x = 0;
         }
 
+        Vector2 deltaPosition = (_previousVelocity + _velocity) * 0.5f;
+
         // Apply velocity
-        _controller.Move(_velocity * Time.fixedDeltaTime);
+        _controller.Move(deltaPosition * Time.fixedDeltaTime);
 
         // Remove accumulate gravity
         if (_controller.CollisionInfo.below)
         {
             _velocity.y = 0;
+            _gravity = _normalGravity;
         }
 
         if (_controller.CollisionInfo.left || _controller.CollisionInfo.right)
@@ -107,7 +120,6 @@ public class Player : MonoBehaviour
 
     private void LateUpdate()
     {
-        Debug.Log(_animator.GetCurrentAnimatorStateInfo(0).IsName("run_FK"));
         if (Mathf.Approximately(_velocity.x, 0f) && _controller.CollisionInfo.below)
         {
             _animator.Play("idle_FK");
@@ -138,6 +150,9 @@ public class Player : MonoBehaviour
             _velocity.y = _jumpForce;
             _lastYPosition = Mathf.NegativeInfinity;
             _isApexReached = false;
+
+            // Debug
+            _startJumpHeight = transform.position.y;
         }
     }
 }
