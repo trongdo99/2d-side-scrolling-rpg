@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float _maxJumpHeight;
     [SerializeField] private float _timeToJumpApex;
     [SerializeField] private float _fallGravityMultiplier;
+    [SerializeField] private float _rollDuration;
+    [SerializeField] private float _rollSpeed;
 
     private CharacterController2D _controller;
 
@@ -32,6 +34,9 @@ public class Player : MonoBehaviour
     private float _jumpForce;
     private float _maxHeightReached = Mathf.NegativeInfinity;
     private bool _isApexReached = false;
+
+    // Roll variables
+    private float _rollTimer;
 
     // Visual variables
     private bool _isFacingRight = true;
@@ -55,6 +60,7 @@ public class Player : MonoBehaviour
     {
         GameInputManager.Instance.OnJumpActionPerformed += GameInputManager_OnJumpAction;
         GameInputManager.Instance.OnJumpActionCaceled += GameInputManager_OnJumpActionCaceled;
+        GameInputManager.Instance.OnRollActionPerformed += GameInputManager_OnRollActionPerformed;
     }
 
     private void OnDestroy()
@@ -82,8 +88,6 @@ public class Player : MonoBehaviour
 
         _maxHeightReached = Mathf.Max(transform.position.y, _maxHeightReached);
 
-        DetermineSpriteFacingDirection();
-
         Vector2 deltaPosition = CalculateDeltaPosition();
 
         // Move the character
@@ -105,6 +109,14 @@ public class Player : MonoBehaviour
 
     private void LateUpdate()
     {
+        DetermineSpriteFacingDirection();
+
+        if (_controller.CollisionInfo.below && _rollTimer > 0f)
+        {
+            _animator.Play("roll_FK");
+            return;
+        }
+
         if (Mathf.Approximately(_velocity.x, 0f) && _controller.CollisionInfo.below)
         {
             _animator.Play("idle_FK");
@@ -130,8 +142,20 @@ public class Player : MonoBehaviour
         // Apply gravity
         _velocity.y += _gravity * Time.deltaTime;
 
+        float movementSpeed = 0f;
+        // Roll
+        if (_rollTimer > 0)
+        {
+            _rollTimer -= Time.deltaTime;
+            movementSpeed = _rollSpeed;
+        }
+        else
+        {
+            movementSpeed = _moveSpeed;
+        }
+
         // Smooth out velocity x
-        float targetVelocityX = _inputVector.x * _moveSpeed;
+        float targetVelocityX = _inputVector.x * movementSpeed;
         _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing, (_controller.CollisionInfo.below) ? _accelerationTimeGrounded : _accelerationTimeAirborne);
         //Set velocity x to 0 to make sure the character stop completely when there is no input
         if (Mathf.Abs(_velocity.x - targetVelocityX) < 1f && _inputVector.x == 0)
@@ -180,6 +204,14 @@ public class Player : MonoBehaviour
         if (!_controller.CollisionInfo.below && _velocity.y > 0f)
         {
             _velocity.y = 0;
+        }
+    }
+
+    private void GameInputManager_OnRollActionPerformed()
+    {
+        if (_controller.CollisionInfo.below)
+        {
+            _rollTimer = _rollDuration;
         }
     }
 }
