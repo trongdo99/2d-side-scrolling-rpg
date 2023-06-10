@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     private float _normalGravity;
     private float _fallingGravity;
     private float _jumpForce;
-    private float _lastYPosition = Mathf.NegativeInfinity;
+    private float _maxHeightReached = Mathf.NegativeInfinity;
     private bool _isApexReached = false;
     private bool _isFacingRight = true;
 
@@ -60,58 +60,36 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (!_isApexReached && _lastYPosition > transform.position.y)
+        _inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
+
+        // Check if reached apex jump height, then set gravity to falling gravity
+        if (!_isApexReached && _maxHeightReached > transform.position.y)
         {
             _isApexReached = true;
             _gravity = _fallingGravity;
 
-            float jumpHeight = transform.position.y - _startJumpHeight;
+            // Debug only
+            float jumpHeight = _maxHeightReached - _startJumpHeight;
             print("Jump height: " + jumpHeight);
         }
 
-        _lastYPosition = Mathf.Max(transform.position.y, _lastYPosition);
+        _maxHeightReached = Mathf.Max(transform.position.y, _maxHeightReached);
 
-        _inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
+        DetermineSpriteFacingDirection();
 
-        if (_inputVector.x > 0 && !_isFacingRight)
-        {
-            Flip();
-        }
+        Vector2 deltaPosition = CalculateDeltaPosition();
 
-        if (_inputVector.x < 0 && _isFacingRight)
-        {
-            Flip();
-        }
-    }
+        // Move the character
+        _controller.Move(deltaPosition * Time.deltaTime);
 
-    private void FixedUpdate()
-    {
-        _previousVelocity = _velocity;
-
-        // Apply gravity
-        _velocity.y += _gravity * Time.fixedDeltaTime;
-
-        // Smooth out velocity x
-        float targetVelocityX = _inputVector.x * _moveSpeed;
-        _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing, (_controller.CollisionInfo.below) ? _accelerationTimeGrounded : _accelerationTimeAirborne);
-        //Set velocity x to 0 to make sure the character stop completely when there is no input
-        if (Mathf.Abs(_velocity.x - targetVelocityX) < 1f && _inputVector.x == 0)
-        {
-            _velocity.x = 0;
-        }
-
-        Vector2 deltaPosition = (_previousVelocity + _velocity) * 0.5f;
-
-        // Apply velocity
-        _controller.Move(deltaPosition * Time.fixedDeltaTime);
-
-        // Remove accumulate gravity
+        // Remove the accumulation of gravity
         if (_controller.CollisionInfo.below)
         {
             _velocity.y = 0;
             _gravity = _normalGravity;
         }
 
+        // Remove the collision force left/right
         if (_controller.CollisionInfo.left || _controller.CollisionInfo.right)
         {
             _velocity.x = 0;
@@ -137,6 +115,40 @@ public class Player : MonoBehaviour
             _animator.Play("jump_down_FK");
         }
     }
+
+    private Vector2 CalculateDeltaPosition()
+    {
+        _previousVelocity = _velocity;
+
+        // Apply gravity
+        _velocity.y += _gravity * Time.deltaTime;
+
+        // Smooth out velocity x
+        float targetVelocityX = _inputVector.x * _moveSpeed;
+        _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing, (_controller.CollisionInfo.below) ? _accelerationTimeGrounded : _accelerationTimeAirborne);
+        //Set velocity x to 0 to make sure the character stop completely when there is no input
+        if (Mathf.Abs(_velocity.x - targetVelocityX) < 1f && _inputVector.x == 0)
+        {
+            _velocity.x = 0;
+        }
+
+        Vector2 deltaPosition = (_previousVelocity + _velocity) * 0.5f;
+        return deltaPosition;
+    }
+
+    private void DetermineSpriteFacingDirection()
+    {
+        if (_inputVector.x > 0 && !_isFacingRight)
+        {
+            Flip();
+        }
+
+        if (_inputVector.x < 0 && _isFacingRight)
+        {
+            Flip();
+        }
+    }
+
     private void Flip()
     {
         _isFacingRight = !_isFacingRight;
@@ -148,7 +160,7 @@ public class Player : MonoBehaviour
         if (_controller.CollisionInfo.below)
         {
             _velocity.y = _jumpForce;
-            _lastYPosition = Mathf.NegativeInfinity;
+            _maxHeightReached = Mathf.NegativeInfinity;
             _isApexReached = false;
 
             // Debug

@@ -28,6 +28,7 @@ public class CharacterController2D : MonoBehaviour
 
     public void Move(Vector3 velocity)
     {
+
         UpdateRaycastOrigins();
         _collisionInfo.Reset();
 
@@ -41,6 +42,10 @@ public class CharacterController2D : MonoBehaviour
         }
 
         transform.Translate(velocity);
+
+        // Force the physic engine to synchronize physic model after making changes in transform.
+        // Prevent player from constantly sinking to the ground at microseconds.
+        Physics2D.SyncTransforms();
     }
 
     // Changes in this method effect moveDistance Move method
