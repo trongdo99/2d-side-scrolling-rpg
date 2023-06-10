@@ -47,14 +47,15 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        GameInputManager.Instance.OnJumpAction += GameInputManager_OnJumpAction;
+        GameInputManager.Instance.OnJumpActionPerformed += GameInputManager_OnJumpAction;
+        GameInputManager.Instance.OnJumpActionCaceled += GameInputManager_OnJumpActionCaceled;
     }
 
     private void OnDestroy()
     {
         if (GameInputManager.Instance)
         {
-            GameInputManager.Instance.OnJumpAction -= GameInputManager_OnJumpAction;
+            GameInputManager.Instance.OnJumpActionPerformed -= GameInputManager_OnJumpAction;
         }
     }
 
@@ -165,6 +166,14 @@ public class Player : MonoBehaviour
 
             // Debug
             _startJumpHeight = transform.position.y;
+        }
+    }
+
+    private void GameInputManager_OnJumpActionCaceled()
+    {
+        if (!_controller.CollisionInfo.below && _velocity.y > 0f)
+        {
+            _velocity.y = 0;
         }
     }
 }

@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
 {
-    public event Action OnJumpAction;
+    public event Action OnJumpActionPerformed;
+    public event Action OnJumpActionCaceled;
 
     private PlayerInputActions _playerInputActions;
 
@@ -15,11 +16,17 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
         _playerInputActions.Player.Enable();
 
         _playerInputActions.Player.Jump.performed += Jump_performed;
+        _playerInputActions.Player.Jump.canceled += Jump_canceled;
+    }
+
+    private void Jump_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnJumpActionCaceled?.Invoke();
     }
 
     private void Jump_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        OnJumpAction?.Invoke();
+        OnJumpActionPerformed?.Invoke();
     }
 
     public Vector2 GetMovementVectorNormalized()
