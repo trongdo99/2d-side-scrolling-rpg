@@ -18,16 +18,22 @@ public class Player : MonoBehaviour
     [SerializeField] private float _fallGravityMultiplier;
 
     private CharacterController2D _controller;
+
+    // Movement variables
     private Vector2 _inputVector;
     private Vector2 _velocity;
     private Vector2 _previousVelocity;
     private float _velocityXSmoothing;
+
+    // Jump variables
     private float _gravity;
     private float _normalGravity;
     private float _fallingGravity;
     private float _jumpForce;
     private float _maxHeightReached = Mathf.NegativeInfinity;
     private bool _isApexReached = false;
+
+    // Visual variables
     private bool _isFacingRight = true;
 
     // Debug variable;
