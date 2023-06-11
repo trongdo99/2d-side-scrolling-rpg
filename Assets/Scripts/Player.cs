@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
 
     // Roll variables
     private float _rollTimer;
+    private int _rollDirection;
 
     // Visual variables
     private bool _isFacingRight = true;
@@ -111,13 +112,13 @@ public class Player : MonoBehaviour
     {
         DetermineSpriteFacingDirection();
 
-        if (_controller.CollisionInfo.below && _rollTimer > 0f)
+        if (_rollTimer > 0f)
         {
             _animator.Play("roll_FK");
             return;
         }
 
-        if (Mathf.Approximately(_velocity.x, 0f) && _controller.CollisionInfo.below)
+        if (_velocity.x == 0 && _controller.CollisionInfo.below)
         {
             _animator.Play("idle_FK");
         }
@@ -142,25 +143,16 @@ public class Player : MonoBehaviour
         // Apply gravity
         _velocity.y += _gravity * Time.deltaTime;
 
-        float movementSpeed = 0f;
         // Roll
         if (_rollTimer > 0)
         {
             _rollTimer -= Time.deltaTime;
-            movementSpeed = _rollSpeed;
+            _velocity.x = _rollDirection * _rollSpeed;
         }
+        // Walk
         else
         {
-            movementSpeed = _moveSpeed;
-        }
-
-        // Smooth out velocity x
-        float targetVelocityX = _inputVector.x * movementSpeed;
-        _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing, (_controller.CollisionInfo.below) ? _accelerationTimeGrounded : _accelerationTimeAirborne);
-        //Set velocity x to 0 to make sure the character stop completely when there is no input
-        if (Mathf.Abs(_velocity.x - targetVelocityX) < 1f && _inputVector.x == 0)
-        {
-            _velocity.x = 0;
+            _velocity.x = _inputVector.x * _moveSpeed;
         }
 
         Vector2 deltaPosition = (_previousVelocity + _velocity) * 0.5f;
@@ -169,12 +161,12 @@ public class Player : MonoBehaviour
 
     private void DetermineSpriteFacingDirection()
     {
-        if (_inputVector.x > 0 && !_isFacingRight)
+        if (_velocity.x > 0 && !_isFacingRight)
         {
             Flip();
         }
 
-        if (_inputVector.x < 0 && _isFacingRight)
+        if (_velocity.x < 0 && _isFacingRight)
         {
             Flip();
         }
@@ -209,9 +201,10 @@ public class Player : MonoBehaviour
 
     private void GameInputManager_OnRollActionPerformed()
     {
-        if (_controller.CollisionInfo.below)
+        if (_rollTimer <= 0f && _controller.CollisionInfo.below && _inputVector.x != 0)
         {
             _rollTimer = _rollDuration;
+            _rollDirection = _isFacingRight ? 1 : -1;
         }
     }
 }
