@@ -1,22 +1,22 @@
 public abstract class StateMachine
 {
-    protected State _currentState;
+    public State CurrentState { get; private set; }
 
     public void Init(State startState)
     {
-        _currentState = startState;
-        _currentState.OnEnter();
+        CurrentState = startState;
+        CurrentState.OnEnter();
     }
 
     public void ChangeToState(State nextState)
     {
-        _currentState.OnExit();
-        _currentState = nextState;
-        _currentState.OnEnter();
+        CurrentState.OnExit();
+        CurrentState = nextState;
+        CurrentState.OnEnter();
     }
 
     public void OnUpdate()
     {
-        _currentState.OnUpdate();
+        CurrentState.OnUpdate();
     }
 }
