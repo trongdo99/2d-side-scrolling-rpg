@@ -17,8 +17,6 @@ public class Player : MonoBehaviour
 
     [Header("Move settings")]
     [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _accelerationTimeGrounded;
-    [SerializeField] private float _accelerationTimeAirborne;
 
 
     [Header("Jump settings")]
@@ -33,43 +31,36 @@ public class Player : MonoBehaviour
     private CharacterController2D _controller;
 
     // Movement variables
-    private Vector2 _inputVector;
     private Vector2 _velocity;
     private Vector2 _previousVelocity;
-    private float _velocityXSmoothing;
 
     // Jump variables
     private float _gravity;
     private float _normalGravity;
     private float _fallingGravity;
     private float _jumpForce;
-    private float _maxHeightReached = Mathf.NegativeInfinity;
-    private bool _isApexReached = false;
-
-    // Roll variables
-    private float _rollTimer;
-    private int _rollDirection;
 
     // Visual variables
     private bool _isFacingRight = true;
 
-    // Attack variables
-    private bool _isAttacking;
-    private int _comboCounter = 1;
-    private float _comboWindowTimer;
+    public int facingDirection;
 
     // State Machine
     private PlayerStateMachine _stateMachine;
     public PlayerIdleState idleState { get; private set; }
     public PlayerMoveState moveState { get; private set; }
     public PlayerJumpState jumpState { get; private set; }
+    public PlayerFallState fallState { get; private set; }
+    public PlayerRollState rollState { get; private set; }
+    public PlayerPrimaryAttackState primaryAttackState { get; private set; }
 
+
+    public CharacterController2D Controller { get => _controller; private set => _controller = value; }
     public float moveSpeed { get => _moveSpeed; private set => _moveSpeed = value; }
     public float JumpForce { get => _jumpForce; private set => _jumpForce = value; }
-    public CharacterController2D Controller { get => _controller; private set => _controller = value; }
-
-    // Debug variable;
-    private float _startJumpHeight;
+    public float RollDuration { get => _rollDuration; private set => _rollDuration = value; }
+    public float RollSpeed { get => _rollSpeed; private set => _rollSpeed = value; }
+    public float ComboWindow { get => _comboWindow; private set => _comboWindow = value; }
 
     private void Awake()
     {
@@ -77,6 +68,9 @@ public class Player : MonoBehaviour
         idleState = new PlayerIdleState(_stateMachine, this, _animator);
         moveState = new PlayerMoveState(_stateMachine, this, _animator);
         jumpState = new PlayerJumpState(_stateMachine, this, _animator);
+        fallState = new PlayerFallState(_stateMachine, this, _animator);
+        rollState = new PlayerRollState(_stateMachine, this, _animator);
+        primaryAttackState = new PlayerPrimaryAttackState(_stateMachine, this, _animator);
 
         _stateMachine.Init(idleState);
 
@@ -90,25 +84,6 @@ public class Player : MonoBehaviour
         Debug.Log($"Gravity: {_gravity}, Jump Force: {_jumpForce}");
     }
 
-    private void Start()
-    {
-        GameInputManager.Instance.OnJumpActionPerformed += GameInputManager_OnJumpActionPerformed;
-        GameInputManager.Instance.OnJumpActionCaceled += GameInputManager_OnJumpActionCaceled;
-        GameInputManager.Instance.OnPrimaryAttackPerformed += GameInputManager_OnPrimaryAttackPerformed;
-        GameInputManager.Instance.OnRollActionPerformed += GameInputManager_OnRollActionPerformed;
-    }
-
-    private void OnDestroy()
-    {
-        if (GameInputManager.Instance)
-        {
-            GameInputManager.Instance.OnJumpActionPerformed -= GameInputManager_OnJumpActionPerformed;
-            GameInputManager.Instance.OnJumpActionCaceled -= GameInputManager_OnJumpActionCaceled;
-            GameInputManager.Instance.OnPrimaryAttackPerformed -= GameInputManager_OnPrimaryAttackPerformed;
-            GameInputManager.Instance.OnRollActionPerformed -= GameInputManager_OnRollActionPerformed;
-        }
-    }
-
     private void Update()
     {
         _previousVelocity = _velocity;
@@ -118,105 +93,29 @@ public class Player : MonoBehaviour
 
         Vector2 deltaPosition = (_previousVelocity + _velocity) * 0.5f;
         _controller.Move(deltaPosition * Time.deltaTime);
+
+        // Remove the accumulation of gravity
+        if (_controller.CollisionInfo.below)
+        {
+            _velocity.y = 0;
+            _gravity = _normalGravity;
+        }
+
+        // Remove the collision force left/right
+        if (_controller.CollisionInfo.left || _controller.CollisionInfo.right)
+        {
+            _velocity.x = 0;
+        }
     }
-
-    //private void Update()
-    //{
-    //    _inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
-    //    if (_isAttacking)
-    //    {
-    //        _inputVector.x = 0;
-    //    }
-
-    //    // Check if reached apex jump height, then set gravity to falling gravity
-    //    if (!_isApexReached && _maxHeightReached > transform.position.y)
-    //    {
-    //        _isApexReached = true;
-    //        _gravity = _fallingGravity;
-
-    //        // Debug only
-    //        float jumpHeight = _maxHeightReached - _startJumpHeight;
-    //        print("Jump height: " + jumpHeight);
-    //    }
-
-    //    _maxHeightReached = Mathf.Max(transform.position.y, _maxHeightReached);
-
-    //    Vector2 deltaPosition = CalculateDeltaPosition();
-
-    //    // Move the character
-    //    _controller.Move(deltaPosition * Time.deltaTime);
-
-    //    // Remove the accumulation of gravity
-    //    if (_controller.CollisionInfo.below)
-    //    {
-    //        _velocity.y = 0;
-    //        _gravity = _normalGravity;
-    //    }
-
-    //    // Remove the collision force left/right
-    //    if (_controller.CollisionInfo.left || _controller.CollisionInfo.right)
-    //    {
-    //        _velocity.x = 0;
-    //    }
-
-    //    _comboWindowTimer -= Time.deltaTime;
-    //}
 
     private void LateUpdate()
     {
         DetermineSpriteFacingDirection();
-        return;
-
-        if (_rollTimer > 0f)
-        {
-            _animator.Play("roll_FK");
-            return;
-        }
-
-        if (_isAttacking)
-        {
-            if (_comboCounter == 1)
-            {
-                Debug.Log("1-Attack");
-                _animator.Play("attack_1_FK");
-            }
-            else if (_comboCounter == 2)
-            {
-                Debug.Log("2-Attack");
-                _animator.Play("attack_2_FK");
-            }
-            else
-            {
-                Debug.Log("3-Attack");
-                _animator.Play("attack_3_FK");
-            }
-
-            return;
-        }
-
-        if (_velocity.x == 0 && _controller.CollisionInfo.below)
-        {
-            _animator.Play("idle_FK");
-        }
-        else if (_velocity.x != 0 && _controller.CollisionInfo.below)
-        {
-            _animator.Play("run_FK");
-        }
-        else if (_velocity.y > 0 && !_controller.CollisionInfo.below)
-        {
-            _animator.Play("jump_up_FK");
-        }
-        else if (_velocity.y < 0 && !_controller.CollisionInfo.below)
-        {
-            _animator.Play("jump_down_FK");
-        }
     }
 
-    public void AttackOver()
+    public void OnAnimationCompleted()
     {
-        _isAttacking = false;
-        _comboWindowTimer = _comboWindow;
-        _comboCounter = _comboCounter < 3 ? _comboCounter + 1 : 1;
+        (_stateMachine.CurrentState as PlayerState).OnAnimationCompleted();
     }
 
     public void SetVelocity(Vector2 velocity)
@@ -234,27 +133,14 @@ public class Player : MonoBehaviour
         _velocity.y = yVelocity;
     }
 
-    private Vector2 CalculateDeltaPosition()
+    public void SetNormalGravity()
     {
-        _previousVelocity = _velocity;
+        _gravity = _normalGravity;
+    }
 
-        // Apply gravity
-        _velocity.y += _gravity * Time.deltaTime;
-
-        // Roll
-        if (_rollTimer > 0)
-        {
-            _rollTimer -= Time.deltaTime;
-            _velocity.x = _rollDirection * _rollSpeed;
-        }
-        // Walk
-        else
-        {
-            _velocity.x = _inputVector.x * _moveSpeed;
-        }
-
-        Vector2 deltaPosition = (_previousVelocity + _velocity) * 0.5f;
-        return deltaPosition;
+    public void SetFallingGravity()
+    {
+        _gravity = _fallingGravity;
     }
 
     private void DetermineSpriteFacingDirection()
@@ -274,55 +160,6 @@ public class Player : MonoBehaviour
     {
         _isFacingRight = !_isFacingRight;
         _spriteRenderer.flipX = !_isFacingRight;
-    }
-
-    private void GameInputManager_OnJumpActionPerformed()
-    {
-        return;
-        if (_isAttacking) return;
-
-        if (_controller.CollisionInfo.below)
-        {
-            _velocity.y = _jumpForce;
-            _maxHeightReached = Mathf.NegativeInfinity;
-            _isApexReached = false;
-
-            // Debug
-            _startJumpHeight = transform.position.y;
-        }
-    }
-
-    private void GameInputManager_OnJumpActionCaceled()
-    {
-        return;
-        if (!_controller.CollisionInfo.below && _velocity.y > 0f)
-        {
-            _velocity.y = 0;
-        }
-    }
-
-    private void GameInputManager_OnPrimaryAttackPerformed()
-    {
-        return;
-        if (!_controller.CollisionInfo.below || _isAttacking) return;
-
-        _isAttacking = true;
-
-        if (_comboWindowTimer <= 0f)
-        {
-            _comboWindowTimer = _comboWindow;
-            _comboCounter = 1;
-        }
-    }
-
-    private void GameInputManager_OnRollActionPerformed()
-    {
-        if (_isAttacking) return;
-
-        if (_rollTimer <= 0f && _controller.CollisionInfo.below && _inputVector.x != 0)
-        {
-            _rollTimer = _rollDuration;
-            _rollDirection = _isFacingRight ? 1 : -1;
-        }
+        facingDirection = _isFacingRight ? 1 : -1;
     }
 }

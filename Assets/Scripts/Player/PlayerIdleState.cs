@@ -21,6 +21,7 @@ public class PlayerIdleState : PlayerOnGroundState
 
         if (_inputVector.x != 0)
         {
+            _player.SetXVelocity(0f);
             _stateMachine.ChangeToState(_player.moveState);
         }
     }

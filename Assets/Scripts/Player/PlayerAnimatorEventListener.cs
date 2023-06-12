@@ -11,8 +11,8 @@ public class PlayerAnimatorEventListener : MonoBehaviour
         _player = GetComponentInParent<Player>();
     }
 
-    private void EventAttackOver()
+    private void EventAnimationCompleted()
     {
-        _player.AttackOver();
+        _player.OnAnimationCompleted();
     }
 }
