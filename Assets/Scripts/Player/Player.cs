@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _accelerationTimeGrounded;
     [SerializeField] private float _accelerationTimeAirborne;
 
+
     [Header("Jump settings")]
     [SerializeField] private float _maxJumpHeight;
     [SerializeField] private float _timeToJumpApex;
@@ -57,11 +58,28 @@ public class Player : MonoBehaviour
     private int _comboCounter = 1;
     private float _comboWindowTimer;
 
+    // State Machine
+    private PlayerStateMachine _stateMachine;
+    public PlayerIdleState idleState { get; private set; }
+    public PlayerMoveState moveState { get; private set; }
+    public PlayerJumpState jumpState { get; private set; }
+
+    public float moveSpeed { get => _moveSpeed; private set => _moveSpeed = value; }
+    public float JumpForce { get => _jumpForce; private set => _jumpForce = value; }
+    public CharacterController2D Controller { get => _controller; private set => _controller = value; }
+
     // Debug variable;
     private float _startJumpHeight;
 
     private void Awake()
     {
+        _stateMachine = new PlayerStateMachine();
+        idleState = new PlayerIdleState(_stateMachine, this, _animator);
+        moveState = new PlayerMoveState(_stateMachine, this, _animator);
+        jumpState = new PlayerJumpState(_stateMachine, this, _animator);
+
+        _stateMachine.Init(idleState);
+
         _controller = GetComponent<CharacterController2D>();
 
         _normalGravity = -2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2);
@@ -93,49 +111,61 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        _inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
-        if (_isAttacking)
-        {
-            _inputVector.x = 0;
-        }
+        _previousVelocity = _velocity;
+        _velocity.y += _gravity * Time.deltaTime;
 
-        // Check if reached apex jump height, then set gravity to falling gravity
-        if (!_isApexReached && _maxHeightReached > transform.position.y)
-        {
-            _isApexReached = true;
-            _gravity = _fallingGravity;
+        _stateMachine.OnUpdate();
 
-            // Debug only
-            float jumpHeight = _maxHeightReached - _startJumpHeight;
-            print("Jump height: " + jumpHeight);
-        }
-
-        _maxHeightReached = Mathf.Max(transform.position.y, _maxHeightReached);
-
-        Vector2 deltaPosition = CalculateDeltaPosition();
-
-        // Move the character
+        Vector2 deltaPosition = (_previousVelocity + _velocity) * 0.5f;
         _controller.Move(deltaPosition * Time.deltaTime);
-
-        // Remove the accumulation of gravity
-        if (_controller.CollisionInfo.below)
-        {
-            _velocity.y = 0;
-            _gravity = _normalGravity;
-        }
-
-        // Remove the collision force left/right
-        if (_controller.CollisionInfo.left || _controller.CollisionInfo.right)
-        {
-            _velocity.x = 0;
-        }
-
-        _comboWindowTimer -= Time.deltaTime;
     }
+
+    //private void Update()
+    //{
+    //    _inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
+    //    if (_isAttacking)
+    //    {
+    //        _inputVector.x = 0;
+    //    }
+
+    //    // Check if reached apex jump height, then set gravity to falling gravity
+    //    if (!_isApexReached && _maxHeightReached > transform.position.y)
+    //    {
+    //        _isApexReached = true;
+    //        _gravity = _fallingGravity;
+
+    //        // Debug only
+    //        float jumpHeight = _maxHeightReached - _startJumpHeight;
+    //        print("Jump height: " + jumpHeight);
+    //    }
+
+    //    _maxHeightReached = Mathf.Max(transform.position.y, _maxHeightReached);
+
+    //    Vector2 deltaPosition = CalculateDeltaPosition();
+
+    //    // Move the character
+    //    _controller.Move(deltaPosition * Time.deltaTime);
+
+    //    // Remove the accumulation of gravity
+    //    if (_controller.CollisionInfo.below)
+    //    {
+    //        _velocity.y = 0;
+    //        _gravity = _normalGravity;
+    //    }
+
+    //    // Remove the collision force left/right
+    //    if (_controller.CollisionInfo.left || _controller.CollisionInfo.right)
+    //    {
+    //        _velocity.x = 0;
+    //    }
+
+    //    _comboWindowTimer -= Time.deltaTime;
+    //}
 
     private void LateUpdate()
     {
         DetermineSpriteFacingDirection();
+        return;
 
         if (_rollTimer > 0f)
         {
@@ -189,6 +219,21 @@ public class Player : MonoBehaviour
         _comboCounter = _comboCounter < 3 ? _comboCounter + 1 : 1;
     }
 
+    public void SetVelocity(Vector2 velocity)
+    {
+        _velocity = velocity;
+    }
+
+    public void SetXVelocity(float xVelocity)
+    {
+        _velocity.x = xVelocity;
+    }
+
+    public void SetYVelocity(float yVelocity)
+    {
+        _velocity.y = yVelocity;
+    }
+
     private Vector2 CalculateDeltaPosition()
     {
         _previousVelocity = _velocity;
@@ -233,6 +278,7 @@ public class Player : MonoBehaviour
 
     private void GameInputManager_OnJumpActionPerformed()
     {
+        return;
         if (_isAttacking) return;
 
         if (_controller.CollisionInfo.below)
@@ -248,6 +294,7 @@ public class Player : MonoBehaviour
 
     private void GameInputManager_OnJumpActionCaceled()
     {
+        return;
         if (!_controller.CollisionInfo.below && _velocity.y > 0f)
         {
             _velocity.y = 0;
@@ -256,6 +303,7 @@ public class Player : MonoBehaviour
 
     private void GameInputManager_OnPrimaryAttackPerformed()
     {
+        return;
         if (!_controller.CollisionInfo.below || _isAttacking) return;
 
         _isAttacking = true;

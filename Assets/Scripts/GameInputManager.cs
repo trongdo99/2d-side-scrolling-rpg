@@ -25,6 +25,16 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
         _playerInputActions.Player.Roll.performed += Roll_performed;
     }
 
+    public bool WasJumpPressed()
+    {
+        return _playerInputActions.Player.Jump.WasPressedThisFrame();
+    }
+
+    public bool WasJumpReleased()
+    {
+        return _playerInputActions.Player.Jump.WasReleasedThisFrame();
+    }
+
     private void PrimaryAttack_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         OnPrimaryAttackPerformed?.Invoke();

@@ -8,7 +8,7 @@ public abstract class StateMachine
         _currentState.OnEnter();
     }
 
-    public void ChangeStateTo(State nextState)
+    public void ChangeToState(State nextState)
     {
         _currentState.OnExit();
         _currentState = nextState;
