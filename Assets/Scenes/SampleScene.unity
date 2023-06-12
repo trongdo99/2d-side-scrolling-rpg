@@ -7683,6 +7683,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1946773058}
   _animator: {fileID: 1946773059}
+  _comboWindow: 0.4
   _moveSpeed: 6
   _accelerationTimeGrounded: 0.1
   _accelerationTimeAirborne: 0.2
@@ -8805,6 +8806,7 @@ GameObject:
   - component: {fileID: 1946773057}
   - component: {fileID: 1946773058}
   - component: {fileID: 1946773059}
+  - component: {fileID: 1946773060}
   m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
@@ -8900,6 +8902,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1946773060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946773056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a793c332152f79418c9de97af6db9d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1980125794
 GameObject:
   m_ObjectHideFlags: 0

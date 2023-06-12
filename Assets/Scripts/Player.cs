@@ -12,6 +12,9 @@ public class Player : MonoBehaviour
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Animator _animator;
 
+    [Header("Attack settings")]
+    [SerializeField] private float _comboWindow;
+
     [Header("Move settings")]
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _accelerationTimeGrounded;
@@ -49,6 +52,11 @@ public class Player : MonoBehaviour
     // Visual variables
     private bool _isFacingRight = true;
 
+    // Attack variables
+    private bool _isAttacking;
+    private int _comboCounter = 1;
+    private float _comboWindowTimer;
+
     // Debug variable;
     private float _startJumpHeight;
 
@@ -66,8 +74,9 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        GameInputManager.Instance.OnJumpActionPerformed += GameInputManager_OnJumpAction;
+        GameInputManager.Instance.OnJumpActionPerformed += GameInputManager_OnJumpActionPerformed;
         GameInputManager.Instance.OnJumpActionCaceled += GameInputManager_OnJumpActionCaceled;
+        GameInputManager.Instance.OnPrimaryAttackPerformed += GameInputManager_OnPrimaryAttackPerformed;
         GameInputManager.Instance.OnRollActionPerformed += GameInputManager_OnRollActionPerformed;
     }
 
@@ -75,13 +84,20 @@ public class Player : MonoBehaviour
     {
         if (GameInputManager.Instance)
         {
-            GameInputManager.Instance.OnJumpActionPerformed -= GameInputManager_OnJumpAction;
+            GameInputManager.Instance.OnJumpActionPerformed -= GameInputManager_OnJumpActionPerformed;
+            GameInputManager.Instance.OnJumpActionCaceled -= GameInputManager_OnJumpActionCaceled;
+            GameInputManager.Instance.OnPrimaryAttackPerformed -= GameInputManager_OnPrimaryAttackPerformed;
+            GameInputManager.Instance.OnRollActionPerformed -= GameInputManager_OnRollActionPerformed;
         }
     }
 
     private void Update()
     {
         _inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
+        if (_isAttacking)
+        {
+            _inputVector.x = 0;
+        }
 
         // Check if reached apex jump height, then set gravity to falling gravity
         if (!_isApexReached && _maxHeightReached > transform.position.y)
@@ -113,6 +129,8 @@ public class Player : MonoBehaviour
         {
             _velocity.x = 0;
         }
+
+        _comboWindowTimer -= Time.deltaTime;
     }
 
     private void LateUpdate()
@@ -122,6 +140,27 @@ public class Player : MonoBehaviour
         if (_rollTimer > 0f)
         {
             _animator.Play("roll_FK");
+            return;
+        }
+
+        if (_isAttacking)
+        {
+            if (_comboCounter == 1)
+            {
+                Debug.Log("1-Attack");
+                _animator.Play("attack_1_FK");
+            }
+            else if (_comboCounter == 2)
+            {
+                Debug.Log("2-Attack");
+                _animator.Play("attack_2_FK");
+            }
+            else
+            {
+                Debug.Log("3-Attack");
+                _animator.Play("attack_3_FK");
+            }
+
             return;
         }
 
@@ -141,6 +180,13 @@ public class Player : MonoBehaviour
         {
             _animator.Play("jump_down_FK");
         }
+    }
+
+    public void AttackOver()
+    {
+        _isAttacking = false;
+        _comboWindowTimer = _comboWindow;
+        _comboCounter = _comboCounter < 3 ? _comboCounter + 1 : 1;
     }
 
     private Vector2 CalculateDeltaPosition()
@@ -185,8 +231,10 @@ public class Player : MonoBehaviour
         _spriteRenderer.flipX = !_isFacingRight;
     }
 
-    private void GameInputManager_OnJumpAction()
+    private void GameInputManager_OnJumpActionPerformed()
     {
+        if (_isAttacking) return;
+
         if (_controller.CollisionInfo.below)
         {
             _velocity.y = _jumpForce;
@@ -206,8 +254,23 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void GameInputManager_OnPrimaryAttackPerformed()
+    {
+        if (!_controller.CollisionInfo.below || _isAttacking) return;
+
+        _isAttacking = true;
+
+        if (_comboWindowTimer <= 0f)
+        {
+            _comboWindowTimer = _comboWindow;
+            _comboCounter = 1;
+        }
+    }
+
     private void GameInputManager_OnRollActionPerformed()
     {
+        if (_isAttacking) return;
+
         if (_rollTimer <= 0f && _controller.CollisionInfo.below && _inputVector.x != 0)
         {
             _rollTimer = _rollDuration;

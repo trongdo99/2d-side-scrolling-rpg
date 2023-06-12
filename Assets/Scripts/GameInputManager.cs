@@ -7,6 +7,7 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
 {
     public event Action OnJumpActionPerformed;
     public event Action OnJumpActionCaceled;
+    public event Action OnPrimaryAttackPerformed;
     public event Action OnRollActionPerformed;
 
     private PlayerInputActions _playerInputActions;
@@ -19,7 +20,14 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
         _playerInputActions.Player.Jump.performed += Jump_performed;
         _playerInputActions.Player.Jump.canceled += Jump_canceled;
 
+        _playerInputActions.Player.PrimaryAttack.performed += PrimaryAttack_performed;
+
         _playerInputActions.Player.Roll.performed += Roll_performed;
+    }
+
+    private void PrimaryAttack_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnPrimaryAttackPerformed?.Invoke();
     }
 
     private void Roll_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
