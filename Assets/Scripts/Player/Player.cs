@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.Tilemaps;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -14,6 +10,8 @@ public class Player : MonoBehaviour
 
     [Header("Attack settings")]
     [SerializeField] private float _comboWindow;
+    [SerializeField] private Vector2[] _attackMovement;
+
 
     [Header("Move settings")]
     [SerializeField] private float _moveSpeed;
@@ -27,6 +25,9 @@ public class Player : MonoBehaviour
     [Header("Roll settings")]
     [SerializeField] private float _rollDuration;
     [SerializeField] private float _rollSpeed;
+
+    public int facingDirection;
+    public bool isBusy;
 
     private CharacterController2D _controller;
 
@@ -42,8 +43,6 @@ public class Player : MonoBehaviour
 
     // Visual variables
     private bool _isFacingRight = true;
-
-    public int facingDirection;
 
     // State Machine
     private PlayerStateMachine _stateMachine;
@@ -61,6 +60,7 @@ public class Player : MonoBehaviour
     public float RollDuration { get => _rollDuration; private set => _rollDuration = value; }
     public float RollSpeed { get => _rollSpeed; private set => _rollSpeed = value; }
     public float ComboWindow { get => _comboWindow; private set => _comboWindow = value; }
+    public Vector2[] AttackMovement { get => _attackMovement; private set => _attackMovement = value; }
 
     private void Awake()
     {
@@ -141,6 +141,15 @@ public class Player : MonoBehaviour
     public void SetFallingGravity()
     {
         _gravity = _fallingGravity;
+    }
+
+    public IEnumerator isBusyFor(float seconds)
+    {
+        isBusy = true;
+
+        yield return new WaitForSeconds(seconds);
+
+        isBusy = false;
     }
 
     private void DetermineSpriteFacingDirection()

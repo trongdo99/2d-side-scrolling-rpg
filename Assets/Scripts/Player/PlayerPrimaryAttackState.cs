@@ -32,13 +32,26 @@ public class PlayerPrimaryAttackState : PlayerState
                 _animator.Play("attack_3_FK");
                 break;
         }
+
+        float attackDirection = _player.facingDirection;
+        if (_inputVector.x != 0)
+        {
+            attackDirection = _inputVector.x;
+        }
+
+        _player.SetVelocity(new Vector2(attackDirection * _player.AttackMovement[_comboCounter].x, _player.AttackMovement[_comboCounter].y));
+
+        _stateTimer = 0.2f;
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
 
-        _player.SetXVelocity(0f);
+        if (_stateTimer < 0)
+        {
+            _player.SetXVelocity(0f);
+        }
 
         if (_isAnimationCompletedTriggered)
         {
@@ -52,5 +65,7 @@ public class PlayerPrimaryAttackState : PlayerState
 
         _comboCounter++;
         _lastAttackTime = Time.time;
+        _player.SetXVelocity(0f);
+        _player.StartCoroutine(_player.isBusyFor(0.15f));
     }
 }

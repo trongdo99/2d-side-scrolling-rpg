@@ -19,7 +19,7 @@ public class PlayerIdleState : PlayerOnGroundState
     {
         base.OnUpdate();
 
-        if (_inputVector.x != 0)
+        if (_inputVector.x != 0 && !_player.isBusy)
         {
             _player.SetXVelocity(0f);
             _stateMachine.ChangeToState(_player.moveState);
