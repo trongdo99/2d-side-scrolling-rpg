@@ -8,14 +8,21 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Animator _animator;
+
+    [Header("Move settings")]
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _accelerationTimeGrounded;
     [SerializeField] private float _accelerationTimeAirborne;
+
+    [Header("Jump settings")]
     [SerializeField] private float _maxJumpHeight;
     [SerializeField] private float _timeToJumpApex;
     [SerializeField] private float _fallGravityMultiplier;
+
+    [Header("Roll settings")]
     [SerializeField] private float _rollDuration;
     [SerializeField] private float _rollSpeed;
 
