@@ -1,22 +1,27 @@
-public abstract class StateMachine
+public class StateMachine
 {
-    public State CurrentState { get; private set; }
+    private State _currentState;
 
     public void Init(State startState)
     {
-        CurrentState = startState;
-        CurrentState.OnEnter();
+        _currentState = startState;
+        _currentState.OnEnter();
     }
 
     public void ChangeToState(State nextState)
     {
-        CurrentState.OnExit();
-        CurrentState = nextState;
-        CurrentState.OnEnter();
+        _currentState.OnExit();
+        _currentState = nextState;
+        _currentState.OnEnter();
     }
 
     public void OnUpdate()
     {
-        CurrentState.OnUpdate();
+        _currentState.OnUpdate();
+    }
+
+    public void OnStateAnimationTrigger()
+    {
+        _currentState.OnAnimationTriggered();
     }
 }

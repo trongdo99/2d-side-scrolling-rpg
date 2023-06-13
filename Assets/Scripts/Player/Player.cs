@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
     private bool _isFacingRight = true;
 
     // State Machine
-    private PlayerStateMachine _stateMachine;
+    private StateMachine _stateMachine;
     public PlayerIdleState idleState { get; private set; }
     public PlayerMoveState moveState { get; private set; }
     public PlayerJumpState jumpState { get; private set; }
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        _stateMachine = new PlayerStateMachine();
+        _stateMachine = new StateMachine();
         idleState = new PlayerIdleState(_stateMachine, this, _animator);
         moveState = new PlayerMoveState(_stateMachine, this, _animator);
         jumpState = new PlayerJumpState(_stateMachine, this, _animator);
@@ -115,7 +115,7 @@ public class Player : MonoBehaviour
 
     public void OnAnimationCompleted()
     {
-        (_stateMachine.CurrentState as PlayerState).OnAnimationCompleted();
+        _stateMachine.OnStateAnimationTrigger();
     }
 
     public void SetVelocity(Vector2 velocity)

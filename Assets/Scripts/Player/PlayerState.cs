@@ -29,7 +29,7 @@ public abstract class PlayerState : State
         _stateTimer -= Time.deltaTime;
     }
 
-    public void OnAnimationCompleted()
+    public override void OnAnimationTriggered()
     {
         _isAnimationCompletedTriggered = true;
     }
