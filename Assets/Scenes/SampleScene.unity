@@ -13235,19 +13235,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1946773058}
   _animator: {fileID: 1946773059}
+  _moveSpeed: 6
+  _maxJumpHeight: 2.5
+  _timeToJumpApex: 0.4
+  _fallGravityMultiplier: 2.41
+  _isFacingRight: 0
+  facingDirection: 0
+  isBusy: 0
   _comboWindow: 0.4
   _attackMovement:
   - {x: 0.3, y: 2}
   - {x: 1, y: 1}
   - {x: 0.2, y: 0}
-  _moveSpeed: 6
-  _maxJumpHeight: 2.5
-  _timeToJumpApex: 0.4
-  _fallGravityMultiplier: 2.41
   _rollDuration: 0.667
   _rollSpeed: 6.5
-  facingDirection: 0
-  isBusy: 0
 --- !u!61 &1653787191
 BoxCollider2D:
   m_ObjectHideFlags: 0
