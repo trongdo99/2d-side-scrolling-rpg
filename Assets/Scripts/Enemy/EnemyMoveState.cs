@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMoveState : EnemyState
+public class EnemyMoveState : EnemyOnGroundState
 {
     public EnemyMoveState(StateMachine stateMachine, Enemy enemy, Animator animator) : base(stateMachine, enemy, animator)
     {
