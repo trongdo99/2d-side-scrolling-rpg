@@ -11,7 +11,7 @@ public class EnemyIdleState : EnemyState
     public override void OnAnimationTriggered()
     {
         base.OnAnimationTriggered();
-        _animator.Play("idle_NB");
+        _animator.Play("idle_SKL");
     }
 
     public override void OnEnter()
