@@ -27,7 +27,6 @@ public class EnemyState : State
 
     public override void OnExit()
     {
-        throw new System.NotImplementedException();
     }
 
     public override void OnAnimationTriggered()

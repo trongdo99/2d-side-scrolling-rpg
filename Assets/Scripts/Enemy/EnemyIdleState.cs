@@ -11,21 +11,30 @@ public class EnemyIdleState : EnemyState
     public override void OnAnimationTriggered()
     {
         base.OnAnimationTriggered();
-        _animator.Play("idle_SKL");
     }
 
     public override void OnEnter()
     {
         base.OnEnter();
-    }
 
-    public override void OnExit()
-    {
-        base.OnExit();
+        _animator.Play("idle_SKL");
+        _stateTimer = _enemy.IdleTime;
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
+
+        _enemy.SetXVelocity(0f);
+
+        if (_stateTimer < 0f)
+        {
+            _stateMachine.ChangeToState(_enemy.moveState);
+        }
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
     }
 }

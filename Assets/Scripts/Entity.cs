@@ -121,26 +121,26 @@ public class Entity : MonoBehaviour
         isBusy = false;
     }
 
-    protected void DetermineSpriteFacingDirection()
+    public void ChangeFacingDirection()
     {
-        if (_velocity.x > 0 && !_isFacingRight)
-        {
-            Flip();
-        }
-
-        if (_velocity.x < 0 && _isFacingRight)
-        {
-            Flip();
-        }
-
-        // Enable updating facing direciton via Inspector
+        _isFacingRight = !_isFacingRight;
         _spriteRenderer.flipX = !_isFacingRight;
         facingDirection = _isFacingRight ? 1 : -1;
     }
 
-    protected void Flip()
+    protected void DetermineSpriteFacingDirection()
     {
-        _isFacingRight = !_isFacingRight;
+        if (_velocity.x > 0 && !_isFacingRight)
+        {
+            ChangeFacingDirection();
+        }
+
+        if (_velocity.x < 0 && _isFacingRight)
+        {
+            ChangeFacingDirection();
+        }
+
+        // Enable updating facing direciton via Inspector
         _spriteRenderer.flipX = !_isFacingRight;
         facingDirection = _isFacingRight ? 1 : -1;
     }
