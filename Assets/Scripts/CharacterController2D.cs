@@ -78,27 +78,6 @@ public class CharacterController2D : MonoBehaviour
         Physics2D.SyncTransforms();
     }
 
-    public void Move(Vector3 velocity)
-    {
-        //UpdateRaycastOrigins();
-        //_collisionInfo.Reset();
-
-        //if (velocity.x != 0)
-        //{
-        //    HorizontalCollisions(ref velocity);
-        //}
-        //if (velocity.y != 0)
-        //{
-        //    VerticalCollisions(ref velocity);
-        //}
-
-        //transform.Translate(velocity);
-
-        //// Force the physic engine to synchronize physic model after making changes in transform.
-        //// Prevent player from constantly sinking to the ground at microseconds.
-        //Physics2D.SyncTransforms();
-    }
-
     // Changes in this method effect moveDistance Move method
     private void HorizontalCollisions(ref Vector2 velocity)
     {
