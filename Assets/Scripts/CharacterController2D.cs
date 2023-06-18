@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 [RequireComponent (typeof (BoxCollider2D))]
@@ -13,13 +14,11 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private int _horizontalRayCount;
     [SerializeField] private int _verticalRayCount;
 
+    [ReadOnly]
     public float gravity = GRAVITY;
+    [SerializeField, ReadOnly] private Vector2 _velocity;
 
-    [SerializeField]
-    private Vector2 _velocity;
-    [SerializeField]
     private Vector2 _preVelocity;
-
     private float _horizontalRaySpacing;
     private float _verticalRaySpacing;
     private BoxCollider2D _boxCollider;
