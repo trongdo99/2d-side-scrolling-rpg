@@ -7,7 +7,7 @@ public class PlayerPrimaryAttackState : PlayerState
     private int _comboCounter;
     private float _lastAttackTime;
 
-    public PlayerPrimaryAttackState(StateMachine stateMachine, Player player, Animator animator) : base(stateMachine, player, animator)
+    public PlayerPrimaryAttackState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
 
@@ -39,7 +39,7 @@ public class PlayerPrimaryAttackState : PlayerState
             attackDirection = _inputVector.x;
         }
 
-        _player.SetVelocity(new Vector2(attackDirection * _player.AttackMovement[_comboCounter].x, _player.AttackMovement[_comboCounter].y));
+        _controller.Velocity = new Vector2(attackDirection * _player.AttackMovement[_comboCounter].x, _player.AttackMovement[_comboCounter].y);
 
         _stateTimer = 0.2f;
     }
@@ -50,7 +50,7 @@ public class PlayerPrimaryAttackState : PlayerState
 
         if (_stateTimer < 0)
         {
-            _player.SetXVelocity(0f);
+            _controller.Velocity = new Vector2(0f, _controller.Velocity.y);
         }
 
         if (_isAnimationCompletedTriggered)
@@ -65,7 +65,7 @@ public class PlayerPrimaryAttackState : PlayerState
 
         _comboCounter++;
         _lastAttackTime = Time.time;
-        _player.SetXVelocity(0f);
+        _controller.Velocity = new Vector2(0f, _controller.Velocity.y);
         _player.StartCoroutine(_player.isBusyFor(0.15f));
     }
 }

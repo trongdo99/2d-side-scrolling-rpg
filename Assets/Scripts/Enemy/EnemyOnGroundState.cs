@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyOnGroundState : EnemyState
 {
-    public EnemyOnGroundState(StateMachine stateMachine, Enemy enemy, Animator animator) : base(stateMachine, enemy, animator)
+    public EnemyOnGroundState(StateMachine stateMachine, Enemy enemy, CharacterController2D controller, Animator animator) : base(stateMachine, enemy, controller, animator)
     {
     }
 

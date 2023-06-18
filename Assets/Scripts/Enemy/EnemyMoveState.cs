@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyMoveState : EnemyOnGroundState
 {
-    public EnemyMoveState(StateMachine stateMachine, Enemy enemy, Animator animator) : base(stateMachine, enemy, animator)
+    public EnemyMoveState(StateMachine stateMachine, Enemy enemy, CharacterController2D controller, Animator animator) : base(stateMachine, enemy, controller, animator)
     {
     }
 
@@ -24,7 +24,7 @@ public class EnemyMoveState : EnemyOnGroundState
             _enemy.ChangeFacingDirection();
             _stateMachine.ChangeToState(_enemy.idleState);
         }
-        _enemy.SetXVelocity(_enemy.facingDirection * _enemy.MoveSpeed);
+        _controller.Velocity = new Vector2(_enemy.facingDirection * _enemy.MoveSpeed, _controller.Velocity.y);
     }
 
     public override void OnExit()

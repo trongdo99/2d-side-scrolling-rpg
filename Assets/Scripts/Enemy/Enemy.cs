@@ -16,8 +16,8 @@ public class Enemy : Entity
     {
         base.Awake();
 
-        idleState = new EnemyIdleState(_stateMachine, this, _animator);
-        moveState = new EnemyMoveState(_stateMachine, this, _animator);
+        idleState = new EnemyIdleState(_stateMachine, this, _controller, _animator);
+        moveState = new EnemyMoveState(_stateMachine, this, _controller, _animator);
         _stateMachine.Init(idleState);
     }
 

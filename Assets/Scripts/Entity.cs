@@ -39,6 +39,8 @@ public class Entity : MonoBehaviour
     protected StateMachine _stateMachine;
 
     public CharacterController2D Controller { get => _controller; private set => _controller = value; }
+    public float NormalGravity { get => _normalGravity; set => _normalGravity = value; }
+    public float FallingGravity { get => _fallingGravity; set => _fallingGravity = value; }
 
     protected virtual void Awake()
     {
@@ -46,7 +48,7 @@ public class Entity : MonoBehaviour
         _controller = GetComponent<CharacterController2D>();
         _normalGravity = -2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2);
         _fallingGravity = _normalGravity * _fallGravityMultiplier;
-        _gravity = _normalGravity;
+        _controller.gravity = _normalGravity;
         _jumpForce = 2 * _maxJumpHeight / _timeToJumpApex;
 
         Debug.Log($"Gravity: {_gravity}, Jump Force: {_jumpForce}");
@@ -54,27 +56,7 @@ public class Entity : MonoBehaviour
 
     protected virtual void Update()
     {
-        _previousVelocity = _velocity;
-        _velocity.y += _gravity * Time.deltaTime;
-
-        // Velocity calculation, animation are handled inside each state
         _stateMachine.OnUpdate();
-
-        Vector2 deltaPosition = (_previousVelocity + _velocity) * 0.5f;
-        _controller.Move(deltaPosition * Time.deltaTime);
-
-        // Remove the accumulation of gravity
-        if (_controller.CollisionInfo.below)
-        {
-            _velocity.y = 0;
-            _gravity = _normalGravity;
-        }
-
-        // Remove the collision force left/right
-        if (_controller.CollisionInfo.left || _controller.CollisionInfo.right)
-        {
-            _velocity.x = 0;
-        }
     }
 
     protected virtual void LateUpdate()
@@ -85,31 +67,6 @@ public class Entity : MonoBehaviour
     public void OnAnimationCompleted()
     {
         _stateMachine.OnStateAnimationTrigger();
-    }
-
-    public void SetVelocity(Vector2 velocity)
-    {
-        _velocity = velocity;
-    }
-
-    public void SetXVelocity(float xVelocity)
-    {
-        _velocity.x = xVelocity;
-    }
-
-    public void SetYVelocity(float yVelocity)
-    {
-        _velocity.y = yVelocity;
-    }
-
-    public void SetNormalGravity()
-    {
-        _gravity = _normalGravity;
-    }
-
-    public void SetFallingGravity()
-    {
-        _gravity = _fallingGravity;
     }
 
     public IEnumerator isBusyFor(float seconds)
@@ -130,12 +87,12 @@ public class Entity : MonoBehaviour
 
     protected void DetermineSpriteFacingDirection()
     {
-        if (_velocity.x > 0 && !_isFacingRight)
+        if (_controller.Velocity.x > 0 && !_isFacingRight)
         {
             ChangeFacingDirection();
         }
 
-        if (_velocity.x < 0 && _isFacingRight)
+        if (_controller.Velocity.x < 0 && _isFacingRight)
         {
             ChangeFacingDirection();
         }

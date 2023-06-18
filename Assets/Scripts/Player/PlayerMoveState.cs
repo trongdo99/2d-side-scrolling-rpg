@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class PlayerMoveState : PlayerOnGroundState
 {
-    public PlayerMoveState(StateMachine stateMachine, Player player, Animator animator) : base(stateMachine, player, animator)
+    public PlayerMoveState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
 
     public override void OnEnter()
     {
         base.OnEnter();
-        Debug.Log("Enter Move State");
         _animator.Play("run_FK");
     }
 
@@ -24,7 +23,7 @@ public class PlayerMoveState : PlayerOnGroundState
             _stateMachine.ChangeToState(_player.idleState);
         }
 
-        _player.SetXVelocity(_inputVector.x * _player.moveSpeed);
+        _controller.Velocity = new Vector2(_inputVector.x * _player.moveSpeed, _controller.Velocity.y);
     }
 
     public override void OnExit()

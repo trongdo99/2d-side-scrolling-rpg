@@ -5,11 +5,20 @@ using UnityEngine;
 [RequireComponent (typeof (BoxCollider2D))]
 public class CharacterController2D : MonoBehaviour
 {
+    public const float GRAVITY = -9.8f;
+
     // Used to determine which objects to collide with
     [SerializeField] private LayerMask _collisionMask;
     [SerializeField] private float _skinWidth;
     [SerializeField] private int _horizontalRayCount;
     [SerializeField] private int _verticalRayCount;
+
+    public float gravity = GRAVITY;
+
+    [SerializeField]
+    private Vector2 _velocity;
+    [SerializeField]
+    private Vector2 _preVelocity;
 
     private float _horizontalRaySpacing;
     private float _verticalRaySpacing;
@@ -19,37 +28,80 @@ public class CharacterController2D : MonoBehaviour
 
     public CollisionInfo CollisionInfo => _collisionInfo;
 
+    public Vector2 Velocity
+    {
+        get { return _velocity; }
+        set
+        {
+            _preVelocity = value;
+            _velocity = value;
+        }
+    }
+
     // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
         _boxCollider = GetComponent<BoxCollider2D>();
         CalculateRaySpacing();
     }
 
-    public void Move(Vector3 velocity)
+    private void Update()
     {
+        _velocity.y += gravity * Time.deltaTime;
+        Vector2 desiredVelocity = (_preVelocity + _velocity) * 0.5f * Time.deltaTime;
 
         UpdateRaycastOrigins();
         _collisionInfo.Reset();
 
-        if (velocity.x != 0)
+        if (desiredVelocity.x != 0)
         {
-            HorizontalCollisions(ref velocity);
+            HorizontalCollisions(ref desiredVelocity);
         }
-        if (velocity.y != 0)
+        if (desiredVelocity.y != 0)
         {
-            VerticalCollisions(ref velocity);
+            VerticalCollisions(ref desiredVelocity);
         }
 
-        transform.Translate(velocity);
+        transform.Translate(desiredVelocity);
+
+        if (_collisionInfo.below)
+        {
+            _velocity.y = 0f;
+        }
+
+        if (_collisionInfo.right || _collisionInfo.left)
+        {
+            _velocity.x = 0f;
+        }
 
         // Force the physic engine to synchronize physic model after making changes in transform.
         // Prevent player from constantly sinking to the ground at microseconds.
         Physics2D.SyncTransforms();
     }
 
+    public void Move(Vector3 velocity)
+    {
+        //UpdateRaycastOrigins();
+        //_collisionInfo.Reset();
+
+        //if (velocity.x != 0)
+        //{
+        //    HorizontalCollisions(ref velocity);
+        //}
+        //if (velocity.y != 0)
+        //{
+        //    VerticalCollisions(ref velocity);
+        //}
+
+        //transform.Translate(velocity);
+
+        //// Force the physic engine to synchronize physic model after making changes in transform.
+        //// Prevent player from constantly sinking to the ground at microseconds.
+        //Physics2D.SyncTransforms();
+    }
+
     // Changes in this method effect moveDistance Move method
-    private void HorizontalCollisions(ref Vector3 velocity)
+    private void HorizontalCollisions(ref Vector2 velocity)
     {
         float directionX = Mathf.Sign(velocity.x);
         float rayLength = Mathf.Abs(velocity.x) + _skinWidth;
@@ -85,7 +137,7 @@ public class CharacterController2D : MonoBehaviour
 
 
     // Changes in this method effect moveDistance inside Move method
-    private void VerticalCollisions(ref Vector3 velocity)
+    private void VerticalCollisions(ref Vector2 velocity)
     {
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + _skinWidth;

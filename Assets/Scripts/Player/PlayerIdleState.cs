@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class PlayerIdleState : PlayerOnGroundState
 {
-    public PlayerIdleState(StateMachine stateMachine, Player player, Animator animator) : base(stateMachine, player, animator)
+    public PlayerIdleState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
 
     public override void OnEnter()
     {
         base.OnEnter();
-        Debug.Log("Enter Idle State");
         _animator.Play("idle_FK");
     }
 
@@ -21,7 +20,7 @@ public class PlayerIdleState : PlayerOnGroundState
 
         if (_inputVector.x != 0 && !_player.isBusy)
         {
-            _player.SetXVelocity(0f);
+            _controller.Velocity = new Vector2(0f, _controller.Velocity.y);
             _stateMachine.ChangeToState(_player.moveState);
         }
     }

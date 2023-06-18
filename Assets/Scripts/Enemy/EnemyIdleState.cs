@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyIdleState : EnemyOnGroundState
 {
-    public EnemyIdleState(StateMachine stateMachine, Enemy enemy, Animator animator) : base(stateMachine, enemy, animator)
+    public EnemyIdleState(StateMachine stateMachine, Enemy enemy, CharacterController2D controller, Animator animator) : base(stateMachine, enemy, controller, animator)
     {
     }
 
@@ -25,7 +25,7 @@ public class EnemyIdleState : EnemyOnGroundState
     {
         base.OnUpdate();
 
-        _enemy.SetXVelocity(0f);
+        _controller.Velocity = new Vector2(0f, _controller.Velocity.y);
 
         if (_stateTimer < 0f)
         {

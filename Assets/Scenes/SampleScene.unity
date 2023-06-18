@@ -13239,7 +13239,7 @@ MonoBehaviour:
   _maxJumpHeight: 2.5
   _timeToJumpApex: 0.4
   _fallGravityMultiplier: 2.41
-  _isFacingRight: 0
+  _isFacingRight: 1
   facingDirection: 0
   isBusy: 0
   _comboWindow: 0.4
@@ -13312,6 +13312,9 @@ MonoBehaviour:
   _skinWidth: 0.015
   _horizontalRayCount: 3
   _verticalRayCount: 3
+  gravity: -9.8
+  _velocity: {x: 0, y: 0}
+  _preVelocity: {x: 0, y: 0}
 --- !u!1 &1681721479
 GameObject:
   m_ObjectHideFlags: 0
@@ -13776,6 +13779,9 @@ MonoBehaviour:
   _skinWidth: 0.015
   _horizontalRayCount: 3
   _verticalRayCount: 3
+  gravity: -9.8
+  _velocity: {x: 0, y: 0}
+  _preVelocity: {x: 0, y: 0}
 --- !u!114 &2111332876
 MonoBehaviour:
   m_ObjectHideFlags: 0

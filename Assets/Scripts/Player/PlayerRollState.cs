@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerRollState : PlayerState
 {
-    public PlayerRollState(StateMachine stateMachine, Player player, Animator animator) : base(stateMachine, player, animator)
+    public PlayerRollState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
 
@@ -22,7 +22,7 @@ public class PlayerRollState : PlayerState
 
         if (_stateTimer > 0f)
         {
-            _player.SetXVelocity(_player.facingDirection * _player.RollSpeed);
+            _controller.Velocity = new Vector2(_player.facingDirection * _player.RollSpeed, _controller.Velocity.y);
         }
         else
         {
@@ -33,6 +33,6 @@ public class PlayerRollState : PlayerState
     public override void OnExit()
     {
         base.OnExit();
-        _player.SetXVelocity(0f);
+        _controller.Velocity = new Vector2(0f, _controller.Velocity.y);
     }
 }

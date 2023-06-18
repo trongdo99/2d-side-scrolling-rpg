@@ -6,7 +6,7 @@ public class PlayerJumpState : PlayerState
 {
     private float _maxHeightReached;
 
-    public PlayerJumpState(StateMachine stateMachine, Player player, Animator animator) : base(stateMachine, player, animator)
+    public PlayerJumpState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
 
@@ -14,10 +14,8 @@ public class PlayerJumpState : PlayerState
     {
         base.OnEnter();
 
-        Debug.Log("Enter Jump State");
-
-        _player.SetNormalGravity();
-        _player.SetYVelocity(_player.JumpForce);
+        _controller.gravity = _player.NormalGravity;
+        _controller.Velocity = new Vector2(_controller.Velocity.x, _player.JumpForce);
         _maxHeightReached = _player.transform.position.y;
         _animator.Play("jump_up_FK");
     }
@@ -26,7 +24,7 @@ public class PlayerJumpState : PlayerState
     {
         base.OnUpdate();
 
-        _player.SetXVelocity(_inputVector.x * _player.moveSpeed);
+        _controller.Velocity = new Vector2(_inputVector.x * _player.moveSpeed, _controller.Velocity.y);
 
         if (_maxHeightReached > _player.transform.position.y)
         {

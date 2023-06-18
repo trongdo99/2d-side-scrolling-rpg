@@ -31,12 +31,12 @@ public class Player : Entity
     {
         base.Awake();
 
-        idleState = new PlayerIdleState(_stateMachine, this, _animator);
-        moveState = new PlayerMoveState(_stateMachine, this, _animator);
-        jumpState = new PlayerJumpState(_stateMachine, this, _animator);
-        fallState = new PlayerFallState(_stateMachine, this, _animator);
-        rollState = new PlayerRollState(_stateMachine, this, _animator);
-        primaryAttackState = new PlayerPrimaryAttackState(_stateMachine, this, _animator);
+        idleState = new PlayerIdleState(_stateMachine, this, _controller, _animator);
+        moveState = new PlayerMoveState(_stateMachine, this, _controller, _animator);
+        jumpState = new PlayerJumpState(_stateMachine, this, _controller, _animator);
+        fallState = new PlayerFallState(_stateMachine, this, _controller, _animator);
+        rollState = new PlayerRollState(_stateMachine, this, _controller, _animator);
+        primaryAttackState = new PlayerPrimaryAttackState(_stateMachine, this, _controller, _animator);
         _stateMachine.Init(idleState);
     }
 

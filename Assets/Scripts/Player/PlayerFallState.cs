@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerFallState : PlayerState
 {
-    public PlayerFallState(StateMachine stateMachine, Player player, Animator animator) : base(stateMachine, player, animator)
+    public PlayerFallState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
 
@@ -12,9 +12,7 @@ public class PlayerFallState : PlayerState
     {
         base.OnEnter();
 
-        Debug.Log("Enter Fall State");
-
-        _player.SetFallingGravity();
+        _controller.gravity = _player.FallingGravity;
         _animator.Play("jump_down_FK");
     }
 
@@ -22,7 +20,7 @@ public class PlayerFallState : PlayerState
     {
         base.OnUpdate();
 
-        _player.SetXVelocity(_inputVector.x * _player.moveSpeed);
+        _controller.Velocity = new Vector2(_inputVector.x * _player.moveSpeed, _controller.Velocity.y);
 
         if (_player.Controller.CollisionInfo.below)
         {
@@ -33,5 +31,6 @@ public class PlayerFallState : PlayerState
     public override void OnExit()
     {
         base.OnExit();
+        _controller.gravity = _player.NormalGravity;
     }
 }

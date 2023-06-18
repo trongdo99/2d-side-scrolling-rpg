@@ -6,7 +6,7 @@ public class PlayerOnGroundState : PlayerState
 {
     private float _lastYPosition;
 
-    public PlayerOnGroundState(StateMachine stateMachine, Player player, Animator animator) : base(stateMachine, player, animator)
+    public PlayerOnGroundState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
 

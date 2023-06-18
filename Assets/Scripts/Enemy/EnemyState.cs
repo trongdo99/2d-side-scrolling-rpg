@@ -5,13 +5,15 @@ using UnityEngine;
 public class EnemyState : State
 {
     protected Enemy _enemy;
+    protected CharacterController2D _controller;
     protected Animator _animator;
     protected float _stateTimer;
     protected bool _isAnimationCompleted;
 
-    public EnemyState(StateMachine stateMachine, Enemy enemy, Animator animator) : base(stateMachine)
+    public EnemyState(StateMachine stateMachine, Enemy enemy, CharacterController2D controller, Animator animator) : base(stateMachine)
     {
         _enemy = enemy;
+        _controller = controller; ;
         _animator = animator;
     }
 
