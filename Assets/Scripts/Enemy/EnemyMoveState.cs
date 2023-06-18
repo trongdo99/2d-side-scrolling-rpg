@@ -19,7 +19,9 @@ public class EnemyMoveState : EnemyOnGroundState
     {
         base.OnUpdate();
 
-        if (_enemy.Controller.CollisionInfo.left || _enemy.Controller.CollisionInfo.right)
+        if (_controller.CollisionInfo.left || _controller.CollisionInfo.right ||
+            (_enemy.facingDirection == -1 && !_controller.CollisionInfo.leftBottomEdge) ||
+            (_enemy.facingDirection == 1 && !_controller.CollisionInfo.rightBottomEdge))
         {
             _enemy.ChangeFacingDirection();
             _stateMachine.ChangeToState(_enemy.idleState);

@@ -52,6 +52,8 @@ public class CharacterController2D : MonoBehaviour
         UpdateRaycastOrigins();
         _collisionInfo.Reset();
 
+        CheckBottomEdgeCollisions();
+
         if (desiredVelocity.x != 0)
         {
             HorizontalCollisions(ref desiredVelocity);
@@ -76,6 +78,30 @@ public class CharacterController2D : MonoBehaviour
         // Force the physic engine to synchronize physic model after making changes in transform.
         // Prevent player from constantly sinking to the ground at microseconds.
         Physics2D.SyncTransforms();
+    }
+
+    private void CheckBottomEdgeCollisions()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.leftBottomEdge, Vector2.down, 0.1f, _collisionMask);
+        _collisionInfo.leftBottomEdge = hit ? true : false;
+        if (hit)
+        {
+            Debug.DrawRay(_raycastOrigins.leftBottomEdge, Vector2.down * 0.1f, Color.red);
+        }
+        else
+        {
+            Debug.DrawRay(_raycastOrigins.leftBottomEdge, Vector2.down * 0.1f, Color.green);
+        }
+        hit = Physics2D.Raycast(_raycastOrigins.rightBottomEdge, Vector2.down, 0.1f, _collisionMask);
+        _collisionInfo.rightBottomEdge = hit ? true : false;
+        if (hit)
+        {
+            Debug.DrawRay(_raycastOrigins.rightBottomEdge, Vector2.down * 0.1f, Color.red);
+        }
+        else
+        {
+            Debug.DrawRay(_raycastOrigins.rightBottomEdge, Vector2.down * 0.1f, Color.green);
+        }
     }
 
     // Changes in this method effect moveDistance Move method
@@ -157,6 +183,8 @@ public class CharacterController2D : MonoBehaviour
         _raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
         _raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
         _raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
+        _raycastOrigins.leftBottomEdge = new Vector2(_raycastOrigins.bottomLeft.x - 0.1f, _raycastOrigins.bottomLeft.y);
+        _raycastOrigins.rightBottomEdge = new Vector2(_raycastOrigins.bottomRight.x + 0.1f, _raycastOrigins.bottomRight.y);
     }
 
     private void CalculateRaySpacing()
@@ -176,6 +204,7 @@ public struct RaycastOrigins
 {
     public Vector2 topLeft, topRight;
     public Vector2 bottomLeft, bottomRight;
+    public Vector2 leftBottomEdge, rightBottomEdge;
 }
 
 // Used to remove the accumulation of gravity and collisions left/right
@@ -183,10 +212,12 @@ public struct CollisionInfo
 {
     public bool above, below;
     public bool left, right;
+    public bool leftBottomEdge, rightBottomEdge;
 
     public void Reset()
     {
         above = below = false;
         left = right = false;
+        leftBottomEdge = rightBottomEdge = false;
     }
 }
