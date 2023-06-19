@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyMoveToAttackRangeState : EnemyBattleState
 {
     private Vector2 _directionToPlayer;
+    private Player _player;
 
     public EnemyMoveToAttackRangeState(StateMachine stateMachine, Enemy enemy, CharacterController2D controller, Animator animator) : base(stateMachine, enemy, controller, animator)
     {
@@ -14,8 +15,7 @@ public class EnemyMoveToAttackRangeState : EnemyBattleState
     {
         base.OnEnter();
 
-        Vector2 playerPosition = _enemy.GetTargetedPlayer().transform.position;
-        _directionToPlayer = playerPosition - (Vector2)_enemy.transform.position;
+        _player = _enemy.GetTargetedPlayer();
 
         Debug.Log("[Enemy] Enter move to attack range state");
     }
@@ -24,8 +24,8 @@ public class EnemyMoveToAttackRangeState : EnemyBattleState
     {
         base.OnUpdate();
 
-        _controller.Velocity = new Vector2(_directionToPlayer.normalized.x, _directionToPlayer.normalized.y) * _enemy.MoveSpeed;
-
+        Vector2 playerPosition = _player.transform.position;
+        _directionToPlayer = playerPosition - (Vector2)_enemy.transform.position;
         if (_directionToPlayer.magnitude < _enemy.AttackRange)
         {
             _stateMachine.ChangeToState(_enemy.attackState);

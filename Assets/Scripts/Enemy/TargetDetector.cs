@@ -27,6 +27,7 @@ public class TargetDetector : MonoBehaviour
             {
                 _target = player;
                 Debug.DrawRay(_boxCollider.bounds.center, Vector2.left * _detectionRange, Color.red);
+                return;
             }
             else
             {

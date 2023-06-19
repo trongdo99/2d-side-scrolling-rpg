@@ -47,4 +47,10 @@ public class Enemy : Entity
     {
         base.Update();
     }
+
+    private void OnGUI()
+    {
+
+        GUI.Label(new Rect(10, 10, 100, 20), _stateMachine.CurrentState.ToString());
+    }
 }

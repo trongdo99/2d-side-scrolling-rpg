@@ -2,6 +2,8 @@ public class StateMachine
 {
     private State _currentState;
 
+    public State CurrentState { get => _currentState; private set => _currentState = value; }
+
     public void Init(State startState)
     {
         _currentState = startState;
