@@ -13823,7 +13823,7 @@ GameObject:
   - component: {fileID: 1992044824}
   - component: {fileID: 1992044823}
   - component: {fileID: 1992044822}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13930,7 +13930,8 @@ GameObject:
   - component: {fileID: 2111332877}
   - component: {fileID: 2111332876}
   - component: {fileID: 2111332875}
-  m_Layer: 6
+  - component: {fileID: 2111332879}
+  m_Layer: 7
   m_Name: Enemy_Skeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14040,6 +14041,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2111332879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111332874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3126d2ee73f9ff947a199355d2f6f40c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  _detectionRange: 4
+  _target: {fileID: 0}
 --- !u!1 &2126946586
 GameObject:
   m_ObjectHideFlags: 0

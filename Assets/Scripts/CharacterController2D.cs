@@ -204,6 +204,7 @@ public struct RaycastOrigins
 {
     public Vector2 topLeft, topRight;
     public Vector2 bottomLeft, bottomRight;
+    public Vector2 middleLeft, middleRight;
     public Vector2 leftBottomEdge, rightBottomEdge;
 }
 
