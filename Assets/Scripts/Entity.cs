@@ -39,6 +39,7 @@ public class Entity : MonoBehaviour
     protected StateMachine _stateMachine;
 
     public CharacterController2D Controller { get => _controller; private set => _controller = value; }
+    public StateMachine StateMachine { get => _stateMachine; private set => _stateMachine = value; }
     public float NormalGravity { get => _normalGravity; set => _normalGravity = value; }
     public float FallingGravity { get => _fallingGravity; set => _fallingGravity = value; }
 

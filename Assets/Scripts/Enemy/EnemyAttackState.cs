@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAttackState : EnemyBattleState
+public class EnemyAttackState : EnemyState
 {
     public EnemyAttackState(StateMachine stateMachine, Enemy enemy, CharacterController2D controller, Animator animator) : base(stateMachine, enemy, controller, animator)
     {
@@ -24,12 +24,14 @@ public class EnemyAttackState : EnemyBattleState
 
         if (_isAnimationCompleted)
         {
-            _stateMachine.ChangeToState(_enemy.idleState);
+            _stateMachine.ChangeToState(_enemy.battleState);
         }
     }
 
     public override void OnExit()
     {
         base.OnExit();
+
+        _enemy.lastAttackTime = Time.time;
     }
 }

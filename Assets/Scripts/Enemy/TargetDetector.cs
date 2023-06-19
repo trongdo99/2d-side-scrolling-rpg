@@ -20,42 +20,53 @@ public class TargetDetector : MonoBehaviour
 
     private void Update()
     {
-        RaycastHit2D hit = Physics2D.Raycast(_boxCollider.bounds.center, Vector2.left, _detectionRange, _targetLayer);
-        if (hit)
+        bool leftFound = FindTargetUsingRaycast(Vector2.left);
+        bool rightFound = false;
+
+        if (!leftFound)
         {
-            if (hit.transform.TryGetComponent<Player>(out Player player))
-            {
-                _target = player;
-                Debug.DrawRay(_boxCollider.bounds.center, Vector2.left * _detectionRange, Color.red);
-                return;
-            }
-            else
-            {
-                Debug.DrawRay(_boxCollider.bounds.center, Vector2.left * _detectionRange, Color.green);
-            }
+            rightFound = FindTargetUsingRaycast(Vector2.right);
+        }
+
+        if (leftFound)
+        {
+            Debug.DrawRay(_boxCollider.bounds.center, Vector2.left * _detectionRange, Color.red);
         }
         else
         {
-            _target = null;
             Debug.DrawRay(_boxCollider.bounds.center, Vector2.left * _detectionRange, Color.green);
         }
 
-        hit = Physics2D.Raycast(_boxCollider.bounds.center, Vector2.right, _detectionRange, _targetLayer);
+        if (rightFound)
+        {
+            Debug.DrawRay(_boxCollider.bounds.center, Vector2.right * _detectionRange, Color.red);
+        }
+        else
+        {
+
+            Debug.DrawRay(_boxCollider.bounds.center, Vector2.right * _detectionRange, Color.green);
+        }
+    }
+
+    private bool FindTargetUsingRaycast(Vector2 checkDirection)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(_boxCollider.bounds.center, checkDirection, _detectionRange, _targetLayer);
         if (hit)
         {
-            if (hit.transform.TryGetComponent<Player>(out Player player))
+            if (hit.transform.TryGetComponent(out Player player))
             {
                 _target = player;
-                Debug.DrawRay(_boxCollider.bounds.center, Vector2.right * _detectionRange, Color.red);
+                return true;
             }
             else
             {
-                Debug.DrawRay(_boxCollider.bounds.center, Vector2.right * _detectionRange, Color.green); }
+                _target = null;
+                return false;
             }
-        else
-        {
-            _target = null;
-            Debug.DrawRay(_boxCollider.bounds.center, Vector2.right * _detectionRange, Color.green);
         }
+
+        _target = null;
+        Debug.DrawRay(_boxCollider.bounds.center, Vector2.left * _detectionRange, Color.green);
+        return false;
     }
 }

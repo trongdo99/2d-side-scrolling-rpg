@@ -5,7 +5,12 @@ using UnityEngine;
 public class Enemy : Entity
 {
     [SerializeField] private float _idleTime;
+    [SerializeField] private float _attackCooldown;
     [SerializeField] private float _attackRange;
+    [SerializeField] private float _battleTime;
+    [SerializeField] private float _loseAgroDistance;
+
+    [HideInInspector] public float lastAttackTime;
 
     private TargetDetector _targetDetector;
 
@@ -13,11 +18,13 @@ public class Enemy : Entity
     public EnemyMoveState moveState { get; private set; }
     public EnemyBattleState battleState { get; private set; }
     public EnemyAttackState attackState { get; private set; }
-    public EnemyMoveToAttackRangeState moveToAttackRangeState { get; private set; }
 
     public float MoveSpeed { get => _moveSpeed; private set => _moveSpeed = value; }
     public float IdleTime { get => _idleTime; private set => _idleTime = value; }
     public float AttackRange { get => _attackRange; private set => _attackRange = value; }
+    public float AttackCooldown { get => _attackCooldown; private set => _attackCooldown = value; }
+    public float BattleTime { get => _battleTime; private set => _battleTime = value; }
+    public float LoseAgroDistance { get => _loseAgroDistance; private set => _loseAgroDistance = value; }
 
     protected override void Awake()
     {
@@ -29,13 +36,7 @@ public class Enemy : Entity
         moveState = new EnemyMoveState(_stateMachine, this, _controller, _animator);
         battleState = new EnemyBattleState(_stateMachine, this, _controller, _animator);
         attackState = new EnemyAttackState(_stateMachine, this, _controller, _animator);
-        moveToAttackRangeState = new EnemyMoveToAttackRangeState(_stateMachine, this, _controller, _animator);
         _stateMachine.Init(idleState);
-    }
-
-    public Player GetTargetedPlayer()
-    {
-        return _targetDetector.Target;
     }
 
     protected override void LateUpdate()
@@ -48,9 +49,8 @@ public class Enemy : Entity
         base.Update();
     }
 
-    private void OnGUI()
+    public bool IsPlayerDetected()
     {
-
-        GUI.Label(new Rect(10, 10, 100, 20), _stateMachine.CurrentState.ToString());
+        return _targetDetector.Target ? true : false;
     }
 }

@@ -17,8 +17,8 @@ public class CharacterController2D : MonoBehaviour
     [ReadOnly]
     public float gravity = GRAVITY;
     [SerializeField, ReadOnly] private Vector2 _velocity;
+    [SerializeField, ReadOnly] private Vector2 _preVelocity;
 
-    private Vector2 _preVelocity;
     private float _horizontalRaySpacing;
     private float _verticalRaySpacing;
     private BoxCollider2D _boxCollider;

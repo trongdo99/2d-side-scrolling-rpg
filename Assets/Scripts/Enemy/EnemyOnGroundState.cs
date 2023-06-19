@@ -17,9 +17,9 @@ public class EnemyOnGroundState : EnemyState
     {
         base.OnUpdate();
 
-        if (_enemy.GetTargetedPlayer())
+        if (_enemy.IsPlayerDetected())
         {
-            _stateMachine.ChangeToState(_enemy.moveToAttackRangeState);
+            _stateMachine.ChangeToState(_enemy.battleState);
         }
     }
 
