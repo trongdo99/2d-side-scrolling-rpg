@@ -5,20 +5,37 @@ using UnityEngine;
 public class Enemy : Entity
 {
     [SerializeField] private float _idleTime;
+    [SerializeField] private float _attackRange;
+
+    private TargetDetector _targetDetector;
 
     public EnemyIdleState idleState { get; private set; }
     public EnemyMoveState moveState { get; private set; }
+    public EnemyBattleState battleState { get; private set; }
+    public EnemyAttackState attackState { get; private set; }
+    public EnemyMoveToAttackRangeState moveToAttackRangeState { get; private set; }
 
     public float MoveSpeed { get => _moveSpeed; private set => _moveSpeed = value; }
     public float IdleTime { get => _idleTime; private set => _idleTime = value; }
+    public float AttackRange { get => _attackRange; private set => _attackRange = value; }
 
     protected override void Awake()
     {
         base.Awake();
 
+        _targetDetector = GetComponent<TargetDetector>();
+
         idleState = new EnemyIdleState(_stateMachine, this, _controller, _animator);
         moveState = new EnemyMoveState(_stateMachine, this, _controller, _animator);
+        battleState = new EnemyBattleState(_stateMachine, this, _controller, _animator);
+        attackState = new EnemyAttackState(_stateMachine, this, _controller, _animator);
+        moveToAttackRangeState = new EnemyMoveToAttackRangeState(_stateMachine, this, _controller, _animator);
         _stateMachine.Init(idleState);
+    }
+
+    public Player GetTargetedPlayer()
+    {
+        return _targetDetector.Target;
     }
 
     protected override void LateUpdate()

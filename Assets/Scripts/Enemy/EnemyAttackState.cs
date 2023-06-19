@@ -1,0 +1,35 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class EnemyAttackState : EnemyBattleState
+{
+    public EnemyAttackState(StateMachine stateMachine, Enemy enemy, CharacterController2D controller, Animator animator) : base(stateMachine, enemy, controller, animator)
+    {
+    }
+
+    public override void OnEnter()
+    {
+        base.OnEnter();
+
+        _animator.Play("attack_SKL");
+        Debug.Log("[Enemy] Enter attack state");
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        _controller.Velocity = new Vector2(0f, _controller.Velocity.y);
+
+        if (_isAnimationCompleted)
+        {
+            _stateMachine.ChangeToState(_enemy.idleState);
+        }
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+    }
+}

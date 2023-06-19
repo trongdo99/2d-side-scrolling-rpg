@@ -16,6 +16,11 @@ public class EnemyOnGroundState : EnemyState
     public override void OnUpdate()
     {
         base.OnUpdate();
+
+        if (_enemy.GetTargetedPlayer())
+        {
+            _stateMachine.ChangeToState(_enemy.moveToAttackRangeState);
+        }
     }
 
     public override void OnExit()
