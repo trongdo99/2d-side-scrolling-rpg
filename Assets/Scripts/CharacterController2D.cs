@@ -14,9 +14,8 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private int _horizontalRayCount;
     [SerializeField] private int _verticalRayCount;
 
-    [ReadOnly]
-    public float gravity = GRAVITY;
-    [SerializeField, ReadOnly] private Vector2 _velocity;
+    [ReadOnly] public float gravity = GRAVITY;
+    [ReadOnly] public Vector2 Velocity;
     [SerializeField, ReadOnly] private Vector2 _preVelocity;
 
     private float _horizontalRaySpacing;
@@ -27,16 +26,6 @@ public class CharacterController2D : MonoBehaviour
 
     public CollisionInfo CollisionInfo => _collisionInfo;
 
-    public Vector2 Velocity
-    {
-        get { return _velocity; }
-        set
-        {
-            _preVelocity = value;
-            _velocity = value;
-        }
-    }
-
     // Start is called before the first frame update
     private void Awake()
     {
@@ -46,33 +35,34 @@ public class CharacterController2D : MonoBehaviour
 
     private void Update()
     {
-        _velocity.y += gravity * Time.deltaTime;
-        Vector2 desiredVelocity = (_preVelocity + _velocity) * 0.5f * Time.deltaTime;
+        _preVelocity = Velocity;
+        Velocity.y += gravity * Time.deltaTime;
+        Vector2 appliedVelocity = (_preVelocity + Velocity) * 0.5f * Time.deltaTime;
 
         UpdateRaycastOrigins();
         _collisionInfo.Reset();
 
         CheckBottomEdgeCollisions();
 
-        if (desiredVelocity.x != 0)
+        if (appliedVelocity.x != 0)
         {
-            HorizontalCollisions(ref desiredVelocity);
+            HorizontalCollisions(ref appliedVelocity);
         }
-        if (desiredVelocity.y != 0)
+        if (appliedVelocity.y != 0)
         {
-            VerticalCollisions(ref desiredVelocity);
+            VerticalCollisions(ref appliedVelocity);
         }
 
-        transform.Translate(desiredVelocity);
+        transform.Translate(appliedVelocity);
 
         if (_collisionInfo.below)
         {
-            _velocity.y = 0f;
+            Velocity.y = 0f;
         }
 
         if (_collisionInfo.right || _collisionInfo.left)
         {
-            _velocity.x = 0f;
+            Velocity.x = 0f;
         }
 
         // Force the physic engine to synchronize physic model after making changes in transform.
