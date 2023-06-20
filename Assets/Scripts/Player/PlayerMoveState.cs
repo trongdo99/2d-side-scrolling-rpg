@@ -23,7 +23,7 @@ public class PlayerMoveState : PlayerOnGroundState
             _stateMachine.ChangeToState(_player.idleState);
         }
 
-        _controller.Velocity = new Vector2(_inputVector.x * _player.moveSpeed, _controller.Velocity.y);
+        _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
     }
 
     public override void OnExit()

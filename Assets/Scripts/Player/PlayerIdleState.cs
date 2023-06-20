@@ -20,7 +20,7 @@ public class PlayerIdleState : PlayerOnGroundState
 
         if (_inputVector.x != 0 && !_player.isBusy)
         {
-            _controller.Velocity = new Vector2(0f, _controller.Velocity.y);
+            _controller.Velocity.x = 0f;
             _stateMachine.ChangeToState(_player.moveState);
         }
     }

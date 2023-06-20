@@ -26,7 +26,7 @@ public class EnemyMoveState : EnemyOnGroundState
             _enemy.ChangeFacingDirection();
             _stateMachine.ChangeToState(_enemy.idleState);
         }
-        _controller.Velocity = new Vector2(_enemy.facingDirection * _enemy.MoveSpeed, _controller.Velocity.y);
+        _controller.Velocity.x = _enemy.facingDirection * _enemy.MoveSpeed;
     }
 
     public override void OnExit()

@@ -20,7 +20,7 @@ public class EnemyAttackState : EnemyState
     {
         base.OnUpdate();
 
-        _controller.Velocity = new Vector2(0f, _controller.Velocity.y);
+        _controller.Velocity.x = 0f;
 
         if (_isAnimationCompleted)
         {

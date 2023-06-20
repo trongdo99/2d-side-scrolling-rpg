@@ -15,7 +15,7 @@ public class PlayerJumpState : PlayerState
         base.OnEnter();
 
         _controller.gravity = _player.NormalGravity;
-        _controller.Velocity = new Vector2(_controller.Velocity.x, _player.JumpForce);
+        _controller.Velocity.y = _player.JumpForce;
         _maxHeightReached = _player.transform.position.y;
         _animator.Play("jump_up_FK");
     }
@@ -24,7 +24,7 @@ public class PlayerJumpState : PlayerState
     {
         base.OnUpdate();
 
-        _controller.Velocity = new Vector2(_inputVector.x * _player.moveSpeed, _controller.Velocity.y);
+        _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
 
         if (_maxHeightReached > _player.transform.position.y)
         {

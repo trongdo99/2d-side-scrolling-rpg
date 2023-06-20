@@ -20,7 +20,7 @@ public class PlayerFallState : PlayerState
     {
         base.OnUpdate();
 
-        _controller.Velocity = new Vector2(_inputVector.x * _player.moveSpeed, _controller.Velocity.y);
+        _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
 
         if (_player.Controller.CollisionInfo.below)
         {

@@ -22,7 +22,7 @@ public class PlayerRollState : PlayerState
 
         if (_stateTimer > 0f)
         {
-            _controller.Velocity = new Vector2(_player.facingDirection * _player.RollSpeed, _controller.Velocity.y);
+            _controller.Velocity.x = _player.facingDirection * _player.RollSpeed;
         }
         else
         {
@@ -33,6 +33,6 @@ public class PlayerRollState : PlayerState
     public override void OnExit()
     {
         base.OnExit();
-        _controller.Velocity = new Vector2(0f, _controller.Velocity.y);
+        _controller.Velocity.x = 0f;
     }
 }
