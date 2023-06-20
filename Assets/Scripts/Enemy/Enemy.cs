@@ -37,6 +37,8 @@ public class Enemy : Entity
         battleState = new EnemyBattleState(_stateMachine, this, _controller, _animator);
         attackState = new EnemyAttackState(_stateMachine, this, _controller, _animator);
         _stateMachine.Init(idleState);
+
+        lastAttackTime = float.MinValue;
     }
 
     protected override void LateUpdate()
