@@ -33,6 +33,8 @@ public class PlayerRollState : PlayerState
     public override void OnExit()
     {
         base.OnExit();
+
+        _player.lastRollTime = Time.time;
         _controller.Velocity.x = 0f;
     }
 }
