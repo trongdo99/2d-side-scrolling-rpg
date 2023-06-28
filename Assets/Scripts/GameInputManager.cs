@@ -22,7 +22,7 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
 
         _playerInputActions.Player.PrimaryAttack.performed += PrimaryAttack_performed;
 
-        _playerInputActions.Player.Roll.performed += Roll_performed;
+        _playerInputActions.Player.Dash.performed += Roll_performed;
     }
 
     public bool WasJumpButtonPressed()
@@ -35,9 +35,9 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
         return _playerInputActions.Player.Jump.WasReleasedThisFrame();
     }
 
-    public bool WasRollButtonPressed()
+    public bool WasDashButtonPressed()
     {
-        return _playerInputActions.Player.Roll.WasPressedThisFrame();
+        return _playerInputActions.Player.Dash.WasPressedThisFrame();
     }
 
     public bool WasPrimaryAttackButtonPressed()

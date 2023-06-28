@@ -26,12 +26,6 @@ public class PlayerOnGroundState : PlayerState
             _stateMachine.ChangeToState(_player.primaryAttackState);
         }
 
-        if (GameInputManager.Instance.WasRollButtonPressed() && CanRoll() && _inputVector.x != 0)
-        {
-            _player.facingDirection = (int)_inputVector.x;
-            _stateMachine.ChangeToState(_player.rollState);
-        }
-
         if (GameInputManager.Instance.WasJumpButtonPressed())
         {
             _stateMachine.ChangeToState(_player.jumpState);
@@ -48,10 +42,5 @@ public class PlayerOnGroundState : PlayerState
     public override void OnExit()
     {
         base.OnExit();
-    }
-
-    private bool CanRoll()
-    {
-        return Time.time > _player.lastRollTime + _player.RollCooldown;
     }
 }

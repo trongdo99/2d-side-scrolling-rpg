@@ -23,13 +23,13 @@ public class PlayerPrimaryAttackState : PlayerState
         switch (_comboCounter)
         {
             case 0:
-                _animator.Play("attack1_assasin");
+                _animator.Play("attack_1_swordmaster");
                 break;
             case 1:
-                _animator.Play("attack2_assasin");
+                _animator.Play("attack_2_swordmaster");
                 break;
             case 2:
-                _animator.Play("attack3_assasin");
+                _animator.Play("attack_3_swordmaster");
                 break;
         }
 

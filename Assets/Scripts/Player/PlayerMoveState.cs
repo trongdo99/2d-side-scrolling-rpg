@@ -11,7 +11,7 @@ public class PlayerMoveState : PlayerOnGroundState
     public override void OnEnter()
     {
         base.OnEnter();
-        _animator.Play("run_assasin");
+        _animator.Play("run_swordmaster");
     }
 
     public override void OnUpdate()
