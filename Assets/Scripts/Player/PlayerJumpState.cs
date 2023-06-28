@@ -17,7 +17,7 @@ public class PlayerJumpState : PlayerState
         _controller.gravity = _player.NormalGravity;
         _controller.Velocity.y = _player.JumpForce;
         _maxHeightReached = _player.transform.position.y;
-        _animator.Play("jump_up_FK");
+        _animator.Play("jump_assasin");
     }
 
     public override void OnUpdate()

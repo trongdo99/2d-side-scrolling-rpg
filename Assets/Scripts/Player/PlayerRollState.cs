@@ -13,7 +13,7 @@ public class PlayerRollState : PlayerState
         base.OnEnter();
 
         _stateTimer = _player.RollDuration;
-        _animator.Play("roll_FK");
+        //_animator.Play("roll_FK");
     }
 
     public override void OnUpdate()

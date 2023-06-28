@@ -11,7 +11,7 @@ public class PlayerIdleState : PlayerOnGroundState
     public override void OnEnter()
     {
         base.OnEnter();
-        _animator.Play("idle_FK");
+        _animator.Play("idle_assasin");
     }
 
     public override void OnUpdate()

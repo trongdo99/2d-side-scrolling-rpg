@@ -13,7 +13,7 @@ public class PlayerFallState : PlayerState
         base.OnEnter();
 
         _controller.gravity = _player.FallingGravity;
-        _animator.Play("jump_down_FK");
+        _animator.Play("fall_assasin");
     }
 
     public override void OnUpdate()
