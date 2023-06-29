@@ -74,30 +74,59 @@ public class CharacterController2D : MonoBehaviour
 
     public bool CanGrapLedge()
     {
-        return (!_collisionInfo.leftTopLedge && _collisionInfo.left) || (!_collisionInfo.rightTopLedge && _collisionInfo.right);
+        return (!_collisionInfo.leftTopLedge && _collisionInfo.leftTop) || (!_collisionInfo.rightTopLedge && _collisionInfo.rightTop);
     }
 
     private void CheckLedgeCollisions()
     {
-        RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.leftTopLedge, Vector2.left, 0.1f, _collisionMask);
-        _collisionInfo.leftTopLedge = hit ? true : false;
-        if (hit)
+        if (Velocity.x < 0)
         {
-            Debug.DrawRay(_raycastOrigins.leftTopLedge, Vector2.left * 0.1f, Color.red);
+            RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.leftTopLedge, Vector2.left, 0.1f, _collisionMask);
+            _collisionInfo.leftTopLedge = hit ? true : false;
+            if (hit)
+            {
+                Debug.DrawRay(_raycastOrigins.leftTopLedge, Vector2.left * 0.1f, Color.red);
+            }
+            else
+            {
+                Debug.DrawRay(_raycastOrigins.leftTopLedge, Vector2.left * 0.1f, Color.green);
+            }
+
+            hit = Physics2D.Raycast(_raycastOrigins.topLeft, Vector2.left, 0.1f, _collisionMask);
+            _collisionInfo.leftTop = hit ? true : false;
+            if (hit)
+            {
+                Debug.DrawRay(_raycastOrigins.topLeft, Vector2.left * 0.1f, Color.red);
+            }
+            else
+            {
+                Debug.DrawRay(_raycastOrigins.topLeft, Vector2.left * 0.1f, Color.green);
+            }
         }
-        else
+        
+        if (Velocity.x > 0)
         {
-            Debug.DrawRay(_raycastOrigins.leftTopLedge, Vector2.left * 0.1f, Color.green);
-        }
-        hit = Physics2D.Raycast(_raycastOrigins.rightTopLedge, Vector2.right, 0.1f, _collisionMask);
-        _collisionInfo.rightTopLedge = hit ? true : false;
-        if (hit)
-        {
-            Debug.DrawRay(_raycastOrigins.rightTopLedge, Vector2.right * 0.1f, Color.red);
-        }
-        else
-        {
-            Debug.DrawRay(_raycastOrigins.rightTopLedge, Vector2.right * 0.1f, Color.green);
+            RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.rightTopLedge, Vector2.right, 0.1f, _collisionMask);
+            _collisionInfo.rightTopLedge = hit ? true : false;
+            if (hit)
+            {
+                Debug.DrawRay(_raycastOrigins.rightTopLedge, Vector2.right * 0.1f, Color.red);
+            }
+            else
+            {
+                Debug.DrawRay(_raycastOrigins.rightTopLedge, Vector2.right * 0.1f, Color.green);
+            }
+
+            hit = Physics2D.Raycast(_raycastOrigins.topRight, Vector2.right, 0.1f, _collisionMask);
+            _collisionInfo.rightTop = hit ? true : false;
+            if (hit)
+            {
+                Debug.DrawRay(_raycastOrigins.topRight, Vector2.right * 0.1f);
+            }
+            else
+            {
+                Debug.DrawRay(_raycastOrigins.topRight, Vector2.right * 0.1f);
+            }
         }
     }
 
@@ -239,11 +268,14 @@ public struct CollisionInfo
     public bool left, right;
     public bool leftBottomEdge, rightBottomEdge;
     public bool leftTopLedge, rightTopLedge;
+    public bool leftTop, rightTop;
 
     public void Reset()
     {
         above = below = false;
         left = right = false;
         leftBottomEdge = rightBottomEdge = false;
+        leftTopLedge = rightTopLedge = false;
+        leftTop = rightTop = false;
     }
 }

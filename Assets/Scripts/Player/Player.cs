@@ -26,6 +26,7 @@ public class Player : Entity
     public PlayerMoveState moveState { get; private set; }
     public PlayerJumpState jumpState { get; private set; }
     public PlayerFallState fallState { get; private set; }
+    public PlayerLedgeClimbState ledgeClimbState { get; private set; }
     public PlayerDashState dashState { get; private set; }
     public PlayerPrimaryAttackState primaryAttackState { get; private set; }
 
@@ -47,6 +48,7 @@ public class Player : Entity
         moveState = new PlayerMoveState(_stateMachine, this, _controller, _animator);
         jumpState = new PlayerJumpState(_stateMachine, this, _controller, _animator);
         fallState = new PlayerFallState(_stateMachine, this, _controller, _animator);
+        ledgeClimbState = new PlayerLedgeClimbState(_stateMachine, this, _controller, _animator);
         dashState = new PlayerDashState(_stateMachine, this, _controller, _animator);
         primaryAttackState = new PlayerPrimaryAttackState(_stateMachine, this, _controller, _animator);
         _stateMachine.Init(idleState);

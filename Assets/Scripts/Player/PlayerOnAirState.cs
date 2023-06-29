@@ -17,9 +17,9 @@ public class PlayerOnAirState : PlayerState
     {
         base.OnUpdate();
 
-        if (_player.Controller.CollisionInfo.below)
+        if (_controller.CanGrapLedge())
         {
-            _stateMachine.ChangeToState(_player.idleState);
+            _stateMachine.ChangeToState(_player.ledgeClimbState);
         }
     }
 
