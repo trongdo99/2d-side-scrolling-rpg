@@ -23,6 +23,8 @@ public class CharacterController2D : MonoBehaviour
     private BoxCollider2D _boxCollider;
     private RaycastOrigins _raycastOrigins;
     private CollisionInfo _collisionInfo;
+    private Vector2 _bottomLeftLedgePosition;
+    private Vector2 _bottomRightLedgePosition;
 
     public CollisionInfo CollisionInfo => _collisionInfo;
 
@@ -77,55 +79,83 @@ public class CharacterController2D : MonoBehaviour
         return (!_collisionInfo.leftTopLedge && _collisionInfo.leftTop) || (!_collisionInfo.rightTopLedge && _collisionInfo.rightTop);
     }
 
+    public Vector2 GetBottomLedgePosition(int facingDirection)
+    {
+        if (facingDirection > 0)
+        {
+            Debug.Log("Return Bottom Left ledge: " + _bottomLeftLedgePosition);
+        }
+        else if (facingDirection < 0)
+        {
+            Debug.Log("Return Bottom Right ledge: " + _bottomRightLedgePosition);
+        }
+        return facingDirection > 0 ? _bottomLeftLedgePosition : _bottomRightLedgePosition;
+    }
+
     private void CheckLedgeCollisions()
     {
         if (Velocity.x < 0)
         {
-            RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.leftTopLedge, Vector2.left, 0.1f, _collisionMask);
+            RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.leftTopLedge, Vector2.left, 0.2f + _skinWidth, _collisionMask);
             _collisionInfo.leftTopLedge = hit ? true : false;
             if (hit)
             {
-                Debug.DrawRay(_raycastOrigins.leftTopLedge, Vector2.left * 0.1f, Color.red);
+                Debug.DrawRay(_raycastOrigins.leftTopLedge, Vector2.left * (0.2f + _skinWidth), Color.red);
             }
             else
             {
-                Debug.DrawRay(_raycastOrigins.leftTopLedge, Vector2.left * 0.1f, Color.green);
+                Debug.DrawRay(_raycastOrigins.leftTopLedge, Vector2.left * (0.2f + _skinWidth), Color.green);
             }
 
-            hit = Physics2D.Raycast(_raycastOrigins.topLeft, Vector2.left, 0.1f, _collisionMask);
+            hit = Physics2D.Raycast(_raycastOrigins.topLeft, Vector2.left, (0.2f + _skinWidth), _collisionMask);
             _collisionInfo.leftTop = hit ? true : false;
             if (hit)
             {
-                Debug.DrawRay(_raycastOrigins.topLeft, Vector2.left * 0.1f, Color.red);
+                Debug.DrawRay(_raycastOrigins.topLeft, Vector2.left * (0.2f + _skinWidth), Color.red);
             }
             else
             {
-                Debug.DrawRay(_raycastOrigins.topLeft, Vector2.left * 0.1f, Color.green);
+                Debug.DrawRay(_raycastOrigins.topLeft, Vector2.left * (0.2f + _skinWidth), Color.green);
             }
         }
         
         if (Velocity.x > 0)
         {
-            RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.rightTopLedge, Vector2.right, 0.1f, _collisionMask);
+            RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.rightTopLedge, Vector2.right, 0.2f + _skinWidth, _collisionMask);
             _collisionInfo.rightTopLedge = hit ? true : false;
             if (hit)
             {
-                Debug.DrawRay(_raycastOrigins.rightTopLedge, Vector2.right * 0.1f, Color.red);
+                Debug.DrawRay(_raycastOrigins.rightTopLedge, Vector2.right * (0.2f + _skinWidth), Color.red);
             }
             else
             {
-                Debug.DrawRay(_raycastOrigins.rightTopLedge, Vector2.right * 0.1f, Color.green);
+                Debug.DrawRay(_raycastOrigins.rightTopLedge, Vector2.right * (0.2f + _skinWidth), Color.green);
             }
 
-            hit = Physics2D.Raycast(_raycastOrigins.topRight, Vector2.right, 0.1f, _collisionMask);
+            hit = Physics2D.Raycast(_raycastOrigins.topRight, Vector2.right, 0.2f + _skinWidth, _collisionMask);
             _collisionInfo.rightTop = hit ? true : false;
             if (hit)
             {
-                Debug.DrawRay(_raycastOrigins.topRight, Vector2.right * 0.1f);
+                Debug.DrawRay(_raycastOrigins.topRight, Vector2.right * (0.2f + _skinWidth), Color.green);
             }
             else
             {
-                Debug.DrawRay(_raycastOrigins.topRight, Vector2.right * 0.1f);
+                Debug.DrawRay(_raycastOrigins.topRight, Vector2.right * (0.2f + _skinWidth), Color.red);
+            }
+        }
+
+        if (CanGrapLedge())
+        {
+            if (Velocity.x > 0)
+            {
+                _bottomLeftLedgePosition = new Vector2(Mathf.FloorToInt(_raycastOrigins.topRight.x + 0.2f + _skinWidth), Mathf.RoundToInt(_raycastOrigins.topRight.y));
+                Debug.Log("Ledge tile bottom left position: " + _bottomLeftLedgePosition);
+            }
+            
+            if (Velocity.x < 0)
+            {
+                _bottomRightLedgePosition = new Vector2(Mathf.CeilToInt(_raycastOrigins.topLeft.x - 0.2f + _skinWidth), Mathf.RoundToInt(_raycastOrigins.topRight.y));
+                Debug.Log("Ledge tile bottom left position: " + _bottomRightLedgePosition);
             }
         }
     }

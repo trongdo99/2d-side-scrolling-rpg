@@ -22,8 +22,13 @@ public class StateMachine
         _currentState.OnUpdate();
     }
 
-    public void OnStateAnimationTrigger()
+    public void OnStateAnimationTriggered()
     {
         _currentState.OnAnimationTriggered();
+    }
+
+    public void OnStateAnimationCompleted()
+    {
+        _currentState.OnAnimtionCompleted();
     }
 }

@@ -61,7 +61,6 @@ public class Player : Entity
         base.Update();
 
         CheckForDashInput();
-        Debug.Log("Can grap ledge: " + _controller.CanGrapLedge());
     }
 
     protected override void LateUpdate()

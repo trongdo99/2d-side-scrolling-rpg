@@ -10,6 +10,7 @@ public abstract class PlayerState : State
     protected Vector2 _inputVector;
     protected float _stateTimer;
     protected bool _isAnimationCompletedTriggered;
+    protected bool _isAnimationEventTriggered;
 
     protected PlayerState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine)
     {
@@ -20,6 +21,7 @@ public abstract class PlayerState : State
 
     public override void OnEnter()
     {
+        _isAnimationCompletedTriggered = false;
         _isAnimationCompletedTriggered = false;
     }
 
@@ -32,6 +34,11 @@ public abstract class PlayerState : State
     }
 
     public override void OnAnimationTriggered()
+    {
+        _isAnimationEventTriggered = true;
+    }
+
+    public override void OnAnimtionCompleted()
     {
         _isAnimationCompletedTriggered = true;
     }

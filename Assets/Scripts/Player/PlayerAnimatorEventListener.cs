@@ -15,4 +15,9 @@ public class PlayerAnimatorEventListener : MonoBehaviour
     {
         _player.OnAnimationCompleted();
     }
+
+    private void EventAnimationTriggered()
+    {
+        _player.OnAnimationTriggered();
+    }
 }

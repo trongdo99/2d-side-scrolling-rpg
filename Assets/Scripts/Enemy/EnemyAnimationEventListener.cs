@@ -15,4 +15,9 @@ public class CharacterAnimationEventListener : MonoBehaviour
     {
         _enemy.OnAnimationCompleted();
     }
+
+    private void EventAnimationTriggered()
+    {
+        _enemy.OnAnimationTriggered();
+    }
 }

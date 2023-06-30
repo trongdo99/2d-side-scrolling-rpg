@@ -67,7 +67,12 @@ public class Entity : MonoBehaviour
 
     public void OnAnimationCompleted()
     {
-        _stateMachine.OnStateAnimationTrigger();
+        _stateMachine.OnStateAnimationCompleted();
+    }
+
+    public void OnAnimationTriggered()
+    {
+        _stateMachine.OnStateAnimationTriggered();
     }
 
     public IEnumerator isBusyFor(float seconds)
