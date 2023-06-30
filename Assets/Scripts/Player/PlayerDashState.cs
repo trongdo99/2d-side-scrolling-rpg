@@ -13,6 +13,8 @@ public class PlayerDashState : PlayerState
         base.OnEnter();
 
         _stateTimer = _player.DashDuration;
+        _controller.gravity = 0f;
+        _controller.Velocity.y = 0f;
         _animator.Play("dash_swordmaster");
     }
 
@@ -36,6 +38,7 @@ public class PlayerDashState : PlayerState
         base.OnExit();
 
         _player.lastDashTime = Time.time;
+        _controller.gravity = CharacterController2D.GRAVITY;
         _controller.Velocity.x = 0f;
     }
 }
