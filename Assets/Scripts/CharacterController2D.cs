@@ -83,17 +83,34 @@ public class CharacterController2D : MonoBehaviour
     {
         if (facingDirection > 0)
         {
+            if (_bottomLeftLedgePosition == Vector2.zero)
+            {
+                Debug.LogError("Bottom left ledge position is zero");
+            }
             Debug.Log("Return Bottom Left ledge: " + _bottomLeftLedgePosition);
         }
         else if (facingDirection < 0)
         {
+            if (_bottomRightLedgePosition == Vector2.zero)
+            {
+                Debug.LogError("Bottom right ledge position is zero");
+            }
             Debug.Log("Return Bottom Right ledge: " + _bottomRightLedgePosition);
         }
+
+        if (facingDirection == 0)
+        {
+            Debug.LogError("Facing direction shouldn't be zero");
+        }
+
         return facingDirection > 0 ? _bottomLeftLedgePosition : _bottomRightLedgePosition;
     }
 
     private void CheckLedgeCollisions()
     {
+        _bottomLeftLedgePosition = Vector2.zero;
+        _bottomRightLedgePosition = Vector2.zero;
+
         if (Velocity.x < 0)
         {
             RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.leftTopLedge, Vector2.left, 0.2f + _skinWidth, _collisionMask);
