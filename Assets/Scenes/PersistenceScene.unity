@@ -953,8 +953,8 @@ MonoBehaviour:
   - {x: 1, y: 1}
   - {x: 0.2, y: 0}
   _dashCooldown: 1
-  _dashDuration: 0.2
-  _dashSpeed: 30
+  _dashDuration: 0.3
+  _dashSpeed: 20
   _rollCooldown: 1
   _rollDuration: 0.667
   _rollSpeed: 6.5
