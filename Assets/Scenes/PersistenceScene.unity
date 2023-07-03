@@ -949,9 +949,9 @@ MonoBehaviour:
   isBusy: 0
   _comboWindow: 0.4
   _attackMovement:
-  - {x: 0.3, y: 2}
-  - {x: 1, y: 1}
-  - {x: 0.2, y: 0}
+  - {x: 0.3, y: 0}
+  - {x: 0.3, y: 0}
+  - {x: 0.3, y: 0}
   _dashCooldown: 1
   _dashDuration: 0.3
   _dashSpeed: 20

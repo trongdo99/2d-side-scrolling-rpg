@@ -16,14 +16,14 @@ public class PlayerMoveState : PlayerOnGroundState
 
     public override void OnUpdate()
     {
-        base.OnUpdate();
-
         if (_inputVector.x == 0)
         {
             _stateMachine.ChangeToState(_player.idleState);
         }
 
         _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
+
+        base.OnUpdate();
     }
 
     public override void OnExit()

@@ -41,18 +41,11 @@ public class PlayerPrimaryAttackState : PlayerState
 
         _controller.Velocity.x = attackDirection * _player.AttackMovement[_comboCounter].x;
         _controller.Velocity.y = _player.AttackMovement[_comboCounter].y;
-
-        _stateTimer = 0.2f;
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
-
-        if (_stateTimer < 0)
-        {
-            _controller.Velocity.x = 0f;
-        }
 
         if (_isAnimationCompletedTriggered)
         {
