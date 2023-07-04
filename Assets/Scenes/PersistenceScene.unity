@@ -948,6 +948,7 @@ MonoBehaviour:
   facingDirection: 0
   isBusy: 0
   _comboWindow: 0.4
+  _comboInputBufferFrame: 30
   _attackMovement:
   - {x: 0.3, y: 0}
   - {x: 0.3, y: 0}

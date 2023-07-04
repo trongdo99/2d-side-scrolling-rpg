@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerPrimaryAttackState : PlayerState
 {
     private int _comboCounter;
+    private int _combotInputBufferCounter;
     private float _lastAttackTime;
 
     public PlayerPrimaryAttackState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
@@ -47,9 +48,24 @@ public class PlayerPrimaryAttackState : PlayerState
     {
         base.OnUpdate();
 
-        if (_isAnimationCompletedTriggered)
+        if (GameInputManager.Instance.WasPrimaryAttackButtonPressed())
+        {
+            _combotInputBufferCounter = _player.ComboInputBufferFrame;
+        }
+
+        if (_isAnimationCompletedTriggered && _combotInputBufferCounter > -1)
+        {
+            _combotInputBufferCounter = -1;
+            _stateMachine.ChangeToState(_player.primaryAttackState);
+        }
+        else if (_isAnimationCompletedTriggered)
         {
             _stateMachine.ChangeToState(_player.idleState);
+        }
+
+        if (_combotInputBufferCounter > -1)
+        {
+            _combotInputBufferCounter -= 1;
         }
     }
 

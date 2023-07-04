@@ -6,6 +6,7 @@ public class Player : Entity
 {
     [Header("Attack settings")]
     [SerializeField] private float _comboWindow;
+    [SerializeField] private int _comboInputBufferFrame;
     [SerializeField] private Vector2[] _attackMovement;
 
     [Header("Dash settings")]
@@ -39,7 +40,9 @@ public class Player : Entity
     public float RollDuration { get => _rollDuration; private set => _rollDuration = value; }
     public float RollSpeed { get => _rollSpeed; private set => _rollSpeed = value; }
     public float ComboWindow { get => _comboWindow; private set => _comboWindow = value; }
+    public int ComboInputBufferFrame { get => _comboInputBufferFrame; private set => _comboInputBufferFrame = value; }
     public Vector2[] AttackMovement { get => _attackMovement; private set => _attackMovement = value; }
+
     protected override void Awake()
     {
         base.Awake();
