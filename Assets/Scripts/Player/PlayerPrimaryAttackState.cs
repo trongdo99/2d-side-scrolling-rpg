@@ -53,7 +53,7 @@ public class PlayerPrimaryAttackState : PlayerState
             _combotInputBufferCounter = _player.ComboInputBufferFrame;
         }
 
-        if (_isAnimationCompletedTriggered && _combotInputBufferCounter > -1)
+        if (_isAnimationCompletedTriggered && _combotInputBufferCounter > -1 && _controller.CollisionInfo.below)
         {
             _combotInputBufferCounter = -1;
             _stateMachine.ChangeToState(_player.primaryAttackState);
