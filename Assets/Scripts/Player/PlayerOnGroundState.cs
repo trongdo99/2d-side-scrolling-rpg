@@ -21,7 +21,7 @@ public class PlayerOnGroundState : PlayerState
     {
         base.OnUpdate();
 
-        if (GameInputManager.Instance.WasPrimaryAttackButtonPressed())
+        if (GameInputManager.Instance.WasPrimaryAttackButtonPressed() && Time.time - _player.lastComboTime > _player.ComboDelay)
         {
             _stateMachine.ChangeToState(_player.primaryAttackState);
         }

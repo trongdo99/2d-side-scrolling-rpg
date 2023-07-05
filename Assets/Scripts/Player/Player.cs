@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : Entity
 {
     [Header("Attack settings")]
+    [SerializeField] private float _comboDelay;
     [SerializeField] private float _comboWindow;
     [SerializeField] private int _comboInputBufferFrame;
     [SerializeField] private Vector2[] _attackMovement;
@@ -31,6 +32,8 @@ public class Player : Entity
     public PlayerDashState dashState { get; private set; }
     public PlayerPrimaryAttackState primaryAttackState { get; private set; }
 
+    [HideInInspector] public float lastComboTime;
+
     public float moveSpeed { get => _moveSpeed; private set => _moveSpeed = value; }
     public float JumpForce { get => _jumpForce; private set => _jumpForce = value; }
     public float DashCooldown { get => _dashCooldown; private set => _dashCooldown = value; }
@@ -39,6 +42,7 @@ public class Player : Entity
     public float RollCooldown { get => _rollCooldown; private set => _rollCooldown = value; }
     public float RollDuration { get => _rollDuration; private set => _rollDuration = value; }
     public float RollSpeed { get => _rollSpeed; private set => _rollSpeed = value; }
+    public float ComboDelay { get => _comboDelay; private set => _comboDelay = value; }
     public float ComboWindow { get => _comboWindow; private set => _comboWindow = value; }
     public int ComboInputBufferFrame { get => _comboInputBufferFrame; private set => _comboInputBufferFrame = value; }
     public Vector2[] AttackMovement { get => _attackMovement; private set => _attackMovement = value; }

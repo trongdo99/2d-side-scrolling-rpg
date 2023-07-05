@@ -53,14 +53,17 @@ public class PlayerPrimaryAttackState : PlayerState
             _combotInputBufferCounter = _player.ComboInputBufferFrame;
         }
 
-        if (_isAnimationCompletedTriggered && _combotInputBufferCounter > -1 && _controller.CollisionInfo.below)
+        if (_isAnimationCompletedTriggered)
         {
-            _combotInputBufferCounter = -1;
-            _stateMachine.ChangeToState(_player.primaryAttackState);
-        }
-        else if (_isAnimationCompletedTriggered)
-        {
-            _stateMachine.ChangeToState(_player.idleState);
+            if (_comboCounter < 2 && _combotInputBufferCounter > -1 && _controller.CollisionInfo.below)
+            {
+                _combotInputBufferCounter = -1;
+                _stateMachine.ChangeToState(_player.primaryAttackState);
+            }
+            else
+            {
+                _stateMachine.ChangeToState(_player.idleState);
+            }
         }
 
         if (_combotInputBufferCounter > -1)
@@ -74,6 +77,10 @@ public class PlayerPrimaryAttackState : PlayerState
         base.OnExit();
 
         _comboCounter++;
+        if (_comboCounter > 2)
+        {
+            _player.lastComboTime = Time.time;
+        }
         _lastAttackTime = Time.time;
         _controller.Velocity.x = 0f;
         _player.StartCoroutine(_player.isBusyFor(0.15f));

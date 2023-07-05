@@ -947,6 +947,7 @@ MonoBehaviour:
   _isFacingRight: 1
   facingDirection: 0
   isBusy: 0
+  _comboDelay: 0.15
   _comboWindow: 0.4
   _comboInputBufferFrame: 30
   _attackMovement:
@@ -961,6 +962,7 @@ MonoBehaviour:
   _rollSpeed: 6.5
   lastRollTime: 0
   lastDashTime: 0
+  lastComboTime: 0
 --- !u!61 &1653787191
 BoxCollider2D:
   m_ObjectHideFlags: 0
