@@ -23,7 +23,7 @@ public class EnemyMoveState : EnemyOnGroundState
             (_enemy.facingDirection == -1 && !_controller.CollisionInfo.leftBottomEdge) ||
             (_enemy.facingDirection == 1 && !_controller.CollisionInfo.rightBottomEdge))
         {
-            _enemy.ChangeFacingDirection();
+            _enemy.facingDirection = -_enemy.facingDirection;
             _stateMachine.ChangeToState(_enemy.idleState);
         }
         _controller.Velocity.x = _enemy.facingDirection * _enemy.MoveSpeed;

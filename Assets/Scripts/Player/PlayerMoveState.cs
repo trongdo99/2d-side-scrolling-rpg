@@ -22,6 +22,7 @@ public class PlayerMoveState : PlayerOnGroundState
         }
 
         _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
+        _player.facingDirection = (int)_inputVector.x;
 
         base.OnUpdate();
     }

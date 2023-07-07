@@ -35,10 +35,6 @@ public class PlayerPrimaryAttackState : PlayerState
         }
 
         float attackDirection = _player.facingDirection;
-        if (_inputVector.x != 0)
-        {
-            attackDirection = _inputVector.x;
-        }
 
         _controller.Velocity.x = attackDirection * _player.AttackMovement[_comboCounter].x;
         _controller.Velocity.y = _player.AttackMovement[_comboCounter].y;

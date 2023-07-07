@@ -38,9 +38,9 @@ public class EnemyBattleState : EnemyState
                 _directionToPlayer = -1;
             }
 
-            if (Mathf.Sign(_enemy.facingDirection) != _directionToPlayer)
+            if (_enemy.facingDirection != _directionToPlayer)
             {
-                _enemy.ChangeFacingDirection();
+                _enemy.facingDirection = _directionToPlayer;
             }
 
             float distanceToPlayer = Vector2.Distance(_player.transform.position, _enemy.transform.position);

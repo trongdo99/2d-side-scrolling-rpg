@@ -70,17 +70,11 @@ public class Player : Entity
         CheckForDashInput();
     }
 
-    protected override void LateUpdate()
-    {
-        DetermineSpriteFacingDirection();
-    }
-
     private void CheckForDashInput()
     {
         Vector2 inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
         if (GameInputManager.Instance.WasDashButtonPressed() && CanDash() && inputVector.x != 0)
         {
-            facingDirection = (int)inputVector.x;
             _stateMachine.ChangeToState(dashState);
         }
     }

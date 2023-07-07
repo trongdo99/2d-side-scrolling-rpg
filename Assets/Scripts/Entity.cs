@@ -17,11 +17,30 @@ public class Entity : MonoBehaviour
     [SerializeField] protected float _fallGravityMultiplier;
 
     [Header("Visual")]
-    [SerializeField]
-    protected bool _isFacingRight = true;
+    [SerializeField, Tooltip("1 is facing right, -1 is facing left")] protected int _spawnFacingDirection = 1;
 
-    [HideInInspector] public int facingDirection;
     [HideInInspector] public bool isBusy;
+
+    protected int _facingDirection;
+
+    public int facingDirection
+    {
+        get => _facingDirection;
+
+        set
+        {
+            if (_facingDirection == value || value == 0) return;
+
+            _facingDirection = value;
+            
+            if (_spriteRenderer == null)
+            {
+                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            }
+
+            _spriteRenderer.flipX = facingDirection == 1 ? false : true;
+        }
+    }
 
     protected CharacterController2D _controller;
 
@@ -55,14 +74,14 @@ public class Entity : MonoBehaviour
         Debug.Log($"Gravity: {_gravity}, Jump Force: {_jumpForce}");
     }
 
+    protected virtual void Start()
+    {
+        facingDirection = _spawnFacingDirection;
+    }
+
     protected virtual void Update()
     {
         _stateMachine.OnUpdate();
-    }
-
-    protected virtual void LateUpdate()
-    {
-        DetermineSpriteFacingDirection();
     }
 
     public void OnAnimationCompleted()
@@ -82,29 +101,5 @@ public class Entity : MonoBehaviour
         yield return new WaitForSeconds(seconds);
 
         isBusy = false;
-    }
-
-    public void ChangeFacingDirection()
-    {
-        _isFacingRight = !_isFacingRight;
-        _spriteRenderer.flipX = !_isFacingRight;
-        facingDirection = _isFacingRight ? 1 : -1;
-    }
-
-    protected void DetermineSpriteFacingDirection()
-    {
-        if (_controller.Velocity.x > 0 && !_isFacingRight)
-        {
-            ChangeFacingDirection();
-        }
-
-        if (_controller.Velocity.x < 0 && _isFacingRight)
-        {
-            ChangeFacingDirection();
-        }
-
-        // Enable updating facing direciton via Inspector
-        _spriteRenderer.flipX = !_isFacingRight;
-        facingDirection = _isFacingRight ? 1 : -1;
     }
 }

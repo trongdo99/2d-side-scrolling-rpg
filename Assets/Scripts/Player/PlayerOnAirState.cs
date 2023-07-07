@@ -17,6 +17,8 @@ public class PlayerOnAirState : PlayerState
     {
         base.OnUpdate();
 
+        _player.facingDirection = (int)_inputVector.x;
+
         if (_controller.CanGrapLedge())
         {
             _stateMachine.ChangeToState(_player.ledgeClimbState);

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerDashState : PlayerState
 {
+    private int _dashDirection;
+
     public PlayerDashState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
@@ -15,6 +17,7 @@ public class PlayerDashState : PlayerState
         _stateTimer = _player.DashDuration;
         _controller.gravity = 0f;
         _controller.Velocity.y = 0f;
+        _dashDirection = _player.facingDirection;
         _animator.Play("dash_swordmaster");
     }
 
@@ -24,7 +27,7 @@ public class PlayerDashState : PlayerState
 
         if (_stateTimer > -0f)
         {
-            _controller.Velocity.x = _player.facingDirection * _player.DashSpeed;
+            _controller.Velocity.x = _dashDirection * _player.DashSpeed;
             _controller.Velocity.y = 0f;
         }
         else
