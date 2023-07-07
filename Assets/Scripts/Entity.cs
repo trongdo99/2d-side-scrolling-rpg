@@ -84,21 +84,6 @@ public class Entity : MonoBehaviour
         isBusy = false;
     }
 
-    public void Flip()
-    {
-        if (GameInputManager.Instance.GetMovementVectorNormalized().x > 0f)
-        {
-            _spriteRenderer.flipX = false;
-            facingDirection = 1;
-        }
-
-        if (GameInputManager.Instance.GetMovementVectorNormalized().y < 0f)
-        {
-            _spriteRenderer.flipX = true;
-            facingDirection = -1;
-        }
-    }
-
     public void ChangeFacingDirection()
     {
         _isFacingRight = !_isFacingRight;
