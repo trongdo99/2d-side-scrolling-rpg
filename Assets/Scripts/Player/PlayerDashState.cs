@@ -25,6 +25,11 @@ public class PlayerDashState : PlayerState
     {
         base.OnUpdate();
 
+        if (_controller.CanGrapLedge())
+        {
+            _stateMachine.ChangeToState(_player.ledgeClimbState);
+        }
+
         if (_stateTimer > -0f)
         {
             _controller.Velocity.x = _dashDirection * _player.DashSpeed;

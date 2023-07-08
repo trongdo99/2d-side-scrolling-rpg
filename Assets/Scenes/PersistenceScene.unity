@@ -1023,7 +1023,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   _skinWidth: 0.015
-  _horizontalRayCount: 3
+  _horizontalRayCount: 10
   _verticalRayCount: 3
   gravity: -9.8
   Velocity: {x: 0, y: 0}
