@@ -22,7 +22,7 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
 
         _playerInputActions.Player.PrimaryAttack.performed += PrimaryAttack_performed;
 
-        _playerInputActions.Player.Dash.performed += Roll_performed;
+        _playerInputActions.Player.Dodge.performed += Dodge_performed;
     }
 
     public bool WasJumpButtonPressed()
@@ -35,9 +35,9 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
         return _playerInputActions.Player.Jump.WasReleasedThisFrame();
     }
 
-    public bool WasDashButtonPressed()
+    public bool WasDodgeButtonPressed()
     {
-        return _playerInputActions.Player.Dash.WasPressedThisFrame();
+        return _playerInputActions.Player.Dodge.WasPressedThisFrame();
     }
 
     public bool WasPrimaryAttackButtonPressed()
@@ -50,7 +50,7 @@ public class GameInputManager : SingletonMonoBehaviour<GameInputManager>
         OnPrimaryAttackPerformed?.Invoke();
     }
 
-    private void Roll_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void Dodge_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         OnRollActionPerformed?.Invoke();
     }

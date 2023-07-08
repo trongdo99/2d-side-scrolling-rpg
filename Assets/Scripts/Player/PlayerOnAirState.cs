@@ -24,7 +24,7 @@ public class PlayerOnAirState : PlayerState
             _stateMachine.ChangeToState(_player.ledgeClimbState);
         }
 
-        if (GameInputManager.Instance.WasDashButtonPressed()
+        if (GameInputManager.Instance.WasDodgeButtonPressed()
             && CanDash()
             && _inputVector.x != 0f)
         {

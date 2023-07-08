@@ -21,9 +21,14 @@ public class PlayerOnGroundState : PlayerState
     {
         base.OnUpdate();
 
-        if (GameInputManager.Instance.WasPrimaryAttackButtonPressed() && Time.time - _player.lastComboTime > _player.ComboDelay)
+        if (GameInputManager.Instance.WasPrimaryAttackButtonPressed() && CanCombo())
         {
             _stateMachine.ChangeToState(_player.primaryAttackState);
+        }
+
+        if (GameInputManager.Instance.WasDodgeButtonPressed() && CanRoll())
+        {
+            _stateMachine.ChangeToState(_player.rollState);
         }
 
         if (GameInputManager.Instance.WasJumpButtonPressed())
@@ -42,5 +47,15 @@ public class PlayerOnGroundState : PlayerState
     public override void OnExit()
     {
         base.OnExit();
+    }
+
+    private bool CanCombo()
+    {
+        return Time.time > _player.lastComboTime + _player.ComboDelay;
+    }
+
+    private bool CanRoll()
+    {
+        return Time.time > _player.lastRollTime + _player.RollCooldown;
     }
 }

@@ -30,6 +30,7 @@ public class Player : Entity
     public PlayerFallState fallState { get; private set; }
     public PlayerLedgeClimbState ledgeClimbState { get; private set; }
     public PlayerDashState dashState { get; private set; }
+    public PlayerRollState rollState { get; private set; }
     public PlayerPrimaryAttackState primaryAttackState { get; private set; }
 
     [HideInInspector] public float lastComboTime;
@@ -57,6 +58,7 @@ public class Player : Entity
         fallState = new PlayerFallState(_stateMachine, this, _controller, _animator);
         ledgeClimbState = new PlayerLedgeClimbState(_stateMachine, this, _controller, _animator);
         dashState = new PlayerDashState(_stateMachine, this, _controller, _animator);
+        rollState = new PlayerRollState(_stateMachine, this, _controller, _animator);
         primaryAttackState = new PlayerPrimaryAttackState(_stateMachine, this, _controller, _animator);
         _stateMachine.Init(idleState);
 
