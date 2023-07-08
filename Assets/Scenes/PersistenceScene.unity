@@ -944,12 +944,11 @@ MonoBehaviour:
   _maxJumpHeight: 2.5
   _timeToJumpApex: 0.4
   _fallGravityMultiplier: 2.41
-  _isFacingRight: 1
-  facingDirection: 0
+  _spawnFacingDirection: 1
   isBusy: 0
   _comboDelay: 0.15
   _comboWindow: 0.4
-  _comboInputBufferFrame: 30
+  _comboInputBufferFrame: 50
   _attackMovement:
   - {x: 0.3, y: 0}
   - {x: 0.3, y: 0}
@@ -1728,8 +1727,7 @@ MonoBehaviour:
   _maxJumpHeight: 2.5
   _timeToJumpApex: 0.4
   _fallGravityMultiplier: 2.41
-  _isFacingRight: 1
-  facingDirection: 0
+  _spawnFacingDirection: 1
   isBusy: 0
   _idleTime: 2
   _attackCooldown: 1
