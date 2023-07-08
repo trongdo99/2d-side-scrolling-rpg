@@ -18,14 +18,14 @@ public class PlayerFallState : PlayerOnAirState
 
     public override void OnUpdate()
     {
-        base.OnUpdate();
-
         _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
 
         if (_player.Controller.CollisionInfo.below)
         {
             _stateMachine.ChangeToState(_player.idleState);
         }
+
+        base.OnUpdate();
     }
 
     public override void OnExit()

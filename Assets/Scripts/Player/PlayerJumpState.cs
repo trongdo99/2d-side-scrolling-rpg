@@ -22,8 +22,6 @@ public class PlayerJumpState : PlayerOnAirState
 
     public override void OnUpdate()
     {
-        base.OnUpdate();
-
         _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
 
         if (_maxHeightReached > _player.transform.position.y)
@@ -32,6 +30,8 @@ public class PlayerJumpState : PlayerOnAirState
         }
 
         _maxHeightReached = Mathf.Max(_player.transform.position.y, _maxHeightReached);
+
+        base.OnUpdate();
     }
 
     public override void OnExit()

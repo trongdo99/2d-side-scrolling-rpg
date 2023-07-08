@@ -66,21 +66,5 @@ public class Player : Entity
     protected override void Update()
     {
         base.Update();
-
-        CheckForDashInput();
-    }
-
-    private void CheckForDashInput()
-    {
-        Vector2 inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
-        if (GameInputManager.Instance.WasDashButtonPressed() && CanDash() && inputVector.x != 0)
-        {
-            _stateMachine.ChangeToState(dashState);
-        }
-    }
-
-    private bool CanDash()
-    {
-        return Time.time > lastDashTime + DashCooldown;
     }
 }

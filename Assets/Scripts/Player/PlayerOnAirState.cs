@@ -23,10 +23,22 @@ public class PlayerOnAirState : PlayerState
         {
             _stateMachine.ChangeToState(_player.ledgeClimbState);
         }
+
+        if (GameInputManager.Instance.WasDashButtonPressed()
+            && CanDash()
+            && _inputVector.x != 0f)
+        {
+            _stateMachine.ChangeToState(_player.dashState);
+        }
     }
 
     public override void OnExit()
     {
         base.OnExit();
+    }
+
+    private bool CanDash()
+    {
+        return Time.time > _player.lastDashTime + _player.DashCooldown;
     }
 }
