@@ -957,8 +957,8 @@ MonoBehaviour:
   _dashDuration: 0.3
   _dashSpeed: 20
   _rollCooldown: 1
-  _rollDuration: 0.533
-  _rollSpeed: 6.5
+  _rollDuration: 0.296
+  _rollSpeed: 10
   lastRollTime: 0
   lastDashTime: 0
   lastComboTime: 0
