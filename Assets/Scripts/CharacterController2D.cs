@@ -59,7 +59,7 @@ public class CharacterController2D : MonoBehaviour
 
         transform.Translate(appliedVelocity);
 
-        if (_collisionInfo.below)
+        if (_collisionInfo.below || _collisionInfo.above)
         {
             Velocity.y = 0f;
         }
