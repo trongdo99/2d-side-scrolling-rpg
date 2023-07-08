@@ -12,7 +12,6 @@ public class PlayerFallState : PlayerOnAirState
     {
         base.OnEnter();
 
-        _controller.gravity = _player.FallingGravity;
         _animator.Play("fall_swordmaster");
     }
 
@@ -31,6 +30,5 @@ public class PlayerFallState : PlayerOnAirState
     public override void OnExit()
     {
         base.OnExit();
-        _controller.gravity = _player.NormalGravity;
     }
 }

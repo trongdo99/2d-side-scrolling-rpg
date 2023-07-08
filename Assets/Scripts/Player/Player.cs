@@ -35,6 +35,8 @@ public class Player : Entity
 
     [HideInInspector] public float lastComboTime;
 
+    private float _maxHeightReached = float.MinValue;
+
     public float moveSpeed { get => _moveSpeed; private set => _moveSpeed = value; }
     public float JumpForce { get => _jumpForce; private set => _jumpForce = value; }
     public float DashCooldown { get => _dashCooldown; private set => _dashCooldown = value; }
@@ -68,5 +70,23 @@ public class Player : Entity
     protected override void Update()
     {
         base.Update();
+
+        UpdateGravityForce();
+    }
+
+    private void UpdateGravityForce()
+    {
+        if (_maxHeightReached > transform.position.y)
+        {
+            _controller.gravity = _fallingGravity;
+            _maxHeightReached = transform.position.y;
+        }
+
+        _maxHeightReached = Mathf.Max(transform.position.y, _maxHeightReached);
+
+        if (_controller.CollisionInfo.below)
+        {
+            _controller.gravity = _normalGravity;
+        }
     }
 }
