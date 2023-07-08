@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerLedgeClimbState : PlayerState
 {
-    Vector3 _offset = new Vector2(0.401f, 0f);
+    private Vector3 _offset = new Vector2(0.401f, 0f);
+    private int _facingDirection;
     public PlayerLedgeClimbState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
@@ -15,7 +16,8 @@ public class PlayerLedgeClimbState : PlayerState
 
         _controller.gravity = 0f;
         _controller.Velocity = Vector2.zero;
-        _player.transform.position = _controller.GetBottomLedgePosition(_player.facingDirection);
+        _facingDirection = _player.facingDirection;
+        _player.transform.position = _controller.GetBottomLedgePosition(_facingDirection);
         _animator.Play("ledge_climb_swordmaster");
     }
 
@@ -32,7 +34,7 @@ public class PlayerLedgeClimbState : PlayerState
 
         // Delay setting position when exit this state for 1 frame in order to let the next state play it's animation.
         // If not, the sprite will blink forward and backward.
-        _player.StartCoroutine(SetPositionAfterClimb(_player.facingDirection));
+        _player.StartCoroutine(SetPositionAfterClimb(_facingDirection));
         _controller.gravity = CharacterController2D.GRAVITY;
     }
 

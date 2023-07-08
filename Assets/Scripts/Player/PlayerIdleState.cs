@@ -16,12 +16,12 @@ public class PlayerIdleState : PlayerOnGroundState
 
     public override void OnUpdate()
     {
+        base.OnUpdate();
+
         if (_inputVector.x != 0 && !_player.isBusy)
         {
             _stateMachine.ChangeToState(_player.moveState);
         }
-
-        base.OnUpdate();
     }
 
     public override void OnExit()
