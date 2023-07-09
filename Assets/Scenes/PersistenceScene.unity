@@ -1578,7 +1578,7 @@ Animator:
   m_GameObject: {fileID: 1992044821}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5acdd62d31bee814e8ee89f966350be3, type: 2}
+  m_Controller: {fileID: 9100000, guid: 1acf271c34e76e44aa23d928c5305d04, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1630,7 +1630,7 @@ SpriteRenderer:
   m_SortingLayerID: 1172734007
   m_SortingLayer: 5
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1334494171, guid: 0ac8b4753b3630c4baec7c261fcd3423, type: 3}
+  m_Sprite: {fileID: -1012728855, guid: 4f0383e7651175e498fcef7f7b054525, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1682,7 +1682,7 @@ GameObject:
   - component: {fileID: 2111332875}
   - component: {fileID: 2111332879}
   m_Layer: 7
-  m_Name: Enemy_Skeleton
+  m_Name: Enemy_ShockSweeper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1788,7 +1788,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2111332874}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.42, y: -22.82, z: 0}
+  m_LocalPosition: {x: 9.08, y: -11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

@@ -165,14 +165,15 @@ public class CharacterController2D : MonoBehaviour
         {
             if (Velocity.x > 0)
             {
-                _bottomLeftLedgePosition = new Vector2(Mathf.FloorToInt(_raycastOrigins.topRight.x + 0.2f + _skinWidth), Mathf.RoundToInt(_raycastOrigins.topRight.y));
+                _bottomLeftLedgePosition = new Vector2(Mathf.RoundToInt(_raycastOrigins.topRight.x + 0.2f + _skinWidth), Mathf.RoundToInt(_raycastOrigins.topRight.y));
                 Debug.Log("Ledge tile bottom left position: " + _bottomLeftLedgePosition);
             }
             
             if (Velocity.x < 0)
             {
-                _bottomRightLedgePosition = new Vector2(Mathf.CeilToInt(_raycastOrigins.topLeft.x - 0.2f + _skinWidth), Mathf.RoundToInt(_raycastOrigins.topRight.y));
-                Debug.Log("Ledge tile bottom left position: " + _bottomRightLedgePosition);
+                _bottomRightLedgePosition = new Vector2(Mathf.RoundToInt(_raycastOrigins.topLeft.x - 0.2f + _skinWidth), Mathf.RoundToInt(_raycastOrigins.topRight.y));
+                Debug.Log("Before ceil: " + (_raycastOrigins.topLeft.x - 0.2f + _skinWidth));
+                Debug.Log("Ledge tile bottom right position: " + _bottomRightLedgePosition);
             }
         }
     }

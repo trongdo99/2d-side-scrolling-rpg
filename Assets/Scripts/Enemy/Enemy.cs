@@ -41,11 +41,6 @@ public class Enemy : Entity
         lastAttackTime = float.MinValue;
     }
 
-    protected void LateUpdate()
-    {
-        DetermineSpriteFacingDirection();
-    }
-
     protected override void Update()
     {
         base.Update();
@@ -54,10 +49,5 @@ public class Enemy : Entity
     public bool IsPlayerDetected()
     {
         return _targetDetector.Target ? true : false;
-    }
-
-    protected virtual void DetermineSpriteFacingDirection()
-    {
-        facingDirection = (int)_controller.Velocity.x;
     }
 }

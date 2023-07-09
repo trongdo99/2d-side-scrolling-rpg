@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7dc80cb1539bcac4c8e7cd8e9d4831c0
+guid: 745b13802ba19164ca5e35f7c33bcf26
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -108,7 +108,112 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: shocksweeper-death_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 88
+        height: 33
+      alignment: 9
+      pivot: {x: 0.3181818, y: 0.09090909}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb0859a3634d5fb42af53024b2a4f9ec
+      internalID: -585634629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shocksweeper-death_1
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 0
+        width: 88
+        height: 33
+      alignment: 9
+      pivot: {x: 0.3181818, y: 0.09090909}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9572854a3d7593e47985333363dc9e1a
+      internalID: 507574019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shocksweeper-death_2
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 0
+        width: 88
+        height: 33
+      alignment: 9
+      pivot: {x: 0.3181818, y: 0.09090909}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 161070e6956f16a42996fbdab33e9381
+      internalID: -885876603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shocksweeper-death_3
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 0
+        width: 88
+        height: 33
+      alignment: 9
+      pivot: {x: 0.3181818, y: 0.09090909}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 15306b58cb8705240be8242abcca000e
+      internalID: -610714446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shocksweeper-death_4
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 0
+        width: 88
+        height: 33
+      alignment: 9
+      pivot: {x: 0.3181818, y: 0.09090909}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 85f5ca7266238f245a9e8c808530bdaf
+      internalID: -1230267617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +224,12 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      shocksweeper-death_0: -585634629
+      shocksweeper-death_1: 507574019
+      shocksweeper-death_2: -885876603
+      shocksweeper-death_3: -610714446
+      shocksweeper-death_4: -1230267617
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
