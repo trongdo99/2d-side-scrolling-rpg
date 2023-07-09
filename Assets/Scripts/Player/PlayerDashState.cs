@@ -16,7 +16,6 @@ public class PlayerDashState : PlayerState
 
         _stateTimer = _player.DashDuration;
         _controller.gravity = 0f;
-        _controller.Velocity.y = 0f;
         _dashDirection = _player.facingDirection;
         _animator.Play("dash_swordmaster");
     }
@@ -47,6 +46,5 @@ public class PlayerDashState : PlayerState
 
         _player.lastDashTime = Time.time;
         _controller.gravity = CharacterController2D.GRAVITY;
-        _controller.Velocity.x = 0f;
     }
 }

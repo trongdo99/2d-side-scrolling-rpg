@@ -7,6 +7,7 @@ public class PlayerPrimaryAttackState : PlayerState
     private int _comboCounter;
     private int _combotInputBufferCounter;
     private float _lastAttackTime;
+    private Vector2 _attackVelocity;
 
     public PlayerPrimaryAttackState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
@@ -35,14 +36,15 @@ public class PlayerPrimaryAttackState : PlayerState
         }
 
         float attackDirection = _player.facingDirection;
-
-        _controller.Velocity.x = attackDirection * _player.AttackMovement[_comboCounter].x;
-        _controller.Velocity.y = _player.AttackMovement[_comboCounter].y;
+        _attackVelocity.x = attackDirection * _player.AttackMovement[_comboCounter].x;
+        _attackVelocity.y = _player.AttackMovement[_comboCounter].y;
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
+
+        _controller.Velocity = _attackVelocity;
 
         if (GameInputManager.Instance.WasPrimaryAttackButtonPressed())
         {
