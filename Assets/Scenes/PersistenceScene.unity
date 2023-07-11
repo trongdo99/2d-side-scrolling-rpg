@@ -1015,7 +1015,7 @@ MonoBehaviour:
   _spawnFacingDirection: 1
   isBusy: 0
   _ledgeDetector: {fileID: 1653787193}
-  _comboDelay: 0.15
+  _comboDelay: 0
   _comboWindow: 0.4
   _comboInputBufferFrame: 50
   _attackMovement:
@@ -1869,7 +1869,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2111332875
 MonoBehaviour:
   m_ObjectHideFlags: 0
