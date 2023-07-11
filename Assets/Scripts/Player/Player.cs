@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : Entity
 {
+    [SerializeField] private LedgeDetector _ledgeDetector;
+
     [Header("Attack settings")]
     [SerializeField] private float _comboDelay;
     [SerializeField] private float _comboWindow;
@@ -49,6 +51,8 @@ public class Player : Entity
     public float ComboWindow { get => _comboWindow; private set => _comboWindow = value; }
     public int ComboInputBufferFrame { get => _comboInputBufferFrame; private set => _comboInputBufferFrame = value; }
     public Vector2[] AttackMovement { get => _attackMovement; private set => _attackMovement = value; }
+
+    public LedgeDetector LedgeDetector => _ledgeDetector;
 
     protected override void Awake()
     {

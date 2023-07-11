@@ -24,7 +24,7 @@ public class PlayerDashState : PlayerState
     {
         base.OnUpdate();
 
-        if (_controller.CanGrapLedge())
+        if (_player.LedgeDetector.CheckForLedge(_dashDirection, out Vector2 ledgePosition))
         {
             _stateMachine.ChangeToState(_player.ledgeClimbState);
         }

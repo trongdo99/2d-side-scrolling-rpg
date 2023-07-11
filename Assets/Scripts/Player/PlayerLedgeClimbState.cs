@@ -14,10 +14,11 @@ public class PlayerLedgeClimbState : PlayerState
     {
         base.OnEnter();
 
+        _facingDirection = _player.facingDirection;
+        _player.LedgeDetector.CheckForLedge(_facingDirection, out Vector2 ledgePosition);
+        _player.transform.position = ledgePosition;
         _controller.gravity = 0f;
         _controller.Velocity = Vector2.zero;
-        _facingDirection = _player.facingDirection;
-        _player.transform.position = _controller.GetBottomLedgePosition(_facingDirection);
         _animator.Play("ledge_climb_swordmaster");
     }
 
