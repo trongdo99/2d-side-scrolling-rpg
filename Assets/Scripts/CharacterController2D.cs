@@ -108,9 +108,8 @@ public class CharacterController2D : MonoBehaviour
             rayOrigin += Vector2.up * (_horizontalRaySpacing * i);
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, _collisionMask);
 
-
             // Set x moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
-            if (hit)
+            if (hit && !IsOnewayPlatformHit(hit))
             {
                 Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red, 0.01f);
 
@@ -129,6 +128,11 @@ public class CharacterController2D : MonoBehaviour
         }
     }
 
+    private bool IsOnewayPlatformHit(RaycastHit2D hit)
+    {
+        return hit.collider.gameObject.layer == LayerMask.NameToLayer("OnewayPlatform");
+    }
+
 
     // Changes in this method effect moveDistance inside Move method
     private void VerticalCollisions(ref Vector2 velocity)
@@ -144,9 +148,8 @@ public class CharacterController2D : MonoBehaviour
             rayOrigin += Vector2.right * (_verticalRaySpacing * i + velocity.x);
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, _collisionMask);
 
-
             // Set y moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
-            if (hit)
+            if (hit && !IsOnewayPlatformHit(hit))
             {
                 Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
 
@@ -157,7 +160,26 @@ public class CharacterController2D : MonoBehaviour
 
                 _collisionInfo.below = directionY == -1;
                 _collisionInfo.above = directionY == 1;
-            } else
+            }
+            else if (hit && IsOnewayPlatformHit(hit))
+            {
+                if (directionY < 0)
+                {
+                    Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+
+                    velocity.y = (hit.distance - _skinWidth) * directionY;
+                    // Set all ray lengths to the nearest hit ray
+                    // Avoids clipping scenario
+                    rayLength = hit.distance;
+
+                    _collisionInfo.below = true;
+                }
+                else if (directionY > 0)
+                {
+                    Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.green);
+                }
+            }
+            else 
             {
                 Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.green);
             }
