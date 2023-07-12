@@ -1009,7 +1009,7 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 1946773058}
   _animator: {fileID: 1946773059}
   _moveSpeed: 6
-  _maxJumpHeight: 2.5
+  _maxJumpHeight: 3
   _timeToJumpApex: 0.4
   _fallGravityMultiplier: 2.41
   _spawnFacingDirection: 1
