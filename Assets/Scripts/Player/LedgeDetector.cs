@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LedgeDetector : MonoBehaviour
 {
-    [SerializeField] private LayerMask _layerMask;
+    [SerializeField] private LayerMask _collisionMask;
     [SerializeField] private Transform _rightAbovePoint;
     [SerializeField] private Transform _rightBelowPoint;
     [SerializeField] private Transform _leftAbovePoint;
@@ -18,10 +18,10 @@ public class LedgeDetector : MonoBehaviour
         {
             case 1:
                  // Right ledge check
-                RaycastHit2D rightRaycastHit = Physics2D.Raycast(_rightAbovePoint.position, Vector2.right, _checkDistance, _layerMask);
+                RaycastHit2D rightRaycastHit = Physics2D.Raycast(_rightAbovePoint.position, Vector2.right, _checkDistance, _collisionMask);
                 if (!rightRaycastHit)
                 {
-                    rightRaycastHit = Physics2D.Raycast(_rightBelowPoint.position, Vector2.right, _checkDistance, _layerMask);
+                    rightRaycastHit = Physics2D.Raycast(_rightBelowPoint.position, Vector2.right, _checkDistance, _collisionMask);
                     if (rightRaycastHit)
                     {
                         // Right ledge detected
@@ -35,10 +35,10 @@ public class LedgeDetector : MonoBehaviour
                 return false;
 
             case -1:
-                RaycastHit2D leftRaycastHit = Physics2D.Raycast(_leftAbovePoint.position, Vector2.left, _checkDistance, _layerMask);
+                RaycastHit2D leftRaycastHit = Physics2D.Raycast(_leftAbovePoint.position, Vector2.left, _checkDistance, _collisionMask);
                 if (!leftRaycastHit)
                 {
-                    leftRaycastHit = Physics2D.Raycast(_leftBelowPoint.position, Vector2.left, _checkDistance, _layerMask);
+                    leftRaycastHit = Physics2D.Raycast(_leftBelowPoint.position, Vector2.left, _checkDistance, _collisionMask);
                     if (leftRaycastHit)
                     {
                         // Left ledge detected
