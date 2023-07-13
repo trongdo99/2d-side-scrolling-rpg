@@ -15,7 +15,6 @@ public class Entity : MonoBehaviour
     [SerializeField] protected float _maxJumpHeight;
     [SerializeField] protected float _timeToJumpApex;
     [SerializeField] protected float _fallGravityMultiplier;
-    [SerializeField] private bool _canDoubleJump;
 
     [Header("Visual")]
     [SerializeField, Tooltip("1 is facing right, -1 is facing left")] protected int _spawnFacingDirection = 1;
@@ -62,7 +61,6 @@ public class Entity : MonoBehaviour
     public StateMachine StateMachine { get => _stateMachine; private set => _stateMachine = value; }
     public float NormalGravity { get => _normalGravity; set => _normalGravity = value; }
     public float FallingGravity { get => _fallingGravity; set => _fallingGravity = value; }
-    public bool CanDoubleJump { get => _canDoubleJump; private set => _canDoubleJump = value; }
 
     protected virtual void Awake()
     {
