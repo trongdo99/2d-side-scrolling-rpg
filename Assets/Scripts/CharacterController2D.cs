@@ -16,7 +16,9 @@ public class CharacterController2D : MonoBehaviour
 
     [ReadOnly] public float gravity = GRAVITY;
     [ReadOnly] public Vector2 Velocity;
-    [SerializeField, ReadOnly] private Vector2 _preVelocity;
+    [SerializeField, ReadOnly] private Vector2 _lastFrameVelocity;
+
+    public CharacterControllerState State;
 
     private float _horizontalRaySpacing;
     private float _verticalRaySpacing;
@@ -30,14 +32,15 @@ public class CharacterController2D : MonoBehaviour
     private void Awake()
     {
         _boxCollider = GetComponent<BoxCollider2D>();
+        State = new CharacterControllerState();
         CalculateRaySpacing();
     }
 
     private void Update()
     {
-        _preVelocity = Velocity;
+        FrameInitialization();
         Velocity.y += gravity * Time.deltaTime;
-        Vector2 appliedVelocity = (_preVelocity + Velocity) * 0.5f * Time.deltaTime;
+        Vector2 appliedVelocity = (_lastFrameVelocity + Velocity) * 0.5f * Time.deltaTime;
 
         UpdateRaycastOrigins();
         _collisionInfo.Reset();
@@ -68,6 +71,14 @@ public class CharacterController2D : MonoBehaviour
         // Force the physic engine to synchronize physic model after making changes in transform.
         // Prevent player from constantly sinking to the ground at microseconds.
         Physics2D.SyncTransforms();
+    }
+
+    private void FrameInitialization()
+    {
+        _lastFrameVelocity = Velocity;
+        State.WasGroundedLastFrame = State.IsCollidingBelow;
+        State.WasTouchingTheCeilingLastFrame = State.IsCollidingAbove;
+        State.Reset();
     }
 
     //private void CheckBottomEdgeCollisions()

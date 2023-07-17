@@ -10,6 +10,6 @@ public class DebugPanel : MonoBehaviour
 
     private void Update()
     {
-        _textTMP.text = _entity.StateMachine.CurrentState.ToString();
+        //_textTMP.text = _entity.StateMachine.CurrentState.ToString();
     }
 }
