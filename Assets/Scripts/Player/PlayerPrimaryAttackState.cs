@@ -44,7 +44,7 @@ public class PlayerPrimaryAttackState : PlayerState
     {
         base.OnUpdate();
 
-        _controller.Velocity = _attackVelocity;
+        _controller.SetForce(_attackVelocity);
 
         if (GameInputManager.Instance.WasPrimaryAttackButtonPressed())
         {
@@ -53,7 +53,7 @@ public class PlayerPrimaryAttackState : PlayerState
 
         if (_isAnimationCompletedTriggered)
         {
-            if (_comboCounter < 2 && _combotInputBufferCounter > -1 && _controller.CollisionInfo.below)
+            if (_comboCounter < 2 && _combotInputBufferCounter > -1 && _controller.State.IsGrounded)
             {
                 _combotInputBufferCounter = -1;
                 _stateMachine.ChangeToState(_player.primaryAttackState);
@@ -80,7 +80,7 @@ public class PlayerPrimaryAttackState : PlayerState
             _player.lastComboTime = Time.time;
         }
         _lastAttackTime = Time.time;
-        _controller.Velocity.x = 0f;
+        _controller.SetHorizontalForce(0f);
         _player.StartCoroutine(_player.isBusyFor(0.15f));
     }
 }

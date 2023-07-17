@@ -25,7 +25,7 @@ public class PlayerRollState : PlayerState
 
         if (_stateTimer > 0)
         {
-            _controller.Velocity.x = _rollDirection * _player.RollSpeed;
+            _controller.SetHorizontalForce(_rollDirection * _player.RollSpeed);
         }
         else
         {
@@ -37,7 +37,7 @@ public class PlayerRollState : PlayerState
     {
         base.OnExit();
 
-        _controller.Velocity.x = 0;
+        _controller.SetHorizontalForce(0f);
         _player.lastRollTime = Time.time;
     }
 }

@@ -23,7 +23,7 @@ public class PlayerMoveState : PlayerOnGroundState
             _stateMachine.ChangeToState(_player.idleState);
         }
 
-        _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
+        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
         _player.facingDirection = (int)_inputVector.x;
     }
 

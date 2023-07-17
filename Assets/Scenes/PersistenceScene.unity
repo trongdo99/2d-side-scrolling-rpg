@@ -1094,9 +1094,9 @@ MonoBehaviour:
   _skinWidth: 0.015
   _horizontalRayCount: 10
   _verticalRayCount: 3
-  gravity: -9.8
+  _fallMultiplier: 2.41
   Velocity: {x: 0, y: 0}
-  _preVelocity: {x: 0, y: 0}
+  _lastFrameVelocity: {x: 0, y: 0}
 --- !u!114 &1653787193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1888,9 +1888,9 @@ MonoBehaviour:
   _skinWidth: 0.015
   _horizontalRayCount: 3
   _verticalRayCount: 3
-  gravity: -9.8
+  _fallMultiplier: 0
   Velocity: {x: 0, y: 0}
-  _preVelocity: {x: 0, y: 0}
+  _lastFrameVelocity: {x: 0, y: 0}
 --- !u!114 &2111332876
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -17,16 +17,14 @@ public class PlayerLedgeClimbState : PlayerState
         _facingDirection = _player.facingDirection;
         _player.LedgeDetector.CheckForLedge(_facingDirection, out Vector2 ledgePosition);
         _player.transform.position = ledgePosition;
-        _controller.gravity = 0f;
-        _controller.Velocity = Vector2.zero;
+        _controller.SetForce(Vector2.zero);
+        _controller.SetGravityActive(false);
         _animator.Play("ledge_climb_swordmaster");
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
-
-        _controller.Velocity = Vector2.zero;
     }
 
     public override void OnExit()
@@ -36,7 +34,7 @@ public class PlayerLedgeClimbState : PlayerState
         // Delay setting position when exit this state for 1 frame in order to let the next state play it's animation.
         // If not, the sprite will blink forward and backward.
         _player.StartCoroutine(SetPositionAfterClimb(_facingDirection));
-        _controller.gravity = CharacterController2D.GRAVITY;
+        _controller.SetGravityActive(true);
     }
 
     public override void OnAnimtionCompleted()

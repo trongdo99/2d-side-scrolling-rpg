@@ -48,12 +48,12 @@ public class EnemyBattleState : EnemyState
             if (distanceToPlayer > _enemy.AttackRange)
             {
                 _animator.Play("walk_SKL");
-                _controller.Velocity.x = _directionToPlayer * _enemy.MoveSpeed;
+                _controller.SetHorizontalForce(_directionToPlayer * _enemy.MoveSpeed);
             }
             else
             {
                 _animator.Play("idle_SKL");
-                _controller.Velocity.x = 0f;
+                _controller.SetHorizontalForce(0f);
             }
 
             if (distanceToPlayer < _enemy.AttackRange && CanAttack())

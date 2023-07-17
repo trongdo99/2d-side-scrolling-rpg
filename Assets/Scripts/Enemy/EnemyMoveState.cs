@@ -19,14 +19,14 @@ public class EnemyMoveState : EnemyOnGroundState
     {
         base.OnUpdate();
 
-        if (_controller.CollisionInfo.left || _controller.CollisionInfo.right ||
-            (_enemy.facingDirection == -1 && !_controller.CollisionInfo.leftBottomEdge) ||
-            (_enemy.facingDirection == 1 && !_controller.CollisionInfo.rightBottomEdge))
-        {
-            _enemy.facingDirection = -_enemy.facingDirection;
-            _stateMachine.ChangeToState(_enemy.idleState);
-        }
-        _controller.Velocity.x = _enemy.facingDirection * _enemy.MoveSpeed;
+        //if (_controller.CollisionInfo.left || _controller.CollisionInfo.right ||
+        //    (_enemy.facingDirection == -1 && !_controller.CollisionInfo.leftBottomEdge) ||
+        //    (_enemy.facingDirection == 1 && !_controller.CollisionInfo.rightBottomEdge))
+        //{
+        //    _enemy.facingDirection = -_enemy.facingDirection;
+        //    _stateMachine.ChangeToState(_enemy.idleState);
+        //}
+        _controller.SetForce(Vector2.right * _enemy.facingDirection * _enemy.MoveSpeed);
     }
 
     public override void OnExit()

@@ -15,7 +15,7 @@ public class PlayerDashState : PlayerState
         base.OnEnter();
 
         _stateTimer = _player.DashDuration;
-        _controller.gravity = 0f;
+        _controller.SetGravityActive(false);
         _dashDirection = _player.facingDirection;
         _animator.Play("dash_swordmaster");
     }
@@ -31,8 +31,7 @@ public class PlayerDashState : PlayerState
 
         if (_stateTimer > -0f)
         {
-            _controller.Velocity.x = _dashDirection * _player.DashSpeed;
-            _controller.Velocity.y = 0f;
+            _controller.SetForce(Vector2.right * _dashDirection * _player.DashSpeed);
         }
         else
         {
@@ -45,6 +44,6 @@ public class PlayerDashState : PlayerState
         base.OnExit();
 
         _player.lastDashTime = Time.time;
-        _controller.gravity = CharacterController2D.GRAVITY;
+        _controller.SetGravityActive(true);
     }
 }

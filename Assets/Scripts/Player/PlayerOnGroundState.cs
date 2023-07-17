@@ -36,7 +36,7 @@ public class PlayerOnGroundState : PlayerState
             _stateMachine.ChangeToState(_player.jumpState);
         }
 
-        if (!_player.Controller.CollisionInfo.below && _lastYPosition > _player.transform.position.y)
+        if (_controller.State.IsFalling)
         {
             _stateMachine.ChangeToState(_player.fallState);
         }

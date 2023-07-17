@@ -13,20 +13,24 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private float _skinWidth;
     [SerializeField] private int _horizontalRayCount;
     [SerializeField] private int _verticalRayCount;
-
-    [ReadOnly] public float gravity = GRAVITY;
-    [ReadOnly] public Vector2 Velocity;
-    [SerializeField, ReadOnly] private Vector2 _lastFrameVelocity;
+    [SerializeField] private float _fallMultiplier;
 
     public CharacterControllerState State;
 
+    private Vector2 _velocity;
+    [SerializeField, ReadOnly] private Vector2 _lastFrameVelocity;
+    private float _gravity = GRAVITY;
+    private float _currentGravity = GRAVITY;
+    private float _overrideGravity;
+    private bool _hasOverrideGravity = false;
+    private bool _isGravityActive = true;
     private float _horizontalRaySpacing;
     private float _verticalRaySpacing;
     private BoxCollider2D _boxCollider;
     private RaycastOrigins _raycastOrigins;
-    private CollisionInfo _collisionInfo;
 
-    public CollisionInfo CollisionInfo => _collisionInfo;
+    public bool IsGravityActive { get => _isGravityActive; }
+    public float Gravity { get { return _hasOverrideGravity ? _overrideGravity : _gravity; } }
 
     // Start is called before the first frame update
     private void Awake()
@@ -36,14 +40,50 @@ public class CharacterController2D : MonoBehaviour
         CalculateRaySpacing();
     }
 
+    public void SetGravityActive(bool active)
+    {
+        _isGravityActive = active;
+    }
+
+    public void SetOverrideGravity(float value)
+    {
+        _hasOverrideGravity = true;
+        _overrideGravity = value;
+    }
+
+    public void SetForce(Vector2 force)
+    {
+        _velocity = force;
+    }
+
+    public void SetHorizontalForce(float force)
+    {
+        _velocity.x = force;
+    }
+
+    public void SetVerticalFoce(float force)
+    {
+        _velocity.y = force;
+    }
+
     private void Update()
     {
         FrameInitialization();
-        Velocity.y += gravity * Time.deltaTime;
-        Vector2 appliedVelocity = (_lastFrameVelocity + Velocity) * 0.5f * Time.deltaTime;
+
+        _currentGravity = Gravity;
+        if (_velocity.y < 0)
+        {
+            _currentGravity *= _fallMultiplier;
+        }
+
+        if (_isGravityActive)
+        {
+            _velocity.y += _currentGravity * Time.deltaTime;
+        }
+
+        Vector2 appliedVelocity = (_lastFrameVelocity + _velocity) * 0.5f * Time.deltaTime;
 
         UpdateRaycastOrigins();
-        _collisionInfo.Reset();
 
         //CheckBottomEdgeCollisions();
 
@@ -58,14 +98,12 @@ public class CharacterController2D : MonoBehaviour
 
         transform.Translate(appliedVelocity);
 
-        if (_collisionInfo.below || _collisionInfo.above)
-        {
-            Velocity.y = 0f;
-        }
+        UpdateRaycastOrigins();
 
-        if (_collisionInfo.right || _collisionInfo.left)
+        // Set state
+        if (!State.WasGroundedLastFrame && State.IsCollidingBelow)
         {
-            Velocity.x = 0f;
+            State.JustGotGrounded = true;
         }
 
         // Force the physic engine to synchronize physic model after making changes in transform.
@@ -75,7 +113,7 @@ public class CharacterController2D : MonoBehaviour
 
     private void FrameInitialization()
     {
-        _lastFrameVelocity = Velocity;
+        _lastFrameVelocity = _velocity;
         State.WasGroundedLastFrame = State.IsCollidingBelow;
         State.WasTouchingTheCeilingLastFrame = State.IsCollidingAbove;
         State.Reset();
@@ -129,8 +167,9 @@ public class CharacterController2D : MonoBehaviour
                 // Avoids clipping scenario
                 rayLength = hit.distance;
 
-                _collisionInfo.left = directionX == -1;
-                _collisionInfo.right = directionX == 1;
+                State.IsCollidingLeft = directionX == -1;
+                State.IsCollidingRight = directionX == 1;
+                _velocity.x = 0f;
             }
             else
             {
@@ -151,6 +190,8 @@ public class CharacterController2D : MonoBehaviour
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + _skinWidth;
 
+        State.IsFalling = directionY == -1;
+
         for (int i = 0; i < _verticalRayCount; i++)
         {
             // If moving down, cast from bottom left corner
@@ -169,26 +210,10 @@ public class CharacterController2D : MonoBehaviour
                 // Avoids clipping scenario
                 rayLength = hit.distance;
 
-                _collisionInfo.below = directionY == -1;
-                _collisionInfo.above = directionY == 1;
-            }
-            else if (hit && IsOnewayPlatformHit(hit))
-            {
-                if (directionY < 0)
-                {
-                    Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-
-                    velocity.y = (hit.distance - _skinWidth) * directionY;
-                    // Set all ray lengths to the nearest hit ray
-                    // Avoids clipping scenario
-                    rayLength = hit.distance;
-
-                    _collisionInfo.below = true;
-                }
-                else if (directionY > 0)
-                {
-                    Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.green);
-                }
+                State.IsCollidingBelow = directionY == -1;
+                State.IsCollidingAbove = directionY == 1;
+                State.IsFalling = !State.IsCollidingBelow;
+                _velocity.y = 0f;
             }
             else 
             {
@@ -226,19 +251,4 @@ public struct RaycastOrigins
     public Vector2 topLeft, topRight;
     public Vector2 bottomLeft, bottomRight;
     public Vector2 middleLeft, middleRight;
-}
-
-// Used to remove the accumulation of gravity and collisions left/right
-public struct CollisionInfo
-{
-    public bool above, below;
-    public bool left, right;
-    public bool leftBottomEdge, rightBottomEdge;
-
-    public void Reset()
-    {
-        above = below = false;
-        left = right = false;
-        leftBottomEdge = rightBottomEdge = false;
-    }
 }

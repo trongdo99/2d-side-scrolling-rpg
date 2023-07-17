@@ -17,9 +17,9 @@ public class PlayerFallState : PlayerOnAirState
 
     public override void OnUpdate()
     {
-        _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
+        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
 
-        if (_player.Controller.CollisionInfo.below)
+        if (_player.Controller.State.IsGrounded)
         {
             _stateMachine.ChangeToState(_player.idleState);
         }

@@ -68,7 +68,8 @@ public class Entity : MonoBehaviour
         _controller = GetComponent<CharacterController2D>();
         _normalGravity = -2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2);
         _fallingGravity = _normalGravity * _fallGravityMultiplier;
-        _controller.gravity = _normalGravity;
+        //_controller.gravity = _normalGravity;
+        _controller.SetOverrideGravity(_normalGravity);
         _jumpForce = 2 * _maxJumpHeight / _timeToJumpApex;
 
         Debug.Log($"Gravity: {_gravity}, Jump Force: {_jumpForce}");

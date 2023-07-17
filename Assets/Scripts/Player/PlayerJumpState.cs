@@ -14,15 +14,14 @@ public class PlayerJumpState : PlayerOnAirState
     {
         base.OnEnter();
 
-        _controller.gravity = _player.NormalGravity;
-        _controller.Velocity.y = _player.JumpForce;
+        _controller.SetVerticalFoce(_player.JumpForce);
         _maxHeightReached = _player.transform.position.y;
         _animator.Play("jump_swordmaster");
     }
 
     public override void OnUpdate()
     {
-        _controller.Velocity.x = _inputVector.x * _player.moveSpeed;
+        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
 
         if (_maxHeightReached > _player.transform.position.y)
         {

@@ -80,17 +80,17 @@ public class Player : Entity
 
     private void UpdateGravityForce()
     {
-        if (_maxHeightReached > transform.position.y)
-        {
-            _controller.gravity = _fallingGravity;
-            _maxHeightReached = transform.position.y;
-        }
+        //if (_maxHeightReached > transform.position.y)
+        //{
+        //    _controller.gravity = _fallingGravity;
+        //    _maxHeightReached = transform.position.y;
+        //}
 
-        _maxHeightReached = Mathf.Max(transform.position.y, _maxHeightReached);
+        //_maxHeightReached = Mathf.Max(transform.position.y, _maxHeightReached);
 
-        if (_controller.CollisionInfo.below)
-        {
-            _controller.gravity = _normalGravity;
-        }
+        //if (_controller.State.IsGrounded)
+        //{
+        //    _controller.gravity = _normalGravity;
+        //}
     }
 }
