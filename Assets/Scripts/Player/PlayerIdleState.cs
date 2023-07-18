@@ -12,6 +12,7 @@ public class PlayerIdleState : PlayerOnGroundState
     {
         base.OnEnter();
         _animator.Play("idle_swordmaster");
+        _controller.SetForce(Vector2.zero);
     }
 
     public override void OnUpdate()
