@@ -18,9 +18,9 @@ public class CharacterController2D : MonoBehaviour
     public CharacterControllerState State;
 
     private Vector2 _velocity;
-    [SerializeField, ReadOnly] private Vector2 _lastFrameVelocity;
+    private Vector2 _lastFrameVelocity;
     private float _gravity = GRAVITY;
-    private float _currentGravity = GRAVITY;
+    private float _currentGravity;
     private float _overrideGravity;
     private bool _hasOverrideGravity = false;
     private bool _isGravityActive = true;
@@ -69,24 +69,14 @@ public class CharacterController2D : MonoBehaviour
     private void Update()
     {
         FrameInitialization();
+        ApplyGravity();
 
-        _currentGravity = Gravity;
-        if (_velocity.y < 0)
-        {
-            _currentGravity *= _fallMultiplier;
-        }
-
-        if (_isGravityActive)
-        {
-            _velocity.y += _currentGravity * Time.deltaTime;
-        }
-
+        // Calculate the velocity that will be applied to the transform in this update
         Vector2 appliedVelocity = (_lastFrameVelocity + _velocity) * 0.5f * Time.deltaTime;
 
         UpdateRaycastOrigins();
 
-        //CheckBottomEdgeCollisions();
-
+        // Cast rays on all sides to check for collisions
         if (appliedVelocity.x != 0)
         {
             HorizontalCollisions(ref appliedVelocity);
@@ -96,6 +86,7 @@ public class CharacterController2D : MonoBehaviour
             VerticalCollisions(ref appliedVelocity);
         }
 
+        // Move the transform
         transform.Translate(appliedVelocity);
 
         UpdateRaycastOrigins();
@@ -117,6 +108,20 @@ public class CharacterController2D : MonoBehaviour
         State.WasGroundedLastFrame = State.IsCollidingBelow;
         State.WasTouchingTheCeilingLastFrame = State.IsCollidingAbove;
         State.Reset();
+    }
+
+    private void ApplyGravity()
+    {
+        _currentGravity = Gravity;
+        if (_velocity.y < 0)
+        {
+            _currentGravity *= _fallMultiplier;
+        }
+
+        if (_isGravityActive)
+        {
+            _velocity.y += _currentGravity * Time.deltaTime;
+        }
     }
 
     //private void CheckBottomEdgeCollisions()
@@ -158,7 +163,7 @@ public class CharacterController2D : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, _collisionMask);
 
             // Set x moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
-            if (hit && !IsOnewayPlatformHit(hit))
+            if (hit)
             {
                 Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red, 0.01f);
 
@@ -178,12 +183,6 @@ public class CharacterController2D : MonoBehaviour
         }
     }
 
-    private bool IsOnewayPlatformHit(RaycastHit2D hit)
-    {
-        return hit.collider.gameObject.layer == LayerMask.NameToLayer("OnewayPlatform");
-    }
-
-
     // Changes in this method effect moveDistance inside Move method
     private void VerticalCollisions(ref Vector2 velocity)
     {
@@ -201,7 +200,7 @@ public class CharacterController2D : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, _collisionMask);
 
             // Set y moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
-            if (hit && !IsOnewayPlatformHit(hit))
+            if (hit)
             {
                 Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
 
