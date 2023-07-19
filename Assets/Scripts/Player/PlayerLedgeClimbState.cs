@@ -22,6 +22,16 @@ public class PlayerLedgeClimbState : PlayerState
         _animator.Play("ledge_climb_swordmaster");
     }
 
+    public override void CheckCondition()
+    {
+        base.CheckCondition();
+
+        if (_isAnimationCompletedTriggered)
+        {
+            _stateMachine.ChangeToState(_player.idleState);
+        }
+    }
+
     public override void OnUpdate()
     {
         base.OnUpdate();
@@ -35,13 +45,6 @@ public class PlayerLedgeClimbState : PlayerState
         // If not, the sprite will blink forward and backward.
         _player.StartCoroutine(SetPositionAfterClimb(_facingDirection));
         _controller.SetGravityActive(true);
-    }
-
-    public override void OnAnimtionCompleted()
-    {
-        base.OnAnimtionCompleted();
-
-        _stateMachine.ChangeToState(_player.idleState);
     }
 
     private IEnumerator SetPositionAfterClimb(int facingDirection)

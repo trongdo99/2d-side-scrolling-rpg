@@ -15,16 +15,21 @@ public class PlayerFallState : PlayerOnAirState
         _animator.Play("fall_swordmaster");
     }
 
-    public override void OnUpdate()
+    public override void CheckCondition()
     {
-        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
+        base.CheckCondition();
 
         if (_player.Controller.State.IsGrounded)
         {
             _stateMachine.ChangeToState(_player.idleState);
         }
+    }
 
+    public override void OnUpdate()
+    {
         base.OnUpdate();
+
+        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
     }
 
     public override void OnExit()

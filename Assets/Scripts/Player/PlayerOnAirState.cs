@@ -13,23 +13,26 @@ public class PlayerOnAirState : PlayerState
         base.OnEnter();
     }
 
-    public override void OnUpdate()
+    public override void CheckCondition()
     {
-        base.OnUpdate();
+        base.CheckCondition();
 
         _player.facingDirection = (int)_inputVector.x;
-
         if (_player.LedgeDetector.CheckForLedge(_player.facingDirection, out Vector2 ledgePosition))
         {
             _stateMachine.ChangeToState(_player.ledgeClimbState);
         }
-
-        if (GameInputManager.Instance.WasDodgeButtonPressed()
+        else if (GameInputManager.Instance.WasDodgeButtonPressed()
             && CanDash()
             && _inputVector.x != 0f)
         {
             _stateMachine.ChangeToState(_player.dashState);
         }
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
     }
 
     public override void OnExit()

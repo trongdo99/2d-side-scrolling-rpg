@@ -35,4 +35,9 @@ public class EnemyState : State
     {
         _isAnimationCompleted = true;
     }
+
+    public override void CheckCondition()
+    {
+        throw new System.NotImplementedException();
+    }
 }

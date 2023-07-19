@@ -19,6 +19,7 @@ public class StateMachine
 
     public void OnUpdate()
     {
+        _currentState.CheckCondition();
         _currentState.OnUpdate();
     }
 

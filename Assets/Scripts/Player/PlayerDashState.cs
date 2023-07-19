@@ -20,22 +20,27 @@ public class PlayerDashState : PlayerState
         _animator.Play("dash_swordmaster");
     }
 
-    public override void OnUpdate()
+    public override void CheckCondition()
     {
-        base.OnUpdate();
+        base.CheckCondition();
 
         if (_player.LedgeDetector.CheckForLedge(_dashDirection, out Vector2 ledgePosition))
         {
             _stateMachine.ChangeToState(_player.ledgeClimbState);
         }
-
-        if (_stateTimer > -0f)
-        {
-            _controller.SetForce(Vector2.right * _dashDirection * _player.DashSpeed);
-        }
-        else
+        else if (_stateTimer < 0f)
         {
             _stateMachine.ChangeToState(_player.idleState);
+        }
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        if (_stateTimer > 0f)
+        {
+            _controller.SetForce(Vector2.right * _dashDirection * _player.DashSpeed);
         }
     }
 

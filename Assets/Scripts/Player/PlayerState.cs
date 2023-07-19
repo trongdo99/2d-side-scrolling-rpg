@@ -27,6 +27,8 @@ public abstract class PlayerState : State
 
     public override void OnExit() { }
 
+    public override void CheckCondition() { }
+
     public override void OnUpdate()
     {
         _inputVector = GameInputManager.Instance.GetMovementVectorNormalized();

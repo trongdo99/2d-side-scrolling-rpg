@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerOnGroundState : PlayerState
 {
-    private float _lastYPosition;
-
     public PlayerOnGroundState(StateMachine stateMachine, Player player, CharacterController2D controller, Animator animator) : base(stateMachine, player, controller, animator)
     {
     }
@@ -13,35 +11,33 @@ public class PlayerOnGroundState : PlayerState
     public override void OnEnter()
     {
         base.OnEnter();
-
-        _lastYPosition = _player.transform.position.y;
     }
 
-    public override void OnUpdate()
+    public override void CheckCondition()
     {
-        base.OnUpdate();
+        base.CheckCondition();
 
         if (GameInputManager.Instance.WasPrimaryAttackButtonPressed() && CanCombo())
         {
             _stateMachine.ChangeToState(_player.primaryAttackState);
         }
-
-        if (GameInputManager.Instance.WasDodgeButtonPressed() && CanRoll())
+        else if (GameInputManager.Instance.WasDodgeButtonPressed() && CanRoll())
         {
             _stateMachine.ChangeToState(_player.rollState);
         }
-
-        if (GameInputManager.Instance.WasJumpButtonPressed())
+        else if (GameInputManager.Instance.WasJumpButtonPressed())
         {
             _stateMachine.ChangeToState(_player.jumpState);
         }
-
-        if (_controller.State.IsFalling)
+        else if (_controller.State.IsFalling)
         {
             _stateMachine.ChangeToState(_player.fallState);
         }
+    }
 
-        _lastYPosition = Mathf.Max(_player.transform.position.y, _lastYPosition);
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
     }
 
     public override void OnExit()

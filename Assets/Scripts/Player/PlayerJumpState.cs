@@ -19,18 +19,21 @@ public class PlayerJumpState : PlayerOnAirState
         _animator.Play("jump_swordmaster");
     }
 
-    public override void OnUpdate()
+    public override void CheckCondition()
     {
-        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
+        base.CheckCondition();
 
-        if (_maxHeightReached > _player.transform.position.y)
+        if (_controller.State.IsFalling)
         {
             _stateMachine.ChangeToState(_player.fallState);
         }
+    }
 
-        _maxHeightReached = Mathf.Max(_player.transform.position.y, _maxHeightReached);
-
+    public override void OnUpdate()
+    {
         base.OnUpdate();
+
+        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
     }
 
     public override void OnExit()

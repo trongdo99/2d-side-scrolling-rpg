@@ -14,14 +14,19 @@ public class PlayerMoveState : PlayerOnGroundState
         _animator.Play("run_swordmaster");
     }
 
-    public override void OnUpdate()
+    public override void CheckCondition()
     {
-        base.OnUpdate();
+        base.CheckCondition();
 
         if (_inputVector.x == 0)
         {
             _stateMachine.ChangeToState(_player.idleState);
         }
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
 
         _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
         _player.facingDirection = (int)_inputVector.x;

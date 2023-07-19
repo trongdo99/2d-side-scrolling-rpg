@@ -40,16 +40,9 @@ public class PlayerPrimaryAttackState : PlayerState
         _attackVelocity.y = _player.AttackMovement[_comboCounter].y;
     }
 
-    public override void OnUpdate()
+    public override void CheckCondition()
     {
-        base.OnUpdate();
-
-        _controller.SetForce(_attackVelocity);
-
-        if (GameInputManager.Instance.WasPrimaryAttackButtonPressed())
-        {
-            _combotInputBufferCounter = _player.ComboInputBufferFrame;
-        }
+        base.CheckCondition();
 
         if (_isAnimationCompletedTriggered)
         {
@@ -62,6 +55,18 @@ public class PlayerPrimaryAttackState : PlayerState
             {
                 _stateMachine.ChangeToState(_player.idleState);
             }
+        }
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        _controller.SetForce(_attackVelocity);
+
+        if (GameInputManager.Instance.WasPrimaryAttackButtonPressed())
+        {
+            _combotInputBufferCounter = _player.ComboInputBufferFrame;
         }
 
         if (_combotInputBufferCounter > -1)

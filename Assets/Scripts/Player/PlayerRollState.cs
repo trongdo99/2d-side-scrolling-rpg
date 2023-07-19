@@ -19,17 +19,23 @@ public class PlayerRollState : PlayerState
         _animator.Play("roll_swordmaster");
     }
 
+    public override void CheckCondition()
+    {
+        base.CheckCondition();
+
+        if (_stateTimer < 0f)
+        {
+            _stateMachine.ChangeToState(_player.idleState);
+        }
+    }
+
     public override void OnUpdate()
     {
         base.OnUpdate();
 
-        if (_stateTimer > 0)
+        if (_stateTimer > 0f)
         {
             _controller.SetHorizontalForce(_rollDirection * _player.RollSpeed);
-        }
-        else
-        {
-            _stateMachine.ChangeToState(_player.idleState);
         }
     }
 
