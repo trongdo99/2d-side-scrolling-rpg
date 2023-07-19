@@ -14,7 +14,7 @@ public class PlayerRollState : PlayerState
     {
         base.OnEnter();
 
-        _rollDirection = _player.facingDirection;
+        _rollDirection = _player.CurrentFacingDirection;
         _stateTimer = _player.RollDuration;
         _animator.Play("roll_swordmaster");
     }

@@ -16,7 +16,7 @@ public class PlayerDashState : PlayerState
 
         _stateTimer = _player.DashDuration;
         _controller.SetGravityActive(false);
-        _dashDirection = _player.facingDirection;
+        _dashDirection = _player.CurrentFacingDirection;
         _animator.Play("dash_swordmaster");
     }
 

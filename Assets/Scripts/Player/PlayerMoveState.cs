@@ -29,7 +29,15 @@ public class PlayerMoveState : PlayerOnGroundState
         base.OnUpdate();
 
         _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
-        _player.facingDirection = (int)_inputVector.x;
+        if (_inputVector.x > 0f)
+        {
+            _player.Face(Entity.FacingDirection.Right);
+        }
+        else if (_inputVector.x < 0f)
+        {
+            _player.Face(Entity.FacingDirection.Left);
+        }
+
     }
 
     public override void OnExit()

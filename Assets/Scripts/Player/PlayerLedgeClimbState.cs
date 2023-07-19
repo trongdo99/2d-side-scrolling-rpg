@@ -14,7 +14,7 @@ public class PlayerLedgeClimbState : PlayerState
     {
         base.OnEnter();
 
-        _facingDirection = _player.facingDirection;
+        _facingDirection = _player.CurrentFacingDirection;
         _player.LedgeDetector.CheckForLedge(_facingDirection, out Vector2 ledgePosition);
         _player.transform.position = ledgePosition;
         _controller.SetForce(Vector2.zero);

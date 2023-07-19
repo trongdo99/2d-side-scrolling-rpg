@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
+    public enum FacingDirection { Right = 1, Left = -1}
+
     [Header("References")]
     [SerializeField] protected SpriteRenderer _spriteRenderer;
     [SerializeField] protected Animator _animator;
@@ -16,68 +18,31 @@ public class Entity : MonoBehaviour
     [SerializeField] protected float _timeToJumpApex;
     [SerializeField] protected float _fallGravityMultiplier;
 
-    [Header("Visual")]
-    [SerializeField, Tooltip("1 is facing right, -1 is facing left")] protected int _spawnFacingDirection = 1;
+    [Header("Facing Direction")]
+    [SerializeField] protected FacingDirection _initialFacingDirection = FacingDirection.Right;
 
-    [HideInInspector] public bool isBusy;
+    protected int _currentFacingDirection;
 
-    protected int _facingDirection;
-
-    public int facingDirection
-    {
-        get => _facingDirection;
-
-        set
-        {
-            if (_facingDirection == value || value == 0) return;
-
-            _facingDirection = value;
-            
-            if (_spriteRenderer == null)
-            {
-                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-            }
-
-            _spriteRenderer.flipX = facingDirection == 1 ? false : true;
-        }
-    }
+    public bool IsBusy { get; set; }
+    public int CurrentFacingDirection { get => _currentFacingDirection; }
 
     protected CharacterController2D _controller;
-
-    // Movement variables
-    protected Vector2 _velocity;
-    protected Vector2 _previousVelocity;
-
-    // Jump variables
-    protected float _gravity;
-    protected float _normalGravity;
-    protected float _fallingGravity;
-    protected float _jumpForce;
 
     // State Machine
     protected StateMachine _stateMachine;
 
     public CharacterController2D Controller { get => _controller; private set => _controller = value; }
     public StateMachine StateMachine { get => _stateMachine; private set => _stateMachine = value; }
-    public float NormalGravity { get => _normalGravity; set => _normalGravity = value; }
-    public float FallingGravity { get => _fallingGravity; set => _fallingGravity = value; }
 
     protected virtual void Awake()
     {
         _stateMachine = new StateMachine();
         _controller = GetComponent<CharacterController2D>();
-        _normalGravity = -2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2);
-        _fallingGravity = _normalGravity * _fallGravityMultiplier;
-        //_controller.gravity = _normalGravity;
-        _controller.SetOverrideGravity(_normalGravity);
-        _jumpForce = 2 * _maxJumpHeight / _timeToJumpApex;
-
-        Debug.Log($"Gravity: {_gravity}, Jump Force: {_jumpForce}");
     }
 
     protected virtual void Start()
     {
-        facingDirection = _spawnFacingDirection;
+        Face(_initialFacingDirection);
     }
 
     protected virtual void Update()
@@ -95,12 +60,24 @@ public class Entity : MonoBehaviour
         _stateMachine.OnStateAnimationTriggered();
     }
 
-    public IEnumerator isBusyFor(float seconds)
+    public void Face(FacingDirection facingDirection)
     {
-        isBusy = true;
+        if (_currentFacingDirection == (int)facingDirection) return;
+
+        _currentFacingDirection = (int)facingDirection;
+        if (_spriteRenderer == null)
+        {
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+        _spriteRenderer.flipX = _currentFacingDirection != 1;
+    }
+
+    public IEnumerator IsBusyFor(float seconds)
+    {
+        IsBusy = true;
 
         yield return new WaitForSeconds(seconds);
 
-        isBusy = false;
+        IsBusy = false;
     }
 }

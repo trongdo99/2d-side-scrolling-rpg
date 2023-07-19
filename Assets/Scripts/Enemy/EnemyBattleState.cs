@@ -32,15 +32,18 @@ public class EnemyBattleState : EnemyState
             if (_player.transform.position.x > _enemy.transform.position.x)
             {
                 _directionToPlayer = 1;
+                if (_enemy.CurrentFacingDirection != _directionToPlayer)
+                {
+                    _enemy.Face(Entity.FacingDirection.Right);
+                }
             }
             else if (_player.transform.position.x < _enemy.transform.position.x)
             {
                 _directionToPlayer = -1;
-            }
-
-            if (_enemy.facingDirection != _directionToPlayer)
-            {
-                _enemy.facingDirection = _directionToPlayer;
+                if (_enemy.CurrentFacingDirection != _directionToPlayer)
+                {
+                    _enemy.Face(Entity.FacingDirection.Left);
+                }
             }
 
             float distanceToPlayer = Vector2.Distance(_player.transform.position, _enemy.transform.position);

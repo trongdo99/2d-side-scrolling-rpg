@@ -35,7 +35,7 @@ public class PlayerPrimaryAttackState : PlayerState
                 break;
         }
 
-        float attackDirection = _player.facingDirection;
+        float attackDirection = _player.CurrentFacingDirection;
         _attackVelocity.x = attackDirection * _player.AttackMovement[_comboCounter].x;
         _attackVelocity.y = _player.AttackMovement[_comboCounter].y;
     }
@@ -86,6 +86,6 @@ public class PlayerPrimaryAttackState : PlayerState
         }
         _lastAttackTime = Time.time;
         _controller.SetHorizontalForce(0f);
-        _player.StartCoroutine(_player.isBusyFor(0.15f));
+        _player.StartCoroutine(_player.IsBusyFor(0.15f));
     }
 }

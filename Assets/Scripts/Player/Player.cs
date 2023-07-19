@@ -25,7 +25,15 @@ public class Player : Entity
     [HideInInspector] public float lastRollTime;
     [HideInInspector] public float lastDashTime;
 
-    // State machine
+    // Jump variables
+    private float _gravity;
+    private float _normalGravity;
+    private float _fallingGravity;
+    private float _jumpForce;
+
+    public float NormalGravity { get => _normalGravity; set => _normalGravity = value; }
+    public float FallingGravity { get => _fallingGravity; set => _fallingGravity = value; }
+
     public PlayerIdleState idleState { get; private set; }
     public PlayerMoveState moveState { get; private set; }
     public PlayerJumpState jumpState { get; private set; }
@@ -36,8 +44,6 @@ public class Player : Entity
     public PlayerPrimaryAttackState primaryAttackState { get; private set; }
 
     [HideInInspector] public float lastComboTime;
-
-    private float _maxHeightReached = float.MinValue;
 
     public float moveSpeed { get => _moveSpeed; private set => _moveSpeed = value; }
     public float JumpForce { get => _jumpForce; private set => _jumpForce = value; }
@@ -58,6 +64,14 @@ public class Player : Entity
     {
         base.Awake();
 
+        // Gravity calculation
+        _normalGravity = -2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2);
+        _fallingGravity = _normalGravity * _fallGravityMultiplier;
+        _controller.SetOverrideGravity(_normalGravity);
+        _jumpForce = 2 * _maxJumpHeight / _timeToJumpApex;
+        Debug.Log($"Gravity: {_gravity}, Jump Force: {_jumpForce}");
+
+        // Init states
         idleState = new PlayerIdleState(_stateMachine, this, _controller, _animator);
         moveState = new PlayerMoveState(_stateMachine, this, _controller, _animator);
         jumpState = new PlayerJumpState(_stateMachine, this, _controller, _animator);
@@ -68,29 +82,12 @@ public class Player : Entity
         primaryAttackState = new PlayerPrimaryAttackState(_stateMachine, this, _controller, _animator);
         _stateMachine.Init(idleState);
 
+        // Set initial variable's value
         lastRollTime = float.MinValue;
     }
 
     protected override void Update()
     {
         base.Update();
-
-        UpdateGravityForce();
-    }
-
-    private void UpdateGravityForce()
-    {
-        //if (_maxHeightReached > transform.position.y)
-        //{
-        //    _controller.gravity = _fallingGravity;
-        //    _maxHeightReached = transform.position.y;
-        //}
-
-        //_maxHeightReached = Mathf.Max(transform.position.y, _maxHeightReached);
-
-        //if (_controller.State.IsGrounded)
-        //{
-        //    _controller.gravity = _normalGravity;
-        //}
     }
 }

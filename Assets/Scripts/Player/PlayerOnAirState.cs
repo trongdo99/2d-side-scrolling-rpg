@@ -17,8 +17,16 @@ public class PlayerOnAirState : PlayerState
     {
         base.CheckCondition();
 
-        _player.facingDirection = (int)_inputVector.x;
-        if (_player.LedgeDetector.CheckForLedge(_player.facingDirection, out Vector2 ledgePosition))
+        if (_inputVector.x > 0f)
+        {
+            _player.Face(Entity.FacingDirection.Right);
+        }
+        else if (_inputVector.x < 0f)
+        {
+            _player.Face(Entity.FacingDirection.Left);
+        }
+
+        if (_player.LedgeDetector.CheckForLedge(_player.CurrentFacingDirection, out Vector2 ledgePosition))
         {
             _stateMachine.ChangeToState(_player.ledgeClimbState);
         }

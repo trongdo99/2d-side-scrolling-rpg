@@ -19,7 +19,7 @@ public class PlayerIdleState : PlayerOnGroundState
     {
         base.CheckCondition();
 
-        if (_inputVector.x != 0 && !_player.isBusy)
+        if (_inputVector.x != 0 && !_player.IsBusy)
         {
             _stateMachine.ChangeToState(_player.moveState);
         }
