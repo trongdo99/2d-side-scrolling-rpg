@@ -41,15 +41,7 @@ public class PlayerLedgeClimbState : PlayerState
     {
         base.OnExit();
 
-        // Delay setting position when exit this state for 1 frame in order to let the next state play it's animation.
-        // If not, the sprite will blink forward and backward.
-        _player.StartCoroutine(SetPositionAfterClimb(_facingDirection));
+        _player.transform.position += _offset * _facingDirection;
         _controller.SetGravityActive(true);
-    }
-
-    private IEnumerator SetPositionAfterClimb(int facingDirection)
-    {
-        yield return null;
-        _player.transform.position += _offset * facingDirection;
     }
 }
