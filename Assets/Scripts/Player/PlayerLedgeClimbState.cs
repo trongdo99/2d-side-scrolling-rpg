@@ -28,7 +28,7 @@ public class PlayerLedgeClimbState : PlayerState
 
         if (_isAnimationCompletedTriggered)
         {
-            _stateMachine.ChangeToState(_player.idleState);
+            _stateMachine.ChangeToState(_player.IdleState);
         }
     }
 

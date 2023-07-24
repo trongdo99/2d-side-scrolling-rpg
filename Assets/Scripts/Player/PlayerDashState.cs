@@ -26,11 +26,11 @@ public class PlayerDashState : PlayerState
 
         if (_player.LedgeDetector.CheckForLedge(_dashDirection, out Vector2 ledgePosition))
         {
-            _stateMachine.ChangeToState(_player.ledgeClimbState);
+            _stateMachine.ChangeToState(_player.LedgeClimbState);
         }
         else if (_stateTimer < 0f)
         {
-            _stateMachine.ChangeToState(_player.idleState);
+            _stateMachine.ChangeToState(_player.IdleState);
         }
     }
 
@@ -48,7 +48,7 @@ public class PlayerDashState : PlayerState
     {
         base.OnExit();
 
-        _player.lastDashTime = Time.time;
+        _player.LastDashTime = Time.time;
         _controller.SetGravityActive(true);
     }
 }

@@ -22,30 +22,24 @@ public class Player : Entity
     [SerializeField] private float _rollDuration;
     [SerializeField] private float _rollSpeed;
 
-    [HideInInspector] public float lastRollTime;
-    [HideInInspector] public float lastDashTime;
+    public float LastRollTime { get; set; }
+    public float LastDashTime { get; set; }
+    public float LastComboTime { get; set; }
+    public LedgeDetector LedgeDetector => _ledgeDetector;
 
-    // Jump variables
-    private float _gravity;
-    private float _normalGravity;
-    private float _fallingGravity;
+    // Local variables
     private float _jumpForce;
 
-    public float NormalGravity { get => _normalGravity; set => _normalGravity = value; }
-    public float FallingGravity { get => _fallingGravity; set => _fallingGravity = value; }
+    public PlayerIdleState IdleState { get; private set; }
+    public PlayerMoveState MoveState { get; private set; }
+    public PlayerJumpState JumpState { get; private set; }
+    public PlayerFallState FallState { get; private set; }
+    public PlayerLedgeClimbState LedgeClimbState { get; private set; }
+    public PlayerDashState DashState { get; private set; }
+    public PlayerRollState RollState { get; private set; }
+    public PlayerPrimaryAttackState PrimaryAttackState { get; private set; }
 
-    public PlayerIdleState idleState { get; private set; }
-    public PlayerMoveState moveState { get; private set; }
-    public PlayerJumpState jumpState { get; private set; }
-    public PlayerFallState fallState { get; private set; }
-    public PlayerLedgeClimbState ledgeClimbState { get; private set; }
-    public PlayerDashState dashState { get; private set; }
-    public PlayerRollState rollState { get; private set; }
-    public PlayerPrimaryAttackState primaryAttackState { get; private set; }
-
-    [HideInInspector] public float lastComboTime;
-
-    public float moveSpeed { get => _moveSpeed; private set => _moveSpeed = value; }
+    public float MoveSpeed { get => _moveSpeed; private set => _moveSpeed = value; }
     public float JumpForce { get => _jumpForce; private set => _jumpForce = value; }
     public float DashCooldown { get => _dashCooldown; private set => _dashCooldown = value; }
     public float DashDuration { get => _dashDuration; private set => _dashDuration = value; }
@@ -58,32 +52,28 @@ public class Player : Entity
     public int ComboInputBufferFrame { get => _comboInputBufferFrame; private set => _comboInputBufferFrame = value; }
     public Vector2[] AttackMovement { get => _attackMovement; private set => _attackMovement = value; }
 
-    public LedgeDetector LedgeDetector => _ledgeDetector;
 
     protected override void Awake()
     {
         base.Awake();
 
-        // Gravity calculation
-        _normalGravity = -2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2);
-        _fallingGravity = _normalGravity * _fallGravityMultiplier;
-        _controller.SetOverrideGravity(_normalGravity);
+        // Set on ground gravity
+        _controller.SetOverrideGravity(-2 * _maxJumpHeight / Mathf.Pow(_timeToJumpApex, 2));
         _jumpForce = 2 * _maxJumpHeight / _timeToJumpApex;
-        Debug.Log($"Gravity: {_gravity}, Jump Force: {_jumpForce}");
 
         // Init states
-        idleState = new PlayerIdleState(_stateMachine, this, _controller, _animator);
-        moveState = new PlayerMoveState(_stateMachine, this, _controller, _animator);
-        jumpState = new PlayerJumpState(_stateMachine, this, _controller, _animator);
-        fallState = new PlayerFallState(_stateMachine, this, _controller, _animator);
-        ledgeClimbState = new PlayerLedgeClimbState(_stateMachine, this, _controller, _animator);
-        dashState = new PlayerDashState(_stateMachine, this, _controller, _animator);
-        rollState = new PlayerRollState(_stateMachine, this, _controller, _animator);
-        primaryAttackState = new PlayerPrimaryAttackState(_stateMachine, this, _controller, _animator);
-        _stateMachine.Init(idleState);
+        IdleState = new PlayerIdleState(_stateMachine, this, _controller, _animator);
+        MoveState = new PlayerMoveState(_stateMachine, this, _controller, _animator);
+        JumpState = new PlayerJumpState(_stateMachine, this, _controller, _animator);
+        FallState = new PlayerFallState(_stateMachine, this, _controller, _animator);
+        LedgeClimbState = new PlayerLedgeClimbState(_stateMachine, this, _controller, _animator);
+        DashState = new PlayerDashState(_stateMachine, this, _controller, _animator);
+        RollState = new PlayerRollState(_stateMachine, this, _controller, _animator);
+        PrimaryAttackState = new PlayerPrimaryAttackState(_stateMachine, this, _controller, _animator);
+        _stateMachine.Init(IdleState);
 
         // Set initial variable's value
-        lastRollTime = float.MinValue;
+        LastRollTime = float.MinValue;
     }
 
     protected override void Update()

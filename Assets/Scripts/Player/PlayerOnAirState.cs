@@ -28,13 +28,13 @@ public class PlayerOnAirState : PlayerState
 
         if (_player.LedgeDetector.CheckForLedge(_player.CurrentFacingDirection, out Vector2 ledgePosition))
         {
-            _stateMachine.ChangeToState(_player.ledgeClimbState);
+            _stateMachine.ChangeToState(_player.LedgeClimbState);
         }
         else if (GameInputManager.Instance.WasDodgeButtonPressed()
             && CanDash()
             && _inputVector.x != 0f)
         {
-            _stateMachine.ChangeToState(_player.dashState);
+            _stateMachine.ChangeToState(_player.DashState);
         }
     }
 
@@ -50,6 +50,6 @@ public class PlayerOnAirState : PlayerState
 
     private bool CanDash()
     {
-        return Time.time > _player.lastDashTime + _player.DashCooldown;
+        return Time.time > _player.LastDashTime + _player.DashCooldown;
     }
 }

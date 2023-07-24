@@ -19,19 +19,19 @@ public class PlayerOnGroundState : PlayerState
 
         if (GameInputManager.Instance.WasPrimaryAttackButtonPressed() && CanCombo())
         {
-            _stateMachine.ChangeToState(_player.primaryAttackState);
+            _stateMachine.ChangeToState(_player.PrimaryAttackState);
         }
         else if (GameInputManager.Instance.WasDodgeButtonPressed() && CanRoll())
         {
-            _stateMachine.ChangeToState(_player.rollState);
+            _stateMachine.ChangeToState(_player.RollState);
         }
         else if (GameInputManager.Instance.WasJumpButtonPressed())
         {
-            _stateMachine.ChangeToState(_player.jumpState);
+            _stateMachine.ChangeToState(_player.JumpState);
         }
         else if (_controller.State.IsFalling)
         {
-            _stateMachine.ChangeToState(_player.fallState);
+            _stateMachine.ChangeToState(_player.FallState);
         }
     }
 
@@ -47,11 +47,11 @@ public class PlayerOnGroundState : PlayerState
 
     private bool CanCombo()
     {
-        return Time.time > _player.lastComboTime + _player.ComboDelay;
+        return Time.time > _player.LastComboTime + _player.ComboDelay;
     }
 
     private bool CanRoll()
     {
-        return Time.time > _player.lastRollTime + _player.RollCooldown;
+        return Time.time > _player.LastRollTime + _player.RollCooldown;
     }
 }

@@ -49,11 +49,11 @@ public class PlayerPrimaryAttackState : PlayerState
             if (_comboCounter < 2 && _combotInputBufferCounter > -1 && _controller.State.IsGrounded)
             {
                 _combotInputBufferCounter = -1;
-                _stateMachine.ChangeToState(_player.primaryAttackState);
+                _stateMachine.ChangeToState(_player.PrimaryAttackState);
             }
             else
             {
-                _stateMachine.ChangeToState(_player.idleState);
+                _stateMachine.ChangeToState(_player.IdleState);
             }
         }
     }
@@ -82,7 +82,7 @@ public class PlayerPrimaryAttackState : PlayerState
         _comboCounter++;
         if (_comboCounter > 2)
         {
-            _player.lastComboTime = Time.time;
+            _player.LastComboTime = Time.time;
         }
         _lastAttackTime = Time.time;
         _controller.SetHorizontalForce(0f);

@@ -25,7 +25,7 @@ public class PlayerRollState : PlayerState
 
         if (_stateTimer < 0f)
         {
-            _stateMachine.ChangeToState(_player.idleState);
+            _stateMachine.ChangeToState(_player.IdleState);
         }
     }
 
@@ -44,6 +44,6 @@ public class PlayerRollState : PlayerState
         base.OnExit();
 
         _controller.SetHorizontalForce(0f);
-        _player.lastRollTime = Time.time;
+        _player.LastRollTime = Time.time;
     }
 }

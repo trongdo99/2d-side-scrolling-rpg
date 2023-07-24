@@ -25,7 +25,7 @@ public class PlayerJumpState : PlayerOnAirState
 
         if (_controller.State.IsFalling)
         {
-            _stateMachine.ChangeToState(_player.fallState);
+            _stateMachine.ChangeToState(_player.FallState);
         }
     }
 
@@ -33,7 +33,7 @@ public class PlayerJumpState : PlayerOnAirState
     {
         base.OnUpdate();
 
-        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
+        _controller.SetHorizontalForce(_inputVector.x * _player.MoveSpeed);
     }
 
     public override void OnExit()

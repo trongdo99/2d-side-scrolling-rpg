@@ -20,7 +20,7 @@ public class PlayerMoveState : PlayerOnGroundState
 
         if (_inputVector.x == 0)
         {
-            _stateMachine.ChangeToState(_player.idleState);
+            _stateMachine.ChangeToState(_player.IdleState);
         }
     }
 
@@ -28,7 +28,7 @@ public class PlayerMoveState : PlayerOnGroundState
     {
         base.OnUpdate();
 
-        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
+        _controller.SetHorizontalForce(_inputVector.x * _player.MoveSpeed);
         if (_inputVector.x > 0f)
         {
             _player.Face(Entity.FacingDirection.Right);

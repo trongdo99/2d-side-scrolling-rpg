@@ -21,7 +21,7 @@ public class PlayerFallState : PlayerOnAirState
 
         if (_player.Controller.State.IsGrounded)
         {
-            _stateMachine.ChangeToState(_player.idleState);
+            _stateMachine.ChangeToState(_player.IdleState);
         }
     }
 
@@ -29,7 +29,7 @@ public class PlayerFallState : PlayerOnAirState
     {
         base.OnUpdate();
 
-        _controller.SetHorizontalForce(_inputVector.x * _player.moveSpeed);
+        _controller.SetHorizontalForce(_inputVector.x * _player.MoveSpeed);
     }
 
     public override void OnExit()
