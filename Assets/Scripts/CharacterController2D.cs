@@ -1,3 +1,4 @@
+using BanhMy.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -100,14 +101,18 @@ public class CharacterController2D : MonoBehaviour
         UpdateRaycastOrigins();
 
         // Cast rays on all sides to check for collisions
-        if (appliedVelocity.x != 0)
-        {
-            HorizontalCollisions(ref appliedVelocity);
-        }
-        if (appliedVelocity.y != 0)
-        {
-            VerticalCollisions(ref appliedVelocity);
-        }
+        //if (appliedVelocity.x != 0)
+        //{
+        //    HorizontalCollisions(ref appliedVelocity);
+        //}
+        //if (appliedVelocity.y != 0)
+        //{
+        //    VerticalCollisions(ref appliedVelocity);
+        //}
+        CastRaysToTheSides(ref appliedVelocity, -1);
+        CastRaysToTheSides(ref appliedVelocity, 1);
+        CastRayBelow(ref appliedVelocity);
+        CastRayAbove(ref appliedVelocity);
 
         // Move the transform
         transform.Translate(appliedVelocity);
@@ -204,6 +209,121 @@ public class CharacterController2D : MonoBehaviour
                 Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.green, 0.01f);
             }
         }
+    }
+
+    private void CastRaysToTheSides(ref Vector2 velocity, int rayDirection)
+    {
+        var movementDirection = Mathf.Sign(velocity.x);
+        float rayLength = Mathf.Abs(velocity.x) + _skinWidth;
+        RaycastHit2D[] sideHitsList = new RaycastHit2D[_horizontalRayCount];
+
+        for (int i = 0; i < _horizontalRayCount; i++)
+        {
+            Vector2 rayOrigin = (rayDirection == -1) ? _raycastOrigins.bottomLeft : _raycastOrigins.bottomRight;
+            rayOrigin += Vector2.up * (_horizontalRaySpacing * i);
+            sideHitsList[i] = BMDebug.RayCast(rayOrigin, rayDirection * transform.right, rayLength, _platformMask & ~_oneWayPlatformMask, Color.green, true);
+
+            if (sideHitsList[i].distance > 0)
+            {
+                float hitAngle = Mathf.Abs(Vector2.Angle(sideHitsList[i].normal, transform.up));
+
+                if (rayDirection < 0)
+                {
+                    State.IsCollidingLeft = true;
+                }
+
+                if (rayDirection > 0)
+                {
+                    State.IsCollidingRight = true;
+                }
+
+                if (movementDirection == rayDirection)
+                {
+                    velocity.x = (sideHitsList[i].distance - _skinWidth) * rayDirection;
+                    SetHorizontalForce(0f);
+                }
+                break;
+            }
+        }
+    }
+
+    private void CastRayAbove(ref Vector2 velocity)
+    {
+        float rayLength = Mathf.Abs(velocity.y) + _skinWidth;
+        bool isHitConnected = false;
+        float smallestDistance = float.MaxValue;
+        RaycastHit2D[] aboveHitsList = new RaycastHit2D[_verticalRayCount];
+
+        for (int i = 0; i < _verticalRayCount; i++)
+        {
+            Vector2 rayOrigin = _raycastOrigins.topLeft;
+            rayOrigin += Vector2.right * (_verticalRaySpacing * i + velocity.x);
+            aboveHitsList[i] = BMDebug.RayCast(rayOrigin, transform.up, rayLength, _platformMask & ~_oneWayPlatformMask, Color.cyan, true);
+
+            if (aboveHitsList[i])
+            {
+                isHitConnected = true;
+
+                if (aboveHitsList[i].distance < smallestDistance)
+                {
+                    smallestDistance = aboveHitsList[i].distance;
+                }
+            }
+        }
+
+        if (isHitConnected)
+        {
+            velocity.y = smallestDistance - _skinWidth;
+
+            State.IsCollidingAbove = true;
+            SetVerticalFoce(0f);
+        }
+    }
+
+    private void CastRayBelow(ref Vector2 velocity)
+    {
+        State.IsFalling = Mathf.Sign(velocity.y) < 0f;
+
+        float rayLength = Mathf.Abs(velocity.y) + _skinWidth;
+        RaycastHit2D[] belowHitsList = new RaycastHit2D[_verticalRayCount];
+        float smallestDistance = float.MaxValue;
+        bool isHitConnected = false;
+
+        for (int i = 0; i < _verticalRayCount; i++)
+        {
+            Vector2 rayOrigin = _raycastOrigins.bottomLeft;
+            rayOrigin += Vector2.right * (_verticalRaySpacing * i + velocity.x);
+            belowHitsList[i] = BMDebug.RayCast(rayOrigin, -transform.up, rayLength, _platformMask, Color.blue, true);
+
+            if (belowHitsList[i])
+            {
+                isHitConnected = true;
+
+                if (belowHitsList[i].distance < smallestDistance)
+                {
+                    smallestDistance = belowHitsList[i].distance;
+                }
+            }
+        }
+
+        if (isHitConnected)
+        {
+
+            State.IsFalling = false;
+            State.IsCollidingBelow = true;
+            // If is jumping;
+            if (_velocity.y > 0f)
+            {
+                State.IsCollidingBelow = false;
+            }
+            // If not, adjust the velocity based on raycast hit
+            else
+            {
+                velocity.y = -smallestDistance + _skinWidth;
+                SetVerticalFoce(0f);
+            }
+        }
+        
     }
 
     // Changes in this method effect moveDistance inside Move method
