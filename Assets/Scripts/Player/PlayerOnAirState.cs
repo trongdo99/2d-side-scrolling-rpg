@@ -26,7 +26,11 @@ public class PlayerOnAirState : PlayerState
             _player.Face(Entity.FacingDirection.Left);
         }
 
-        if (_player.LedgeDetector.CheckForLedge(_player.CurrentFacingDirection, out Vector2 ledgePosition))
+        if (_controller.State.IsGrounded)
+        {
+            _stateMachine.ChangeToState(_player.IdleState);
+        }
+        else if (_player.LedgeDetector.CheckForLedge(_player.CurrentFacingDirection, out Vector2 ledgePosition))
         {
             _stateMachine.ChangeToState(_player.LedgeClimbState);
         }
