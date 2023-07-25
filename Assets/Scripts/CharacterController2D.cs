@@ -9,7 +9,8 @@ public class CharacterController2D : MonoBehaviour
     public const float GRAVITY = -9.8f;
 
     // Used to determine which objects to collide with
-    [SerializeField] private LayerMask _collisionMask;
+    [SerializeField] private LayerMask _platformMask;
+    [SerializeField] private LayerMask _oneWayPlatformMask;
     [SerializeField] private float _skinWidth;
     [SerializeField] private int _horizontalRayCount;
     [SerializeField] private int _verticalRayCount;
@@ -28,6 +29,7 @@ public class CharacterController2D : MonoBehaviour
     private float _verticalRaySpacing;
     private BoxCollider2D _boxCollider;
     private RaycastOrigins _raycastOrigins;
+    LayerMask _savePlatformMask;
 
     public bool IsGravityActive { get => _isGravityActive; }
     public float Gravity { get { return _hasOverrideGravity ? _overrideGravity : _gravity; } }
@@ -38,6 +40,9 @@ public class CharacterController2D : MonoBehaviour
         _boxCollider = GetComponent<BoxCollider2D>();
         State = new CharacterControllerState();
         CalculateRaySpacing();
+
+        _savePlatformMask = _platformMask;
+        _platformMask |= _oneWayPlatformMask;
     }
 
     public void SetGravityActive(bool active)
@@ -64,6 +69,24 @@ public class CharacterController2D : MonoBehaviour
     public void SetVerticalFoce(float force)
     {
         _velocity.y = force;
+    }
+
+    public IEnumerator DisableCollisionFor(float duration)
+    {
+        DisableCollision();
+        yield return new WaitForSeconds(duration);
+        EnableCollision();
+    }
+
+    public void EnableCollision()
+    {
+        _platformMask = _savePlatformMask;
+        _platformMask |= _oneWayPlatformMask;
+    }
+
+    public void DisableCollision()
+    {
+        _platformMask = 0;
     }
 
     private void Update()
@@ -160,7 +183,7 @@ public class CharacterController2D : MonoBehaviour
             // If moving up, cast from bottom right corner
             Vector2 rayOrigin = (directionX == -1) ? _raycastOrigins.bottomLeft : _raycastOrigins.bottomRight;
             rayOrigin += Vector2.up * (_horizontalRaySpacing * i);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, _collisionMask);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, _platformMask);
 
             // Set x moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
             if (hit)
@@ -197,7 +220,7 @@ public class CharacterController2D : MonoBehaviour
             // If moving up, cast from top left corner
             Vector2 rayOrigin = (directionY == -1) ? _raycastOrigins.bottomLeft : _raycastOrigins.topLeft;
             rayOrigin += Vector2.right * (_verticalRaySpacing * i + velocity.x);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, _collisionMask);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, _platformMask);
 
             // Set y moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
             if (hit)
