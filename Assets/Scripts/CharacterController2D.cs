@@ -276,6 +276,13 @@ public class CharacterController2D : MonoBehaviour
             velocity.y = smallestDistance - _skinWidth;
 
             State.IsCollidingAbove = true;
+
+            // Make the character fall down when touch the ceiling
+            if (!State.WasTouchingTheCeilingLastFrame)
+            {
+                velocity.y = 0f;
+            }
+
             SetVerticalFoce(0f);
         }
     }
