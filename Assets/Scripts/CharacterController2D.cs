@@ -104,15 +104,6 @@ public class CharacterController2D : MonoBehaviour
 
 		UpdateRaycastOrigins();
 
-		// Cast rays on all sides to check for collisions
-		//if (appliedVelocity.x != 0)
-		//{
-		//    HorizontalCollisions(ref appliedVelocity);
-		//}
-		//if (appliedVelocity.y != 0)
-		//{
-		//    VerticalCollisions(ref appliedVelocity);
-		//}
 		DetermineMovementDirection(appliedVelocity);
 		if (_castRaysOnBothSides)
 		{
@@ -130,8 +121,15 @@ public class CharacterController2D : MonoBehaviour
 				CastRaysToTheSides(ref appliedVelocity, - 1);
 			}
 		}
-		CastRayBelow(ref appliedVelocity);
-		CastRayAbove(ref appliedVelocity);
+
+		if (appliedVelocity.y > 0)
+		{
+			CastRayAbove(ref appliedVelocity);
+		}
+		else if (appliedVelocity.y < 0)
+		{
+			CastRayBelow(ref appliedVelocity);
+		}
 
 		// Move the transform
 		transform.Translate(appliedVelocity);
@@ -171,30 +169,6 @@ public class CharacterController2D : MonoBehaviour
 		}
 	}
 
-	//private void CheckBottomEdgeCollisions()
-	//{
-	//    RaycastHit2D hit = Physics2D.Raycast(_raycastOrigins.leftBottomEdge, Vector2.down, 0.1f, _collisionMask);
-	//    _collisionInfo.leftBottomEdge = hit ? true : false;
-	//    if (hit)
-	//    {
-	//        Debug.DrawRay(_raycastOrigins.leftBottomEdge, Vector2.down * 0.1f, Color.red);
-	//    }
-	//    else
-	//    {
-	//        Debug.DrawRay(_raycastOrigins.leftBottomEdge, Vector2.down * 0.1f, Color.green);
-	//    }
-	//    hit = Physics2D.Raycast(_raycastOrigins.rightBottomEdge, Vector2.down, 0.1f, _collisionMask);
-	//    _collisionInfo.rightBottomEdge = hit ? true : false;
-	//    if (hit)
-	//    {
-	//        Debug.DrawRay(_raycastOrigins.rightBottomEdge, Vector2.down * 0.1f, Color.red);
-	//    }
-	//    else
-	//    {
-	//        Debug.DrawRay(_raycastOrigins.rightBottomEdge, Vector2.down * 0.1f, Color.green);
-	//    }
-	//}
-
 	private void DetermineMovementDirection(Vector2 velocity)
 	{
 		_movementDirecion = _storedMovementDirection;
@@ -208,41 +182,6 @@ public class CharacterController2D : MonoBehaviour
 		}
 
 		_storedMovementDirection = _movementDirecion;
-	}
-
-	// Changes in this method effect moveDistance Move method
-	private void HorizontalCollisions(ref Vector2 velocity)
-	{
-		float directionX = Mathf.Sign(velocity.x);
-		float rayLength = Mathf.Abs(velocity.x) + _skinWidth;
-
-		for (int i = 0; i < _horizontalRayCount; i++)
-		{
-			// If moving down, cast from bottom left corner
-			// If moving up, cast from bottom right corner
-			Vector2 rayOrigin = (directionX == -1) ? _raycastOrigins.bottomLeft : _raycastOrigins.bottomRight;
-			rayOrigin += Vector2.up * (_horizontalRaySpacing * i);
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, _platformMask);
-
-			// Set x moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
-			if (hit)
-			{
-				Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red, 0.01f);
-
-				velocity.x = (hit.distance - _skinWidth) * directionX;
-				// Set all ray lengths to the nearest hit ray
-				// Avoids clipping scenario
-				rayLength = hit.distance;
-
-				State.IsCollidingLeft = directionX == -1;
-				State.IsCollidingRight = directionX == 1;
-				_velocity.x = 0f;
-			}
-			else
-			{
-				Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.green, 0.01f);
-			}
-		}
 	}
 
 	private void CastRaysToTheSides(ref Vector2 velocity, int rayDirection)
@@ -309,6 +248,11 @@ public class CharacterController2D : MonoBehaviour
 		{
 			velocity.y = smallestDistance - _skinWidth;
 
+			if (State.IsGrounded && velocity.y < 0f)
+			{
+				velocity.x = 0f;
+			}
+
 			State.IsCollidingAbove = true;
 
 			// Make the character fall down when touch the ceiling
@@ -365,44 +309,6 @@ public class CharacterController2D : MonoBehaviour
 			}
 		}
 		
-	}
-
-	// Changes in this method effect moveDistance inside Move method
-	private void VerticalCollisions(ref Vector2 velocity)
-	{
-		float directionY = Mathf.Sign(velocity.y);
-		float rayLength = Mathf.Abs(velocity.y) + _skinWidth;
-
-		State.IsFalling = directionY == -1;
-
-		for (int i = 0; i < _verticalRayCount; i++)
-		{
-			// If moving down, cast from bottom left corner
-			// If moving up, cast from top left corner
-			Vector2 rayOrigin = (directionY == -1) ? _raycastOrigins.bottomLeft : _raycastOrigins.topLeft;
-			rayOrigin += Vector2.right * (_verticalRaySpacing * i + velocity.x);
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, _platformMask);
-
-			// Set y moveDistance to amount needed to move from current position to the point which the ray collided with obstacle
-			if (hit)
-			{
-				Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-
-				velocity.y = (hit.distance - _skinWidth) * directionY;
-				// Set all ray lengths to the nearest hit ray
-				// Avoids clipping scenario
-				rayLength = hit.distance;
-
-				State.IsCollidingBelow = directionY == -1;
-				State.IsCollidingAbove = directionY == 1;
-				State.IsFalling = !State.IsCollidingBelow;
-				_velocity.y = 0f;
-			}
-			else 
-			{
-				Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.green);
-			}
-		}
 	}
 
 	private void UpdateRaycastOrigins()
