@@ -18,6 +18,7 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private int _verticalRayCount;
 	[SerializeField] private float _fallMultiplier;
 	[SerializeField] private bool _castRaysOnBothSides;
+	[SerializeField] private float _distanceToTheGroundRayMaximumLenght = 100f;
 
 	public CharacterControllerState State;
 
@@ -32,12 +33,14 @@ public class CharacterController2D : MonoBehaviour
 	private bool _isGravityActive = true;
 	private float _horizontalRaySpacing;
 	private float _verticalRaySpacing;
+	private float _distanceToTheGround;
 	private BoxCollider2D _boxCollider;
 	private RaycastOrigins _raycastOrigins;
 	LayerMask _savePlatformMask;
 
 	public bool IsGravityActive { get => _isGravityActive; }
 	public float Gravity { get { return _hasOverrideGravity ? _overrideGravity : _gravity; } }
+	public float DistanceToTheGround { get => _distanceToTheGround; }
 
 	// Start is called before the first frame update
 	private void Awake()
@@ -141,6 +144,7 @@ public class CharacterController2D : MonoBehaviour
 		{
 			State.JustGotGrounded = true;
 		}
+		ComputeDistanceToTheGround();
 
 		// Force the physic engine to synchronize physic model after making changes in transform.
 		// Prevent player from constantly sinking to the ground at microseconds.
@@ -309,6 +313,52 @@ public class CharacterController2D : MonoBehaviour
 			}
 		}
 		
+	}
+
+	private void ComputeDistanceToTheGround()
+	{
+		if (_distanceToTheGroundRayMaximumLenght <= 0f)
+		{
+			_distanceToTheGround = -1;
+			return;
+		}
+
+		if (State.IsGrounded)
+		{
+			_distanceToTheGround = 0f;
+			return;
+		}
+
+		float rayLength = _distanceToTheGroundRayMaximumLenght + _skinWidth;
+		RaycastHit2D[] belowHitsList = new RaycastHit2D[_verticalRayCount];
+		float smallestDistance = float.MaxValue;
+		bool isHitConnected = false;
+
+		for (int i = 0; i < _verticalRayCount; i++)
+		{
+			Vector2 rayOrigin = _raycastOrigins.bottomLeft;
+			rayOrigin += Vector2.right * (_verticalRaySpacing * i);
+			belowHitsList[i] = BMDebug.RayCast(rayOrigin, -transform.up, rayLength, _platformMask, Color.blue, true);
+
+			if (belowHitsList[i])
+			{
+				isHitConnected = true;
+
+				if (belowHitsList[i].distance < smallestDistance)
+				{
+					smallestDistance = belowHitsList[i].distance;
+				}
+			}
+		}
+
+		if (isHitConnected)
+		{
+			_distanceToTheGround = smallestDistance - _skinWidth;
+		}
+		else
+		{
+			_distanceToTheGround = -1;
+		}
 	}
 
 	private void UpdateRaycastOrigins()
