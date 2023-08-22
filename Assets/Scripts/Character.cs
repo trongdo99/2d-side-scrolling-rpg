@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using BanhMy.Tools;
@@ -20,14 +21,15 @@ public class Character : MonoBehaviour
 	
 	[Header("Animator")]
 	[SerializeField] private Animator _animator;
+	public Animator Animator { get => _animator; }
 
 	[Header("Model")]
-	[SerializeField] private SpriteRenderer _spriteRenderer ;
+	[SerializeField] private SpriteRenderer _spriteRenderer;
 	[SerializeField] private GameObject _cameraTarget;
 	[SerializeField] private float _cameraTargetSpeed = 5f;
 
 	[Header("Abilities")]
-	[SerializeField] private List<GameObject> _abilityNodes;
+	[SerializeField] private GameObject _abilityNode;
 	
 	[Header("Airborne")]
 	[SerializeField] private float _airborneDistance = 0.5f;
@@ -40,8 +42,9 @@ public class Character : MonoBehaviour
 		}
 	}
 
-	public BMStateMachine<CharacterState.MovementState> _movementStateMachine { get; private set; }
-	public BMStateMachine<CharacterState.CharacterCondition> _conditionStateMachine { get; private set; }
+	public GameInputManager InputManager { get; private set; }
+	public BMStateMachine<CharacterState.MovementState> MovementStateMachine { get; private set; }
+	public BMStateMachine<CharacterState.CharacterCondition> ConditionStateMachine { get; private set; }
 	public HashSet<int> _animatorParameters { get; private set; }
 
 	private const string _groundedAnimationParameterName = "Grounded";
@@ -67,4 +70,96 @@ public class Character : MonoBehaviour
 	private int _flipAnimationParameter;
 	
 	private CharacterController2D _controller;
+	private CharacterAbility[] _characterAbilities;
+	private bool _abilitiesCachedOnce = false;
+	private Vector3 _cameraTargetInitialPosition;
+
+	private void Awake()
+	{
+		MovementStateMachine = new BMStateMachine<CharacterState.MovementState>();
+		ConditionStateMachine = new BMStateMachine<CharacterState.CharacterCondition>();
+		MovementStateMachine.ChangeState(CharacterState.MovementState.Idle);
+
+		IsFacingRight = _initialFacingDirection == FacingDirection.Right;
+
+		if (_cameraTarget == null)
+		{
+			_cameraTarget = new GameObject();
+			_cameraTarget.transform.SetParent(transform);
+			_cameraTarget.transform.localPosition = Vector3.zero;
+			_cameraTarget.name = "CameraTarget";
+		}
+		_cameraTargetInitialPosition = _cameraTarget.transform.localPosition;
+
+		CharacterState = new CharacterState();
+		_controller = new CharacterController2D();
+		CachedAbilities();
+		SetInputManger();
+		BindAnimator();
+		CanFlip = true;
+	}
+
+	private void CachedAbilities()
+	{
+		if (_abilitiesCachedOnce) return;
+
+		if (_abilityNode != null)
+		{
+			_characterAbilities = _abilityNode.GetComponentsInChildren<CharacterAbility>();
+		}
+		_abilitiesCachedOnce = true;
+	}
+
+	public T FindAbility<T>() where T : CharacterAbility
+	{
+		CachedAbilities();
+
+		Type searchedAbilityType = typeof(T);
+
+		foreach (var ability in _characterAbilities)
+		{
+			if (ability is T characterAbility)
+			{
+				return characterAbility;
+			}
+		}
+
+		return null;
+	}
+
+	private void SetInputManger()
+	{
+		if (_characterType == CharacterType.AI)
+		{
+			InputManager = null;
+			UpdateInputManagerInAbilities();
+			return;
+		}
+
+		InputManager = GameInputManager.Instance;
+		UpdateInputManagerInAbilities();
+	}
+
+	private void UpdateInputManagerInAbilities()
+	{
+		if (_characterAbilities == null) return;
+
+		foreach (var ability in _characterAbilities)
+		{
+			ability.SetInputManager(InputManager);
+		}
+	}
+
+	private void BindAnimator()
+	{
+		if (_animator != null)
+		{
+			InitializeAnimatorParameters();
+		}
+	}
+
+	private void InitializeAnimatorParameters()
+	{
+		
+	}
 }
