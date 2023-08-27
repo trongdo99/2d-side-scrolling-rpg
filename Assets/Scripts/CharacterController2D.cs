@@ -2,6 +2,7 @@ using BanhMy.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent (typeof (BoxCollider2D))]
@@ -20,6 +21,7 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private bool _castRaysOnBothSides;
 	[SerializeField] private float _distanceToTheGroundRayMaximumLenght = 100f;
 
+	public float TimeAirborne = 0f;
 	public CharacterControllerState State;
 
 	private Vector2 _velocity;
@@ -149,6 +151,11 @@ public class CharacterController2D : MonoBehaviour
 		// Force the physic engine to synchronize physic model after making changes in transform.
 		// Prevent player from constantly sinking to the ground at microseconds.
 		Physics2D.SyncTransforms();
+	}
+
+	private void LateUpdate()
+	{
+		TimeAirborne = State.IsGrounded ? 0f : TimeAirborne + Time.deltaTime;
 	}
 
 	private void FrameInitialization()

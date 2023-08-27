@@ -16,11 +16,12 @@ public class CharacterState
 	{
 		Null,
 		Idle,
-		Walking,
+		Moving,
 		Crouching,
 		Dashing,
 		Jumping,
 		DoubleJumping,
+		Falling,
 		FollowingPath,
 		LedgeClimbing,
 		Rolling,

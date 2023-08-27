@@ -33,7 +33,7 @@ public class Character : MonoBehaviour
 	
 	[Header("Airborne")]
 	[SerializeField] private float _airborneDistance = 0.5f;
-	[SerializeField] private float _airborneMinimumTime = 0.1f;
+	public float AirborneMinimumtime = 0.1f;
 	public bool Airborne 
 	{
 		get 
@@ -92,7 +92,7 @@ public class Character : MonoBehaviour
 		_cameraTargetInitialPosition = _cameraTarget.transform.localPosition;
 
 		CharacterState = new CharacterState();
-		_controller = new CharacterController2D();
+		_controller = GetComponent<CharacterController2D>();
 		CachedAbilities();
 		SetInputManger();
 		BindAnimator();
@@ -161,5 +161,50 @@ public class Character : MonoBehaviour
 	private void InitializeAnimatorParameters()
 	{
 		
+	}
+
+	private void Update()
+	{
+		EarlyProcessAbilities();
+
+		if (Time.timeScale != 0)
+		{
+			ProcessAbilities();
+			LateProcessAbilities();
+		}
+
+	}
+
+	private void EarlyProcessAbilities()
+	{
+		foreach (var ability in _characterAbilities)
+		{
+			if (ability.enabled && ability.AbilityInitialized)
+			{
+				ability.EarlyProcessAbiltity();
+			}
+		}
+	}
+
+	private void ProcessAbilities()
+	{
+		foreach (var ability in _characterAbilities)
+		{
+			if (ability.enabled && ability.AbilityInitialized)
+			{
+				ability.ProcessAbility();
+			}
+		}
+	}
+
+	private void LateProcessAbilities()
+	{
+		foreach (var ability in _characterAbilities)
+		{
+			if (ability.enabled && ability.AbilityInitialized)
+			{
+				ability.ProcessAbility();
+			}
+		}
 	}
 }

@@ -58,7 +58,7 @@ public class CharacterAbility : MonoBehaviour
 
 	protected virtual void Start()
 	{
-		
+		Initialize();
 	}
 
 	protected virtual void Initialize()
@@ -103,8 +103,8 @@ public class CharacterAbility : MonoBehaviour
 	{
 		if (_inputManager == null) return;
 
-		_verticalInput = _inputManager.GetMovementVectorNormalized().x;
-		_horizontalInput = _inputManager.GetMovementVectorNormalized().y;
+		_horizontalInput = _inputManager.GetMovementVectorNormalized().x;
+		_verticalInput = _inputManager.GetMovementVectorNormalized().y;
 
 		HandleInput();
 	}
