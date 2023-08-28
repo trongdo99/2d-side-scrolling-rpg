@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CharacterJump : CharacterAbility
 {
-	public enum JumpBehaviour
+	public enum JumpRestriction
 	{
 		CanJumpOnGround,
 		CanJumpAnyWhere
@@ -12,13 +12,85 @@ public class CharacterJump : CharacterAbility
 
 	[Header("Jump")]
 	[SerializeField] private int _numberOfJumps = 2;
-	[SerializeField] private float _jumpHeight = 2f;
-	[SerializeField] private JumpBehaviour _jumpBehaviour = JumpBehaviour.CanJumpAnyWhere;
+	[ReadOnly]
+	[SerializeField] private int _numberOfJumpsLeft;
+	[SerializeField] private float _maxJumpHeight = 2f;
+	[SerializeField] private float _timeToReachApexHeight;
+	[ReadOnly]
+	[SerializeField] private float _jumpForce;
+	[SerializeField] private JumpRestriction _jumpRestriction = JumpRestriction.CanJumpAnyWhere;
 	[SerializeField] private bool _canJumpDownOnWayPlatform = true;
 	
 	[Header("Quality of Life")]
 	[SerializeField] private float _coyoteTime;
 	[SerializeField] private int _inputBufferFrame;
 
-	
+
+	private float _lastTimeGrounded;
+
+	protected override void Initialize()
+	{
+		base.Initialize();
+		_controller.SetOverrideGravity(-2 * _maxJumpHeight / Mathf.Pow(_timeToReachApexHeight, 2));
+		_jumpForce = 2 * _maxJumpHeight / _timeToReachApexHeight;
+	}
+
+	protected override void HandleInput()
+	{
+		base.HandleInput();
+		if (_inputManager.WasJumpButtonPressed())
+		{
+			
+		}
+	}
+
+	private void Jump()
+	{
+		if (!AbilityAuthorized
+			|| !EvaluateJumpRestriction()
+			|| _conditionStateMachine.CurrentState != CharacterState.CharacterCondition.Normal
+			|| _movementStateMachine.CurrentState == CharacterState.MovementState.Dashing)
+		{
+			return;
+		}
+	}
+
+	public override void ProcessAbility()
+	{
+		base.ProcessAbility();
+	}
+
+	private bool EvaluateJumpRestriction()
+	{
+		if (_jumpRestriction == JumpRestriction.CanJumpAnyWhere) return true;
+		
+		if (_jumpRestriction == JumpRestriction.CanJumpOnGround)
+		{
+			if (_controller.State.IsGrounded)
+			{
+				return true;
+			}
+			else if (_numberOfJumpsLeft < _numberOfJumps)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private bool EvaluateJumpTimeWindow()
+	{
+		if (_movementStateMachine.CurrentState == CharacterState.MovementState.Jumping
+			|| _movementStateMachine.CurrentState == CharacterState.MovementState.DoubleJumping)
+		{
+			return false;
+		}
+
+		if (Time.time - _lastTimeGrounded <= _coyoteTime)
+		{
+			return true;
+		}
+		return false;
+	}
 }
