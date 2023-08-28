@@ -40,7 +40,7 @@ public class CharacterJump : CharacterAbility
 		base.HandleInput();
 		if (_inputManager.WasJumpButtonPressed())
 		{
-			
+			Jump();
 		}
 	}
 
@@ -53,11 +53,39 @@ public class CharacterJump : CharacterAbility
 		{
 			return;
 		}
+
+		_movementStateMachine.ChangeState(CharacterState.MovementState.Jumping);
+		_conditionStateMachine.ChangeState(CharacterState.CharacterCondition.Normal);
+		_controller.SetGravityActive(true);
+		_controller.EnableCollision();
+
+		_numberOfJumpsLeft -= 1;
+		
+		if (_controller.State.IsGrounded)
+		{
+			_controller.TimeAirborne = 0f;
+		}
+
+		_controller.SetVerticalFoce(_jumpForce);
 	}
 
 	public override void ProcessAbility()
 	{
 		base.ProcessAbility();
+
+		if (!AbilityAuthorized) return;
+
+		if (_controller.State.JustGotGrounded)
+		{
+			_numberOfJumpsLeft = _numberOfJumps;
+		}
+
+		if (_controller.State.IsGrounded)
+		{
+			_lastTimeGrounded = Time.time;
+		}
+
+		_controller.State.IsJumping = _movementStateMachine.CurrentState == CharacterState.MovementState.Jumping;
 	}
 
 	private bool EvaluateJumpRestriction()

@@ -1072,6 +1072,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1422076819}
   - component: {fileID: 1422076820}
+  - component: {fileID: 1422076821}
   m_Layer: 6
   m_Name: Abilities
   m_TagString: Untagged
@@ -1115,8 +1116,31 @@ MonoBehaviour:
   _inputThreshold: 0.1
   _airControl: 1
   _allowFlipInTheAir: 1
-  _activeIfDied: 0
   _stopWalkingWHenCollidingWithAWall: 1
+--- !u!114 &1422076821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422076818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e27455ee3c23e184ea9b095e07b76377, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AbilityPermitted: 1
+  _blockingMovementStates: 
+  _blockingConditionStates: 
+  _numberOfJumps: 2
+  _numberOfJumpsLeft: 0
+  _maxJumpHeight: 3
+  _timeToReachApexHeight: 0.3
+  _jumpForce: 0
+  _jumpRestriction: 0
+  _canJumpDownOnWayPlatform: 1
+  _coyoteTime: 0
+  _inputBufferFrame: 0
 --- !u!1 &1653787187
 GameObject:
   m_ObjectHideFlags: 0
