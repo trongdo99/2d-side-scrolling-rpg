@@ -84,6 +84,7 @@ public class CharacterHorizontalMovement : CharacterAbility
 			_normalizedHorizontalMovement = _horizontalMovement;
 			if (!_character.IsFacingRight && canFlip && _flipCharacterToFaceDirection)
 			{
+				_character.Flip();
 			}
 		}
 		else if (_horizontalMovement < _inputThreshold)
@@ -91,7 +92,7 @@ public class CharacterHorizontalMovement : CharacterAbility
 			_normalizedHorizontalMovement = _horizontalMovement;
 			if (_character.IsFacingRight && canFlip && _flipCharacterToFaceDirection)
 			{
-				
+				_character.Flip();
 			}
 		}
 		else

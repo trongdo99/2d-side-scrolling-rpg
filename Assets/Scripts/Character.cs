@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using BanhMy.Tools;
+using UnityEditor.MPE;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -27,6 +28,7 @@ public class Character : MonoBehaviour
 	[SerializeField] private SpriteRenderer _spriteRenderer;
 	[SerializeField] private GameObject _cameraTarget;
 	[SerializeField] private float _cameraTargetSpeed = 5f;
+	[SerializeField] private bool _flipModelOnDirectionChange = true;
 
 	[Header("Abilities")]
 	[SerializeField] private GameObject _abilityNode;
@@ -205,6 +207,38 @@ public class Character : MonoBehaviour
 			{
 				ability.ProcessAbility();
 			}
+		}
+	}
+
+	public void Flip(bool ignoreFlipOnDirectionChagngeFalseValue = false)
+	{
+		if (!_flipModelOnDirectionChange && !ignoreFlipOnDirectionChagngeFalseValue) return;
+
+		if (!CanFlip) return;
+
+		if (!_flipModelOnDirectionChange && ignoreFlipOnDirectionChagngeFalseValue)
+		{
+			_spriteRenderer.flipX = !_spriteRenderer.flipX;
+		}
+
+		FlipModel();
+
+		IsFacingRight = !IsFacingRight;
+
+		foreach (var ability in _characterAbilities)
+		{
+			if (ability.enabled)
+			{
+				ability.Flip();
+			}
+		}
+	}
+
+	public void FlipModel()
+	{
+		if (_flipModelOnDirectionChange)
+		{
+			_spriteRenderer.flipX = !_spriteRenderer.flipX;
 		}
 	}
 }
