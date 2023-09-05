@@ -22,6 +22,9 @@ public class Character : MonoBehaviour
 	
 	[Header("Animator")]
 	[SerializeField] private Animator _animator;
+	[SerializeField] private bool _performSanityCheck;
+	[SerializeField] private bool _disableAnimatorLog;
+	
 	public Animator Animator { get => _animator; }
 
 	[Header("Model")]
@@ -157,12 +160,34 @@ public class Character : MonoBehaviour
 		if (_animator != null)
 		{
 			InitializeAnimatorParameters();
+			_animator.logWarnings = _disableAnimatorLog;
 		}
 	}
 
 	private void InitializeAnimatorParameters()
 	{
+		_animatorParameters = new HashSet<int>();
 		
+		_animator.AddAnimatorParameterIfExists(_groundedAnimationParameterName, out _groundedAnimationParameter, AnimatorControllerParameterType.Bool, _animatorParameters);
+		_animator.AddAnimatorParameterIfExists(_airborneAnimationParameterName, out _airborneAnimationParamter, AnimatorControllerParameterType.Bool, _animatorParameters);
+		_animator.AddAnimatorParameterIfExists(_xSpeedAnimationParameterName, out _xSpeedAnimationParamter, AnimatorControllerParameterType.Float, _animatorParameters);
+		_animator.AddAnimatorParameterIfExists(_ySpeedAnimationParamterName, out _ySpeedAnimationParamter, AnimatorControllerParameterType.Float, _animatorParameters);
+		_animator.AddAnimatorParameterIfExists(_worldXSpeedAnimationParamterName, out _worldXSpeedAnimationParamter, AnimatorControllerParameterType.Float, _animatorParameters);
+		_animator.AddAnimatorParameterIfExists(_worldYSpeedAnimationParameterName, out _worldYSpeedAnimationParameter, AnimatorControllerParameterType.Float, _animatorParameters);
+		_animator.AddAnimatorParameterIfExists(_idleAnimationParameterName, out _idleAnimationParameter, AnimatorControllerParameterType.Bool, _animatorParameters);
+		_animator.AddAnimatorParameterIfExists(_aliveAnimationParameterName, out _aliveAnimationParameter, AnimatorControllerParameterType.Bool, _animatorParameters);
+		_animator.AddAnimatorParameterIfExists(_facingRightAnimationParameterName, out _facingRightAnimationParameter, AnimatorControllerParameterType.Bool, _animatorParameters);
+		_animator.AddAnimatorParameterIfExists(_flipAnimationParameterName, out _flipAnimationParameter, AnimatorControllerParameterType.Trigger, _animatorParameters);
+	}
+
+	private void UpdateAnimator()
+	{
+		if (_animator == null) return;
+
+		_animator.UpdateAnimatorBool(_groundedAnimationParameter, _controller.State.IsGrounded, _animatorParameters, _performSanityCheck);
+		_animator.UpdateAnimatorBool(_airborneAnimationParamter, Airborne, _animatorParameters, _performSanityCheck);
+		_animator.UpdateAnimatorBool(_idleAnimationParameter, MovementStateMachine.CurrentState == CharacterState.MovementState.Idle, _animatorParameters, _performSanityCheck);
+		_animator.UpdateAnimatorBool(_facingRightAnimationParameter, IsFacingRight, _animatorParameters, _performSanityCheck);
 	}
 
 	private void Update()
