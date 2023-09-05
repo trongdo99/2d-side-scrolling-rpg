@@ -23,9 +23,10 @@ public class CharacterJump : CharacterAbility
 	
 	[Header("Quality of Life")]
 	[SerializeField] private float _coyoteTime;
-	[SerializeField] private int _inputBufferFrame;
+	[SerializeField] private float _inputBufferDuration;
 
-
+	private float _timeLastJumpButtonPressed;
+	private float _timeSinceLastJumpPressed { get => Time.unscaledTime - _timeLastJumpButtonPressed; }
 	private float _lastTimeGrounded;
 
 	protected override void Initialize()
@@ -40,7 +41,17 @@ public class CharacterJump : CharacterAbility
 		base.HandleInput();
 		if (_inputManager.WasJumpButtonPressed())
 		{
+			_timeLastJumpButtonPressed = Time.unscaledTime;
 			Jump();
+		}
+
+		if (_inputBufferDuration > 0f && _controller.State.JustGotGrounded)
+		{
+			if (_timeSinceLastJumpPressed < _inputBufferDuration)
+			{
+				_numberOfJumpsLeft = _numberOfJumps;
+				Jump();
+			}
 		}
 	}
 
@@ -52,6 +63,13 @@ public class CharacterJump : CharacterAbility
 			|| _movementStateMachine.CurrentState == CharacterState.MovementState.Dashing)
 		{
 			return;
+		}
+
+		if (!_controller.State.IsGrounded
+			&& !EvaluateJumpTimeWindow()
+			&& _numberOfJumpsLeft <= 0)
+		{
+				return;
 		}
 
 		_movementStateMachine.ChangeState(CharacterState.MovementState.Jumping);
@@ -90,6 +108,8 @@ public class CharacterJump : CharacterAbility
 
 	private bool EvaluateJumpRestriction()
 	{
+		if (EvaluateJumpTimeWindow()) return true;
+
 		if (_jumpRestriction == JumpRestriction.CanJumpAnyWhere) return true;
 		
 		if (_jumpRestriction == JumpRestriction.CanJumpOnGround)

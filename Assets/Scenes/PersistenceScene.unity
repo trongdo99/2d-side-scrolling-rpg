@@ -1139,8 +1139,8 @@ MonoBehaviour:
   _jumpForce: 0
   _jumpRestriction: 0
   _canJumpDownOnWayPlatform: 1
-  _coyoteTime: 0
-  _inputBufferFrame: 0
+  _coyoteTime: 0.1
+  _inputBufferDuration: 0.05
 --- !u!1 &1653787187
 GameObject:
   m_ObjectHideFlags: 0
@@ -1727,6 +1727,7 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 486148593}
   _cameraTarget: {fileID: 0}
   _cameraTargetSpeed: 5
+  _flipModelOnDirectionChange: 1
   _abilityNode: {fileID: 1422076818}
   _airborneDistance: 0.5
   AirborneMinimumtime: 0.1
