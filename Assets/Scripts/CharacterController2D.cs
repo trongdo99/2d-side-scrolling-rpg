@@ -43,6 +43,7 @@ public class CharacterController2D : MonoBehaviour
 	public bool IsGravityActive { get => _isGravityActive; }
 	public float Gravity { get { return _hasOverrideGravity ? _overrideGravity : _gravity; } }
 	public float DistanceToTheGround { get => _distanceToTheGround; }
+	public Vector2 Velocity { get => _velocity; }
 
 	// Start is called before the first frame update
 	private void Awake()

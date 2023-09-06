@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using BanhMy.Tools;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -27,9 +28,9 @@ public class CharacterHorizontalMovement : CharacterAbility
 	private float _lastTimeGrounded;
 
 	private const string _speedAnimationParameterName = "Speed";
-	private const string _walkingAnimationParamterName = "Walking";
+	private const string _movingAnimationParamterName = "Moving";
 	private int _speedAnimationParameter;
-	private int _walkingAnimationParamter;
+	private int _movingAnimationParamter;
 
 	protected override void Initialize()
 	{
@@ -175,11 +176,13 @@ public class CharacterHorizontalMovement : CharacterAbility
 
 	protected override void InitializeAnimatorParameters()
 	{
-		
+		RegisterAnimatorParameter(_speedAnimationParameterName, AnimatorControllerParameterType.Float, out _speedAnimationParameter);
+		RegisterAnimatorParameter(_movingAnimationParamterName, AnimatorControllerParameterType.Bool, out _movingAnimationParamter);
 	}
 
 	public override void UpdateAnimator()
 	{
-		
+		_animator.UpdateAnimatorFloat(_speedAnimationParameter, Mathf.Abs(_normalizedHorizontalMovement), _character.AnimatorParameters, _character.PerformSanityCheck);
+		_animator.UpdateAnimatorBool(_movingAnimationParamter, _movementStateMachine.CurrentState == CharacterState.MovementState.Moving, _character.AnimatorParameters, _character.PerformSanityCheck);
 	}
 }

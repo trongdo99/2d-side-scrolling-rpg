@@ -143,4 +143,16 @@ public class CharacterAbility : MonoBehaviour
 	{
 		
 	}
+
+	public virtual void RegisterAnimatorParameter(string parameterName, AnimatorControllerParameterType parameterType, out int parameter)
+	{
+		parameter = Animator.StringToHash(parameterName);
+
+		if (_animator == null) return;
+
+		if (_animator.HasParameterOfType(parameterName, parameterType))
+		{
+			_character.AnimatorParameters.Add(parameter);
+		}
+	}
 }

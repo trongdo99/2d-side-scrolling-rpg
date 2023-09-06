@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using BanhMy.Tools;
 using UnityEngine;
 
 public class CharacterJump : CharacterAbility
@@ -28,6 +30,14 @@ public class CharacterJump : CharacterAbility
 	private float _timeLastJumpButtonPressed;
 	private float _timeSinceLastJumpPressed { get => Time.unscaledTime - _timeLastJumpButtonPressed; }
 	private float _lastTimeGrounded;
+	private bool _doubleJumping;
+
+	private const string _jumpingAnimationParameterName = "Jumping";
+	private const string _doubleJumpingAnimationParameterName = "DoubleJumping";
+	private const string _hitTheGroundAnimationParameterName = "HitTheGround";
+	private int _jumpingAnimationParameter;
+	private int _doubleJumpingAnimationParameter;
+	private int _hitTheGroundAnimationParameter;
 
 	protected override void Initialize()
 	{
@@ -50,6 +60,7 @@ public class CharacterJump : CharacterAbility
 			if (_timeSinceLastJumpPressed < _inputBufferDuration)
 			{
 				_numberOfJumpsLeft = _numberOfJumps;
+				_doubleJumping = false;
 				Jump();
 			}
 		}
@@ -77,6 +88,8 @@ public class CharacterJump : CharacterAbility
 		_controller.SetGravityActive(true);
 		_controller.EnableCollision();
 
+		_doubleJumping = _numberOfJumpsLeft != _numberOfJumps;
+
 		_numberOfJumpsLeft -= 1;
 		
 		if (_controller.State.IsGrounded)
@@ -95,6 +108,7 @@ public class CharacterJump : CharacterAbility
 
 		if (_controller.State.JustGotGrounded)
 		{
+			_doubleJumping = false;
 			_numberOfJumpsLeft = _numberOfJumps;
 		}
 
@@ -141,4 +155,18 @@ public class CharacterJump : CharacterAbility
 		}
 		return false;
 	}
+
+    protected override void InitializeAnimatorParameters()
+    {
+		RegisterAnimatorParameter(_jumpingAnimationParameterName, AnimatorControllerParameterType.Bool, out _jumpingAnimationParameter);
+		RegisterAnimatorParameter(_doubleJumpingAnimationParameterName, AnimatorControllerParameterType.Bool, out _doubleJumpingAnimationParameter);
+		RegisterAnimatorParameter(_hitTheGroundAnimationParameterName, AnimatorControllerParameterType.Bool, out _hitTheGroundAnimationParameter);
+    }
+
+    public override void UpdateAnimator()
+    {
+		_animator.UpdateAnimatorBool(_jumpingAnimationParameter, _movementStateMachine.CurrentState == CharacterState.MovementState.Jumping, _character.AnimatorParameters, _character.PerformSanityCheck);
+		_animator.UpdateAnimatorBool(_doubleJumpingAnimationParameter, _doubleJumping, _character.AnimatorParameters, _character.PerformSanityCheck);
+		_animator.UpdateAnimatorBool(_hitTheGroundAnimationParameter, _controller.State.JustGotGrounded, _character.AnimatorParameters, _character.PerformSanityCheck);
+    }
 }
