@@ -1073,6 +1073,7 @@ GameObject:
   - component: {fileID: 1422076819}
   - component: {fileID: 1422076820}
   - component: {fileID: 1422076821}
+  - component: {fileID: 1422076822}
   m_Layer: 6
   m_Name: Abilities
   m_TagString: Untagged
@@ -1112,7 +1113,8 @@ MonoBehaviour:
   _blockingConditionStates: 
   _moveSpeed: 5
   _flipCharacterToFaceDirection: 1
-  _readInput: 1
+  AbilityMovementSpeedMultiplier: 1
+  ReadInput: 1
   _inputThreshold: 0.1
   _airControl: 1
   _allowFlipInTheAir: 1
@@ -1141,6 +1143,26 @@ MonoBehaviour:
   _canJumpDownOnWayPlatform: 1
   _coyoteTime: 0.1
   _inputBufferDuration: 0.05
+--- !u!114 &1422076822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422076818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cceeb4abae4170428b33226743c0f3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AbilityPermitted: 1
+  _blockingMovementStates: 
+  _blockingConditionStates: 
+  _rollDuration: 0.3
+  _rollSpeed: 2
+  _blockHorizontalInput: 1
+  _preventDamageCollisionDuringRoll: 1
+  _rollCooldown: 1
 --- !u!1 &1653787187
 GameObject:
   m_ObjectHideFlags: 0
@@ -1724,6 +1746,8 @@ MonoBehaviour:
   _initialFacingDirection: 1
   _directionOnSpawn: 0
   _animator: {fileID: 486148595}
+  _performSanityCheck: 0
+  _disableAnimatorLog: 0
   _spriteRenderer: {fileID: 486148593}
   _cameraTarget: {fileID: 0}
   _cameraTargetSpeed: 5

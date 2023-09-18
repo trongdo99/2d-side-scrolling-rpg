@@ -45,6 +45,7 @@ public class CharacterAbility : MonoBehaviour
 
 	protected GameInputManager _inputManager;
 	protected Character _character;
+	protected CharacterHorizontalMovement _characterHorizontalMovement;
 	protected Transform _characterTransform;
 	protected CharacterController2D _controller;
 	protected Animator _animator;
@@ -64,6 +65,7 @@ public class CharacterAbility : MonoBehaviour
 	protected virtual void Initialize()
 	{
 		_character = GetComponentInParent<Character>();
+		_characterHorizontalMovement = _character?.FindAbility<CharacterHorizontalMovement>();
 		_controller = GetComponentInParent<CharacterController2D>();
 		_spriteRenderer = GetComponentInParent<SpriteRenderer>();
 		BindAnimator();

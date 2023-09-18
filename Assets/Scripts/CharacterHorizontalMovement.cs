@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using BanhMy.Tools;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CharacterHorizontalMovement : CharacterAbility
 {
 	[Header("Speed")]
 	[SerializeField] private float _moveSpeed;
 	[SerializeField] private bool _flipCharacterToFaceDirection = true;
+	[ReadOnly]
+	public float AbilityMovementSpeedMultiplier = 1f;
 
+	[FormerlySerializedAs("_readInput")]
 	[Header("Input")]
-	[SerializeField] private bool _readInput;
+	public bool ReadInput;
 	[SerializeField] private float _inputThreshold = 0.1f;
 	[Range(0f, 1f)]
 	[SerializeField] private float _airControl = 1f;
@@ -47,7 +51,7 @@ public class CharacterHorizontalMovement : CharacterAbility
 
 	protected override void HandleInput()
 	{
-		if (!_readInput) return;
+		if (!ReadInput) return;
 
 		_horizontalMovement = _horizontalInput;
 		
@@ -60,6 +64,11 @@ public class CharacterHorizontalMovement : CharacterAbility
 	public void SetAirControlDirection(float value)
 	{
 		_lastGroundedHorizontalMovement = value;
+	}
+
+	public void SetHorizontalMove(float value)
+	{
+		_horizontalMovement = value;
 	}
 
 	private void HandleHorizontalMovement()
@@ -131,7 +140,7 @@ public class CharacterHorizontalMovement : CharacterAbility
 			_movementStateMachine.ChangeState(CharacterState.MovementState.Falling);
 		}
 
-		float movementSpeed = _normalizedHorizontalMovement * MovementSpeed;
+		float movementSpeed = _normalizedHorizontalMovement * MovementSpeed * AbilityMovementSpeedMultiplier;
 		_controller.SetHorizontalForce(movementSpeed);
 		
 		if (_controller.State.IsGrounded)
