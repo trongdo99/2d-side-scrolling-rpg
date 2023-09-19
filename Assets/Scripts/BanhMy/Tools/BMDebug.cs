@@ -6,6 +6,21 @@ namespace BanhMy.Tools
 {
     public static class BMDebug
     {
+        public static void DrawGizmoRectangle(Vector2 center, Vector2 size, Color color)
+        {
+            Gizmos.color = color;
+
+            var topLeft = new Vector3(center.x - size.x / 2, center.y + size.y / 2, 0);
+            var topRight = new Vector3(center.x + size.x / 2, center.y + size.y / 2, 0);
+            var bottomRight = new Vector3(center.x + size.x / 2, center.y - size.y / 2, 0);
+            var bottomLeft = new Vector3(center.x - size.x / 2, center.y - size.y / 2, 0);
+            
+            Gizmos.DrawLine(topLeft, topRight);
+            Gizmos.DrawLine(topRight, bottomRight);
+            Gizmos.DrawLine(bottomRight, bottomLeft);
+            Gizmos.DrawLine(bottomLeft, topLeft);
+        }
+        
         public static RaycastHit2D RayCast(Vector2 rayOriginPoint, Vector2 rayDirection, float rayDistance, LayerMask mask, Color color, bool drawGizmo = false)
         {
             if (drawGizmo)
