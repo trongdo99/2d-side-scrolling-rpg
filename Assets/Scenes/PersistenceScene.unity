@@ -1158,7 +1158,7 @@ MonoBehaviour:
   AbilityPermitted: 1
   _blockingMovementStates: 
   _blockingConditionStates: 
-  _rollDuration: 0.3
+  _rollDuration: 0.31
   _rollSpeed: 2
   _blockHorizontalInput: 1
   _preventDamageCollisionDuringRoll: 1
