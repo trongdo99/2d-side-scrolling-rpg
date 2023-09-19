@@ -25,6 +25,7 @@ public class CharacterHorizontalMovement : CharacterAbility
 	[SerializeField] private bool _stopWalkingWHenCollidingWithAWall = false;
 
 	public float MovementSpeed { get; set; }
+	public bool FlipCharacterToFaceDirection => _flipCharacterToFaceDirection;
 	
 	private float _horizontalMovement;
 	private float _lastGroundedHorizontalMovement;
