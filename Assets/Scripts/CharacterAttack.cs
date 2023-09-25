@@ -26,14 +26,23 @@ public class CharacterAttack : CharacterAbility
     [SerializeField] private bool _bufferInput;
     [SerializeField] private float _bufferDuration;
 
-    private Animator _animator;
-
     private bool _attackInProgress;
     private float _attackTimer;
     private float _bufferEndAt;
     private bool _buffering = false;
     private bool _charHztMvmtFlipInitialSetting;
     private bool _charHztMvmtFlipIntialSettingSet = false;
+
+    #region Animation parameters
+
+    private const string _attack1StartedAnimationParameterName = "Attack1Started";
+    private const string _attack2StartedAnimationParameterName = "Attack2Started";
+    private const string _attack3StartedAnimationParameterName = "Attack3Started";
+    private int _attack1StartedAnimationParameter;
+    private int _attack2StartedAnimationParameter;
+    private int _attack3StartedAnimationParameter;
+
+    #endregion
 
     protected override void Initialize()
     {
@@ -95,14 +104,20 @@ public class CharacterAttack : CharacterAbility
     {
         if (_attackInProgress) yield break;
 
+        _animator.UpdateAnimatorTrigger(_attack1StartedAnimationParameter, _character.AnimatorParameters,
+            _character.PerformSanityCheck);
         _attackInProgress = true;
+        _characterHorizontalMovement.ReadInput = false;
+        _characterHorizontalMovement.SetHorizontalMove(0f);
         yield return new WaitForSeconds(_initialDelay);
         EnableDamageArea();
         yield return new WaitForSeconds(_activeDuration);
         DisableDamageArea();
         _attackInProgress = false;
-    }
 
+        StopAttack();
+    }
+    
     private void EnableDamageArea()
     {
         _damageAreaCollider.enabled = true;
@@ -111,6 +126,23 @@ public class CharacterAttack : CharacterAbility
     private void DisableDamageArea()
     {
         _damageAreaCollider.enabled = false;
+    }
+
+    private void StopAttack()
+    {
+        _characterHorizontalMovement.ReadInput = true;
+
+        if (_movementStateMachine.CurrentState == CharacterState.MovementState.Attacking)
+        {
+            _movementStateMachine.RestorePreviousState();
+        }
+    }
+
+    protected override void InitializeAnimatorParameters()
+    {
+        RegisterAnimatorParameter(_attack1StartedAnimationParameterName, AnimatorControllerParameterType.Trigger, out _attack1StartedAnimationParameter);
+        RegisterAnimatorParameter(_attack2StartedAnimationParameterName, AnimatorControllerParameterType.Trigger, out _attack2StartedAnimationParameter);
+        RegisterAnimatorParameter(_attack3StartedAnimationParameterName, AnimatorControllerParameterType.Trigger, out _attack3StartedAnimationParameter);
     }
 
     private void OnDrawGizmosSelected()
