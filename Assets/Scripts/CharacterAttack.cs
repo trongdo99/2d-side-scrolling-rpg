@@ -81,6 +81,7 @@ public class CharacterAttack : CharacterAbility
     private void Attack()
     {
         if (!AbilityAuthorized
+            || _movementStateMachine.CurrentState == CharacterState.MovementState.Rolling
             || _conditionStateMachine.CurrentState != CharacterState.CharacterCondition.Normal)
         {
             return;
