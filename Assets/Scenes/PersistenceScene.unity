@@ -1181,6 +1181,7 @@ MonoBehaviour:
   _blockingConditionStates: 
   _initialDelay: 0.2
   _activeDuration: 0.3
+  _dropComboTime: 1
   _damageArea: {fileID: 0}
   _damageAreaCollider: {fileID: 0}
   _damageAreaOffset: {x: 0.5, y: 0}

@@ -10,6 +10,7 @@ public class CharacterAttack : CharacterAbility
     [Header("Attack configs")]
     [SerializeField] private float _initialDelay;
     [SerializeField] private float _activeDuration;
+    [SerializeField] private float _dropComboTime;
 
     [FormerlySerializedAs("_hitBox")]
     [Header("Damage area configs")]
@@ -26,6 +27,9 @@ public class CharacterAttack : CharacterAbility
     [SerializeField] private bool _bufferInput;
     [SerializeField] private float _bufferDuration;
 
+    private int _comboIndex = 1;
+    private int _comboLenght;
+    private float _lastComboAt;
     private bool _attackInProgress;
     private float _attackTimer;
     private float _bufferEndAt;
@@ -35,12 +39,14 @@ public class CharacterAttack : CharacterAbility
 
     #region Animation parameters
 
-    private const string _attack1StartedAnimationParameterName = "Attack1Started";
-    private const string _attack2StartedAnimationParameterName = "Attack2Started";
-    private const string _attack3StartedAnimationParameterName = "Attack3Started";
-    private int _attack1StartedAnimationParameter;
-    private int _attack2StartedAnimationParameter;
-    private int _attack3StartedAnimationParameter;
+    private const string _combo1StartedAnimationParameterName = "Combo1Started";
+    private const string _combo2StartedAnimationParameterName = "Combo2Started";
+    private const string _combo3StartedAnimationParameterName = "Combo3Started";
+    private int _combo1StartedAnimationParameter;
+    private int _combo2StartedAnimationParameter;
+    private int _combo3StartedAnimationParameter;
+
+    private Dictionary<int, int> _animationDict;
 
     #endregion
 
@@ -52,6 +58,11 @@ public class CharacterAttack : CharacterAbility
             _charHztMvmtFlipInitialSetting = _characterHorizontalMovement.FlipCharacterToFaceDirection;
         }
 
+        CreateDamageArea();
+    }
+
+    private void CreateDamageArea()
+    {
         if (_damageArea == null)
         {
             _damageArea = new GameObject(_character.name + "DamageArea");
@@ -97,6 +108,11 @@ public class CharacterAttack : CharacterAbility
                 _bufferEndAt = Time.time + _bufferDuration;
             }
         }
+
+        if (Time.time > _lastComboAt + _dropComboTime)
+        {
+            _comboIndex = 1;
+        }
         
         StartCoroutine(AttackCoroutine());
     }
@@ -105,7 +121,7 @@ public class CharacterAttack : CharacterAbility
     {
         if (_attackInProgress) yield break;
 
-        _animator.UpdateAnimatorTrigger(_attack1StartedAnimationParameter, _character.AnimatorParameters,
+        _animator.UpdateAnimatorTrigger(_animationDict[_comboIndex], _character.AnimatorParameters,
             _character.PerformSanityCheck);
         _attackInProgress = true;
         _characterHorizontalMovement.ReadInput = false;
@@ -131,6 +147,18 @@ public class CharacterAttack : CharacterAbility
 
     private void StopAttack()
     {
+        if (_comboIndex == _comboLenght)
+        {
+            _comboIndex = 1;
+            _lastComboAt = 0f;
+        }
+        else
+        {
+            _comboIndex++;
+        }
+
+        _lastComboAt = Time.time;
+        
         _characterHorizontalMovement.ReadInput = true;
 
         if (_movementStateMachine.CurrentState == CharacterState.MovementState.Attacking)
@@ -141,9 +169,16 @@ public class CharacterAttack : CharacterAbility
 
     protected override void InitializeAnimatorParameters()
     {
-        RegisterAnimatorParameter(_attack1StartedAnimationParameterName, AnimatorControllerParameterType.Trigger, out _attack1StartedAnimationParameter);
-        RegisterAnimatorParameter(_attack2StartedAnimationParameterName, AnimatorControllerParameterType.Trigger, out _attack2StartedAnimationParameter);
-        RegisterAnimatorParameter(_attack3StartedAnimationParameterName, AnimatorControllerParameterType.Trigger, out _attack3StartedAnimationParameter);
+        RegisterAnimatorParameter(_combo1StartedAnimationParameterName, AnimatorControllerParameterType.Trigger, out _combo1StartedAnimationParameter);
+        RegisterAnimatorParameter(_combo2StartedAnimationParameterName, AnimatorControllerParameterType.Trigger, out _combo2StartedAnimationParameter);
+        RegisterAnimatorParameter(_combo3StartedAnimationParameterName, AnimatorControllerParameterType.Trigger, out _combo3StartedAnimationParameter);
+        _animationDict = new()
+        {
+            {1, _combo1StartedAnimationParameter},
+            {2, _combo2StartedAnimationParameter},
+            {3, _combo3StartedAnimationParameter},
+        };
+        _comboLenght = _animationDict.Count;
     }
 
     private void OnDrawGizmosSelected()
